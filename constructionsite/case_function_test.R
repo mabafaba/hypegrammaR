@@ -11,12 +11,6 @@ library(reachR)
 require(survey)
 getwd()
 
-match.fun
-
-source("./dependencies.R")
-
-reachR:::load_questionnaire
-
 #load function to treat csv and csv2 equally
 read.csv.auto.sep<-function(file){
   L<-readLines(file, n = 1)
@@ -27,7 +21,7 @@ read.csv.auto.sep<-function(file){
 data<-read.csv.auto.sep(file = "./reach_som_protection_assessment_hh_cleaneddata_feb_2018.csv")
 
 #load sampling frame
-samplingframe<-read.csv(file = "sf.csv",header = T,stringsAsFactors = F)
+samplingframe<-read.csv.auto.sep(file = "sf.csv")
 populations<-load_samplingframe("./sf.csv",
                                 sampling.frame.population.column="Population",
                                 sampling.frame.stratum.column = "Camp_",
@@ -36,17 +30,24 @@ populations<-load_samplingframe("./sf.csv",
 questionnaire <- load_questionnaire(data, questions.file = "./questionscomma2.csv", choices.file = "./choices.csv", choices.label.column.to.use = "english")
 undebug(load_questionnaire)
 
+#some sanity checks
 reachR:::load_questionnaire
 names(read.csv("./questions.csv", stringsAsFactors = F, header= T))
 undebug(load_questionnaire)
 
-data.dependent.var = "resp_gender"
+#checking which question names made it through
+questions <- questionnaire[[1]]
+questions$name
+
+data.dependent.var = "is.this.an.idp.settlement."
 independent.var = "settlement"
-hypothesis.type="difference_in_groups"
+hypothesis.type="group_difference"
 #sampling.strategy="stratified random"
 
 #das könnte auch eleganter gehen mit funktion über x und jeder variable in x einen Type dazu machen
 find.data.types <- function(data.dependent.var, independent.var = NULL) {
+  data.type.dep = c()
+  data.type.indep = c()
   if(question_is_categorical(data.dependent.var) == T){
     data.type.dep = "categorical"
   }
@@ -62,9 +63,17 @@ find.data.types <- function(data.dependent.var, independent.var = NULL) {
   variable.types <- paste(data.type.dep, data.type.indep, sep="_")
   return(variable.types)
 }
-debug(question_is_numeric)
 
-find.data.types(data.dependent.var, independent.var)
+
+
+find.data.types(data.dependent.var)
+
+
+debug(question_is_numeric)
+reachR:::question_is_numeric
+
+
+
 
 data$overview.camp_name
 strata_of<-function(data){
@@ -84,11 +93,14 @@ analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothe
                       weights = variable_weights %>% as.vector,
                       data = data)
 
-  stat.test <- choose.test(hypothesis.type = hypothesis.type,
-                          data = data,
-                          dependent.var = data.dependent.var,
-                          independent.var = independent.var)
+  variable.types<-find.data.types(dependent.var, independent.var)
+  
+  
+  stat.test <- choose.test(hypothesis.type = hypothesis.type, variable.types = variable.type)
 
+  
+  stat.test(dependentvar = dependent.var,independent = independent.var,design = )
+  
   type_independent <- reachR:::question_is_categorical_internal(dependent.var)
 
 
@@ -113,10 +125,10 @@ analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothe
 #still need to add sampling strategy = in here, but for now this package deals with simple random, stratified and cluster in the same way
 #and the others not at all
 choose.test <- function(hypothesis.type, variable.types, crit = NULL, paired = NULL){
-  typestring <- paste("TYPE",hypothesis.type,variable.types, paired, sep="_")
-
+  
+  typestring <- paste(c("TYPE",hypothesis.type,variable.types, paired), collapse = "_")
   # typestring="TYPE_direct_reporting_simple_random_numeric"
-  TYPE_group_difference_categorical_categorical_ <- hypothesis_test_chisquare
+  TYPE_group_difference_categorical_categorical <- hypothesis_test_chisquare
   # TYPE_group_difference_numeric_categorical <- hypothesis_test_difference_in_means
   # TYPE_limit_numeric <- hypothesis_test_one_sample_z_num
   # TYPE_limit_categorical <- hypothesis_test_one_sample_z_cat
@@ -131,6 +143,8 @@ choose.test <- function(hypothesis.type, variable.types, crit = NULL, paired = N
   return(get(typestring))
 
 }
+
+
 
 #Perform test
 # let's pretend the choose.test function decided a chi squared test was appropriate because we are comparing difference in groups
