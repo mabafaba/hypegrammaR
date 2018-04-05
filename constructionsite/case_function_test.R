@@ -1,31 +1,31 @@
 # make sure this works again when you start the next day (don't assume commands from other files have been run), e.g this one
 # set wd to this script's folder
-.install_reachR(T, branch = "master")
-
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-if(!require(devtools)) install.packages("devtools")
-install.packages("ggpubr")
 rm(list = ls())
-require(dplyr)
-library(reachR)
-require(survey)
+this_script_path<-(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd(this_script_path)
 getwd()
 
-#load function to treat csv and csv2 equally
-read.csv.auto.sep<-function(file){
-  L<-readLines(file, n = 1)
-  numfields<- L %>% strsplit(";") %>% unlist %>% length
-  if (numfields == 1) read.csv(file) else read.csv2(file)
-}
+####################
+# run once
+####################
+install.packages("data.table")
+.install_reachR(T)
+####################
+
+source("./dependencies.R")
+library(reachR)
+require(survey)
+
 #load input
-data<-read.csv.auto.sep(file = "./reach_som_protection_assessment_hh_cleaneddata_feb_2018.csv")
+  data<- reachR:::read.csv.auto.sep(file = "./IRQ_CCCM.csv")
 
 #load sampling frame
-samplingframe<-read.csv.auto.sep(file = "sf.csv")
+samplingframe<- reachR:::read.csv.auto.sep(file = "sf.csv")
 populations<-load_samplingframe("./sf.csv",
                                 sampling.frame.population.column="Population",
                                 sampling.frame.stratum.column = "Camp_",
-                                data.stratum.column = "overview.camp_name", return.stratum.populations = T)
+                                data.stratum.column = "overview/camp_name", return.stratum.populations = T)
+
 #load questionnaire
 questionnaire <- load_questionnaire(data, questions.file = "./questionscomma2.csv", choices.file = "./choices.csv", choices.label.column.to.use = "english")
 undebug(load_questionnaire)
@@ -39,9 +39,9 @@ undebug(load_questionnaire)
 questions <- questionnaire[[1]]
 questions$name
 
-data.dependent.var = "is.this.an.idp.settlement."
+data.dependent.var = "hh_profile/hhh_age"
 independent.var = "settlement"
-hypothesis.type="group_difference"
+hypothesis.type="direct_reporting"
 #sampling.strategy="stratified random"
 
 #das könnte auch eleganter gehen mit funktion über x und jeder variable in x einen Type dazu machen
@@ -73,11 +73,10 @@ debug(question_is_numeric)
 reachR:::question_is_numeric
 
 
-
-
-data$overview.camp_name
+#seperate cases 
+data$`overview/camp_name`
 strata_of<-function(data){
-  return(data[,"overview.camp_name"])
+  return(data[,"overview/camp_name"])
 }
 
 
@@ -87,7 +86,7 @@ analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothe
 
   # select methods
   variable_weights <- reachR:::weights_of(data)
-
+  
   design <- svydesign(ids =~1,
                       strata = strata_of(data),
                       weights = variable_weights %>% as.vector,
@@ -112,10 +111,6 @@ analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothe
         }
 
 
-
-#
-#
-#
 # load_clusterframe <- function(cluster.sampling.frame.file, ...)
 # load_questionnaire()
 # load_choices
@@ -132,7 +127,7 @@ choose.test <- function(hypothesis.type, variable.types, crit = NULL, paired = N
   # TYPE_group_difference_numeric_categorical <- hypothesis_test_difference_in_means
   # TYPE_limit_numeric <- hypothesis_test_one_sample_z_num
   # TYPE_limit_categorical <- hypothesis_test_one_sample_z_cat
-  # TYPE_direct_reporting_numeric <- confidence_intervals_num
+  TYPE_direct_reporting_numeric <- confidence_intervals_num
   # TYPE_direct_reporting_categorical <- confidence_intervals_cat
   # TYPE_change_over_time_numeric <- hypothesis_test_difference_in_means #paired or unpaires
   # TYPE_change_over_time_categorical <- hypothesis_test_chisquare
@@ -144,7 +139,8 @@ choose.test <- function(hypothesis.type, variable.types, crit = NULL, paired = N
 
 }
 
-
+variable.types <- "numeric"
+choose.test(hypothesis.type = hypothesis.type, variable.types = variable.types)
 
 #Perform test
 # let's pretend the choose.test function decided a chi squared test was appropriate because we are comparing difference in groups
@@ -162,9 +158,11 @@ hypothesis_test_one_sample_z_num <- function(data.dependent.var, crit, design, d
   svyttest(data.dependent.var~1, null.value = crit, design = design)
 }
 
-hypothesis_test_one_sample_z_num(data$What.is.the.age.of.the.respondent...For.respondents.between.the.age.of.12.and.17.please.ensure.an.adult.guardian.is.present., 32,)
 
-confidence_intervals_num <- function()
+confidence_intervals_num <- function(dependentvar, design, data = data){
+  summary <- svymean(data[[dependentvar]], design, na.rm = T)
+  confint(svymean(data[[dependentvar]] + data[[dependentvar]], design, na.rm = T))
+  }
 
 
 #Spit out results
