@@ -14,6 +14,7 @@ install.packages("data.table")
 
 source("./dependencies.R")
 library(reachR)
+library(data.table)
 require(survey)
 
 #load input
@@ -107,7 +108,6 @@ analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothe
         # design<-make.svydesign()
         mean <- svymean(data[[dependentvar]], design, na.rm = T)
         stat.test.result <- stat.test(....,.....)
-
         }
 
 
