@@ -18,10 +18,11 @@ choose.test <- function(hypothesis.type, variable.types, crit = NULL, paired = N
   
 }
 
+#harmonise parameter names for named data columns:   [SOURCE].[WHAT].column: e.g. data.dependent.var.column, samplingframe.stratum.column, etc.
 
 # I think this function should just take any number of names (either as a vector or with ...). Then get the type for each and concat them together.
-# considering that some are dependent and some are independent is not a thing "find.data.types" should have to worry about. it should find data types and that's it.
-# CONSISTENT PARAMETER NAMES: first starts with data, second not
+# considering that some are dependent and some are independent is not a thing "find.data.types" should have to worry about.
+# it should find data types for whatever you give to it and that's it.
 
 find.data.types <- function(data.dependent.var, independent.var = NULL) {
   
