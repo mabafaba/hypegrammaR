@@ -1,6 +1,6 @@
 
 ####################
-SETUP
+# SETUP
 ####################
       # make sure this works again when you start the next day (don't assume commands from other files have been run), e.g this one
       # set wd to this script's folder
@@ -16,11 +16,11 @@ SETUP
       # .install_reachR(T)
       ####################
       
-      source("./dependencies.R")
-      source("./analyse_indicator.R")
-      source("./map_scales.R")
-      source("./stats.R")
-      source("./plots.R")
+      source("./scripts/dependencies.R")
+      source("./scripts/analyse_indicator.R")
+      source("./scripts/map_scales.R")
+      source("./scripts/stats.R")
+      source("./scripts/plots.R")
       library(reachR)
       require(survey)
 
@@ -29,14 +29,14 @@ SETUP
 ####################
 
     # ALWAYS (or never?) use the reachR load functions. otherwise nothing matches anymore because we harmonise colnames internally
-    data<- load_data(file = "./reach_som_protection_assessment_hh_cleaneddata_feb_2018_2.csv")
+    data<- load_data(file = "./data/reach_som_protection_assessment_hh_cleaneddata_feb_2018_2.csv")
     data %>% glimpse
-    populations<-load_samplingframe("./sf.csv",
+    populations<-load_samplingframe("./data/sf.csv",
                                     sampling.frame.population.column="Population",
                                     sampling.frame.stratum.column = "Camp_",
                                     data.stratum.column = "overview/camp_name", return.stratum.populations = T)
     
-    questionnaire <- load_questionnaire(data, questions.file = "./questionscomma2.csv", choices.file = "./choices2.csv", choices.label.column.to.use = "english")
+    questionnaire <- load_questionnaire(data, questions.file = "./data/questionscomma2.csv", choices.file = "./choices2.csv", choices.label.column.to.use = "english")
     
     # percent of questions successfully matched:
     (length(questionnaire$questions$name %>% hasdata)/length(questionnaire$questions$name)*100) %>% round %>% paste0("% questions matched") %>% cat

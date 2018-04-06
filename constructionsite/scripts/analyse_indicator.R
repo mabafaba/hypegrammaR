@@ -14,7 +14,6 @@ analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothe
         
         
         variable.types<-find.data.types(dependent.var, independent.var)
-        # i think for data column names we should do:   [SOURCE].[WHAT].column: e.g. data.dependent.var.column, samplingframe.stratum.column, etc.
         # what if there's more than 1 independent var?
         # WHAT HAPPENS IF DATA TYPE CANT BE DETERMINED? - IF FOR ONE VARIABLE BOTH GO TO FALSE? -> currently it returns as if only one var was supplied  that's no good.
         # it should guess the data type from the data, and throw a warning if: missmatch with questionnaire or if: not found in questionnaire.
