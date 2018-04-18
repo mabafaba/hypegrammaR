@@ -23,18 +23,20 @@
       source("./scripts/plots.R")
       library(reachR)
       require(survey)
+      options(survey.lonely.psu = "average")
 
 ####################
 # LOAD FILES
 ####################
 
     # ALWAYS (or never?) use the reachR load functions. otherwise nothing matches anymore because we harmonise colnames internally
-    data<- load_data(file = "./data/reach_som_protection_assessment_hh_cleaneddata_feb_2018_2.csv")
+    data<- load_data(file = "./data/data_kri.csv")
     data %>% glimpse
-    populations<-load_samplingframe("./data/sf.csv",
-                                    sampling.frame.population.column="Population",
-                                    sampling.frame.stratum.column = "Camp_",
-                                    data.stratum.column = "overview/camp_name", return.stratum.populations = T)
+
+    populations<-load_samplingframe("./data/weighting_irq_kri.csv",
+                                    sampling.frame.population.column="population.size",
+                                    sampling.frame.stratum.column = "stratum.name",
+                                    data.stratum.column = "stratum", return.stratum.populations = T)
     
     questionnaire <- load_questionnaire(data, questions.file = "./data/questionscomma2.csv", choices.file = "./choices2.csv", choices.label.column.to.use = "english")
     
@@ -45,31 +47,48 @@
 ####################
 # PARAMETERS
 ####################
-  
-  data.dependent.var = "how.many.children.in.the.household.work."
-  independent.var = "what.is.the.gender.of.the.respondent"
+
+  data.dependent.var = "survey.benef.perception.process.described"
+  independent.var = "idp.ref"
   hypothesis.type="direct_reporting"
   
-
 ####################
 # test what becomes analyse_indicator() later:
 ####################
   
-  
   # analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothesis.type, do.for.each.unique.value.in.var = NULL){
-    data <- data[!is.na(dependent.var),]
-    if(nrow(data)==0){stop('dependent var is all NA')}
+    data <- data[!(data$survey.benef.perception.process.described %in% c("NA", "N/A")),] 
+    data$survey.benef.perception.process.described %>% table
     
+    data$idp.ref[data$idp.ref == "host_community"] <- "idp"
+
+    if(nrow(data)==0){stop('dependent var is all NA')}
+    data$stratum %>% table
+    data <- data[!(data$stratum == ""),]
+
     # select methods
     variable_weights <- reachR:::weights_of(data)
     
     design <- svydesign(ids =~1,
-                        strata = strata_of(data),
+                        strata = data$stratum,
                         weights = variable_weights %>% as.vector,
                         data = data)
+
+    data$percent.change <- as.numeric(sub(",", ".", as.character(data$percent.change)))
+    data$percent.change
+    svymean(data$usd.percentage.change, design, na.rm = T)
+    svyttest(percent.change~idp.ref, design)
     
+
+    svymean(data$survey.benef.perception.process.described, design)
     
+    undebug(svymean)
+    svymean(~survey.benef.perception.process.described, design)
     
+    x_sq <- svychisq(~survey.benef.perception.process.described+idp.ref, design, statistic = "Wald")
+
+    
+  design$variables[, as.character(cols)]
     
     variable.types<-find.data.types(dependent.var, independent.var)
          # i think for data column names we should do:   [SOURCE].[WHAT].column: e.g. data.dependent.var.column, samplingframe.stratum.column, etc.
