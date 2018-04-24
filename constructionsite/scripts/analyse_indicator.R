@@ -11,8 +11,6 @@ analyse_indicator<-function(data, dependent.var, independent.var = NULL, hypothe
                             data = data)
         
         
-        
-        
         variable.types<-find.data.types(dependent.var, independent.var)
         # what if there's more than 1 independent var?
         # WHAT HAPPENS IF DATA TYPE CANT BE DETERMINED? - IF FOR ONE VARIABLE BOTH GO TO FALSE? -> currently it returns as if only one var was supplied  that's no good.
