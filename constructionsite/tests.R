@@ -119,11 +119,7 @@
     svyciprop(testresults[[numbers]] design)
     x_sq$observed #gives you the table
     x_sq$statistic #
-  
-    formula_err <- paste0("~" data.dependent.var, ", ~", independent.var, sep = "") #trying to fix this
-    
-    error_bars <- svyby(~modality,~idp.ref, design, svymean)
-    se <- error_bars[,grep("se.", names(error_bars))]
+
     
 
     variable.types<-find.data.types(dependent.var, independent.var)
@@ -144,9 +140,6 @@
     # design<-make.svydesign()
     # mean <- svymean(data[[dependentvar]], design, na.rm = T)
     stat.test.result <- stat.test(....,.....)
-    
-  # }
-  
-  
+
   
 
