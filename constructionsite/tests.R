@@ -59,7 +59,7 @@
   dependent.var = "modality"
     if(nrow(data)==0){stop('dependent var is all NA')}
   independent.var = "idp.ref"
-  hypothesis.type="difference_in_groups"
+  hypothesis.type="group_difference"
   
 
   ####################
@@ -88,6 +88,4 @@
                         data = data)
     
     
-    
-    visualise.results <- function()
     

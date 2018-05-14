@@ -1,25 +1,3 @@
-######## CHI SQUARED
-#function that executes the literal chi squared test 
-
-##############################################
-# consistent naming strategy?
-
-# naming should be in line with what side of each mapping we're on: analysis parameters VS. cases VS. statistical tests etc.
-# that's why group_difference_categorical_categorical() is such a terrible function(name). It actually does a chi squared test. The mapping from case to test happens between fun name and fun content, while really that should happen in the mapping function.
-
-##############################################
-
-do.a.chi.sq <- function(independent.var = independent.var,
-                        dependent.var = data.dependent.var,
-                        design,
-                        na.rm = TRUE){
-  formula_string<-paste0("~",independent.var, "+", dependent.var)
-  chisq <- svychisq (formula(formula_string), design, na.rm = TRUE)
-  results$test.results <- c(chisq$statistic, chisq$p.value)
-  results$test.parameters <- c(chisq$parameter, chisq$method)
-  return(results)
-}
-
 
 
 #function that regroups all procedures for group_difference_categorical_categorical
@@ -72,28 +50,7 @@ percent_with_confints <- function(independent.var = independent.var,
   return(results)
   }
 
-# underscores or dots in names?
-##############################################
-# if i ever used "a" or "the" in a variable name then i didn't mean it
-##############################################
-visualise.a.chisq <- function(){
-  test_name <- hypothesis.test.results$test.parameters[[3]]
-  p_value <- hypothesis.test.results$test.results[[2]]
-  
-  chart <- reach_style_barchart(group = summary.result$names, 
-                                percent = summary.result$numbers, 
-                                error_min = summary.result$min, 
-                                error_max =  summary.result$max)
-  
-  chart + geom_text(aes(x =4, 
-                        y = 2,
-                        label= paste0("To determine ", hypothesis.type, "\n", test_name, "\n"
-                                      ," returned a p value of ", round(p_value,6))),
-                    size=3,
-                    family="Arial Narrow",
-                    col='#000000',
-                    hjust=0,
-                    vjust=0.5)}
+
 
 
 ########ONE SAMPLE Z tEST 
