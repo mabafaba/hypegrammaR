@@ -11,7 +11,7 @@ analyse_indicator<-function(data,
 
 
         # sanitise input
-            data <- data[!is.na(data[,dependent.var]),]
+            # data <- data[!is.na(data[,dependent.var]),]
             if(nrow(data)==0){stop('provided data has no rows where dependent.var is not NA')}
             if(all(is.na(data[,dependent.var]))){stop(paste('variable', dependent.var, 'can\'t be all NA'))}
 
@@ -39,9 +39,9 @@ analyse_indicator<-function(data,
         # add results to the visualisation:
             # visualisation<-visualisation+ggplot()...
         return(list(
-                    summary.result,
-                    hypothesis.test.result,
-                    visualisation
+                    summary.statistic=summary.result,
+                    hypothesis.test.result=hypothesis.test.result,
+                    visualisation=visualisation
               ))
         
     }

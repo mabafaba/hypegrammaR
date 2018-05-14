@@ -54,7 +54,7 @@ reach_style_barchart<-function(group,percent,error_min=NULL,error_max=NULL,horiz
 
 
 
-barchart_with_error_bars <- function(){
+barchart_with_error_bars <- function(hypothesis.test.results,summary.statistics){
   test_name <- hypothesis.test.results$test.parameters[[3]]
   p_value <- hypothesis.test.results$test.results[[2]]
   
