@@ -12,7 +12,7 @@
       # run once
       ####################
       # install.packages("data.table")
-      #.install_reachR(T, branch = "develop")
+      # .install_reachR(T, branch = "develop")
       ####################
       
       source("./scripts/dependencies.R")
@@ -75,4 +75,19 @@
                         data = data)
 
 
+    
+    analyse_indicator(data, dependent.var, independent.var, hypothesis.type, design)  
+    
+    
+    # select methods
+    variable_weights <- reachR:::weights_of(data)
+    
+    design <- svydesign(ids =~1,
+                        strata = strata_of(data),
+                        weights = variable_weights %>% as.vector,
+                        data = data)
+    
+    
+    
+    visualise.results <- function()
     
