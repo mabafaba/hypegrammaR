@@ -50,3 +50,29 @@ reach_style_barchart<-function(group,percent,error_min=NULL,error_max=NULL,horiz
     theplot<-theplot+coord_flip()}
   return(theplot)
 }
+
+
+
+
+barchart_with_error_bars <- function(hypothesis.test.results,summary.statistics){
+  test_name <- hypothesis.test.results$test.parameters[[3]]
+  p_value <- hypothesis.test.results$test.results[[2]]
+  
+  chart <- reach_style_barchart(group = summary.result$names, 
+                                percent = summary.result$numbers, 
+                                error_min = summary.result$min, 
+                                error_max =  summary.result$max)
+  
+  chart + geom_text(aes(x =4, 
+                        y = 2,
+                        label= paste0("To determine ", hypothesis.type, "\n", test_name, "\n"
+                                      ," returned a p value of ", round(p_value,6))),
+                    size=3,
+                    family="Arial Narrow",
+                    col='#000000',
+                    hjust=0,
+                    vjust=0.5)
+  }
+
+
+
