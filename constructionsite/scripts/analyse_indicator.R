@@ -6,6 +6,7 @@ analyse_indicator<-function(data,
                             independent.var = NULL,
                             hypothesis.type,
                             design,
+                            weights,
                             do.for.each.unique.value.in.var = NULL){
 
 

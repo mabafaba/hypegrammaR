@@ -29,7 +29,7 @@
 }
 
 
-.dependencies<-c("dplyr","ggplot2","ggthemes","reshape2","questionr")
+.dependencies<-c("dplyr","ggplot2","ggthemes","reshape2","questionr", "survey")
 .install_dependencies(.dependencies)
 .install_reachR(reinstall_if_exists = F)
 .load_dependencies(c(.dependencies,"reachR"))
