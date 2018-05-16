@@ -1,17 +1,17 @@
 #################################
 # map to design:                #
 #################################
-map_to_design <- function(data, 
-                          dependent.var,
+map_to_design <- function(data,
                           cluster.var = NULL) {
   if(is.null(cluster.var)){
-    cluster.ids <- c("~1")}
+    cluster.ids <- as.formula(c("~1"))}else{
+    cluster.ids <- cluster.var}
   strata.weights <- reachR:::weights_of(data)
-    survey.design <- svydesign(
+    survey.design <- svydesign(data = data,
       ids = formula(cluster.ids),
-      strata = data.stratum.column,
-      weights = strata.weights)}
-
+      strata = names(strata.weights),
+      weights = as.vector(strata.weights))
+    return(survey.design)}
 
 #################################
 # map to case:                  #

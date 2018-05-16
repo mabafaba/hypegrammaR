@@ -26,6 +26,7 @@ analyse_indicator<-function(data,
         
   
         # map from case to appropriate summary statistic, hypothesis test and visualisation:
+            design <- map_to_design(data = data, dependent.var)
             summarise.result<- map_to_summary_statistic(case)
             test.hypothesis <- map_to_hypothesis_test(case)
             visualisation <- map_to_visualisation(case)
