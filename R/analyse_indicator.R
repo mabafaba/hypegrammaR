@@ -2,7 +2,7 @@
 
 #' Complete  analysis for one hypothesis
 #'
-#' Produce summary statistics, hypothesis tests and plot objects for a 
+#' Produce summary statistics, hypothesis tests and plot objects for a hypothesis
 #'
 #' @param data 
 #' @param dependent.var string with the column name in `data` of the dependent variable
@@ -12,10 +12,10 @@
 #' @param sampling.strategy.stratified set to TRUE if you used stratified sampling 
 #' @param do.for.each.unique.value.in.var if you want to repeat the analysis for multiple subsets of the data, specify the column name in `data` by which to split the dataset 
 #' @details this function takes the data, information about your variables of interest, hypothesis type and sampling strategy. It selects the appropriate summary statistics, hypothesis test and visualisation and applies them.
+#' it uses \code{\link[graphics]{map_to_case}},\code{\link[graphics]{map_to_indicator}},\code{\link[graphics]{map_to_hypothesis}},\code{\link[graphics]{map_to_visualisation}}
 #' @return A list with 1. the summary.statistic, 2. the hypothesis.test.result, and 3. the visualisation as a ggplot object
 #' @examples
 #' plot_crayons()
-#'
 #' @export
 analyse_indicator<-function(data,
                             dependent.var,
@@ -31,7 +31,6 @@ analyse_indicator<-function(data,
         # sanitise input
             if(!is.null(do.for.each.unique.value.in.var)){stop("do.for.each.unique.value.in.var must be NULL (not yet implemented)")}
             if(cluster){stop("cluster must be FALSE (not yet implemented)")}
-
             # data <- data[!is.na(data[,dependent.var]),]
             if(nrow(data)==0){stop('provided data has no rows where dependent.var is not NA')}
             if(all(is.na(data[,dependent.var]))){stop(paste('variable', dependent.var, 'can\'t be all NA'))}
