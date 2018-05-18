@@ -24,9 +24,20 @@ percent_with_confints <- function(independent.var = independent.var,
 
 
 
-# confidence_intervals_num <- function(dependentvar, design, data = data){
-#   summary <- svymean(data[[dependentvar]], design, na.rm = T)
-#   confint(svymean(data[[dependentvar]] + data[[dependentvar]], design, na.rm = T), level = 0.95)
-# }
-# 
-# 
+confidence_intervals_num <- function(dependent.var, 
+                                     independent.var = NULL,
+                                     design, 
+                                     data = data){
+  formula_string<-paste0("~as.numeric(", dependent.var, ")")
+  summary <- svymean(formula(formula_string), design, na.rm = T)
+  confints <- confint(summary, level = 0.95)
+  results<-list()
+  results$names <- dependent.var
+  results$numbers <- summary
+  results$min <- confints[,1]
+  results$max <- confints[,2]
+  return(results)
+ }
+ 
+confidence_intervals_num(dependent.var = dependent.var, design = design) 
+svymean(~as.numeric(age.speaker), design, na.rm = T)

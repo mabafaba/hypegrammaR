@@ -18,7 +18,15 @@ hypothesis_test_chisquared <- function(independent.var = independent.var,
 # }
 
 
-
+hypothesis_test_empty <- function(independent.var = NULL,
+                                       dependent.var = data.dependent.var,
+                                       design){
+  results<-list()
+  results$test.results <- c()
+  results$test.parameters <- c()
+  results$hypothesis_test<-"No Hypothesis test"
+  return(results)
+}
 
 
 hypothesis_test_t <- function(independent.var = independent.var,

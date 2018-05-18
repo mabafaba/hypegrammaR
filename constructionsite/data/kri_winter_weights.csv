@@ -3,10 +3,10 @@ weight;group;population
 1,86;erbil_idp_out;18541
 1,21;erbil_ref_in;6304
 0,46;erbil_ref_out;1343
-2,00;dohuk_idp_out;9890
+2;dohuk_idp_out;9890
 1,19;dohuk_ref_in;8897
 0,47;dohuk_ref_out;4867
-0,40;sul_idp_in;4621
+0,4;sul_idp_in;4621
 2,12;sul_idp_out;972
 0,93;sul_ref_in;2073
 0,45;sul_ref_out;633

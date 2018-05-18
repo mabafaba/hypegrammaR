@@ -7,11 +7,12 @@ map_to_design <- function(data,
     cluster.ids <- as.formula(c("~1"))}else{
     cluster.ids <- cluster.var}
   strata.weights <- reachR:::weights_of(data)
-    survey.design <- svydesign(data = data,
+  survey.design <- svydesign(data = data,
       ids = formula(cluster.ids),
       strata = names(strata.weights),
       weights = as.vector(strata.weights))
     return(survey.design)}
+
 
 #################################
 # map to case:                  #
@@ -19,10 +20,8 @@ map_to_design <- function(data,
 map_to_case<-function(data,
                       hypothesis.type,
                       dependent.var,
-                      independent.var,
+                      independent.var = NULL,
                       paired = NULL){
-  
-  
   variable.type <- paste0(reachR:::variable_type(dependent.var), "_", reachR:::variable_type(independent.var))
   case <- paste(c("CASE",hypothesis.type,variable.type, paired), collapse = "_")
   class(case)<-"analysis_case"
@@ -41,7 +40,9 @@ list_all_cases<-function(implemented_only=F){
   }
   
   return(c(
-    "CASE_group_difference_categorical_categorical"
+    "CASE_group_difference_categorical_categorical",
+    "CASE_direct_reporting_numeric_",
+    "CASE_direct_reporting_categorical_"
   ))
 }
 
@@ -70,6 +71,8 @@ map_to_summary_statistic <- function(case) {
   # define summary functions for all cases:
   summary_functions<-list()
   summary_functions$CASE_group_difference_categorical_categorical <- percent_with_confints
+  summary_functions$CASE_direct_reporting_numeric_ <- confidence_intervals_num
+  summary_functions$CASE_direct_reporting_categorical_ <- percent_with_confints
   # summary_functions$CASE_group_difference_numerical_numerical <- function(...){stop(paste("summary statistic for case",case,"not implemented"))}hypothesis_test_one_sample_t
   # summary_functions$CASE_group_difference_numerical_numerical <- hypothesis_test_one_sample_t
   
@@ -94,6 +97,8 @@ map_to_hypothesis_test <- function(case) {
   
   # add implemented cases:
   hypothesis_test_functions[["CASE_group_difference_categorical_categorical"]] <- hypothesis_test_chisquared
+  hypothesis_test_funcrtions[["CASE_direct_reporting_numerical_"]] <- hypothesis_test_empty
+  hypothesis_test_funcrtions[["CASE_direct_reporting_categorical_"]] <- hypothesis_test_empty
   # return function belonging to this case:
   return(hypothesis_test_functions[[case]]) 
 }
@@ -114,6 +119,8 @@ map_to_visualisation <- function(case) {
   
   # add implemented cases:
   visualisation_functions[["CASE_group_difference_categorical_categorical"]] <- barchart_with_error_bars
+  visualisation_functions[["CASE_direct_reporting_categorical_"]] <- barchart_with_error_bars
+  visualisation_functions[["CASE_direct_reporting_numerical_"]] <- barchart_with_error_bars
   
   return(visualisation_functions[[case]]) 
 }

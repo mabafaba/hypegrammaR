@@ -18,7 +18,7 @@ analyse_indicator<-function(data,
 
   
         # map from input to analysis case:
-        case<- map_to_case(hypothesis.type = hypothesis.type,
+        case <- map_to_case(hypothesis.type = hypothesis.type,
                                    data = data,
                                    dependent.var = dependent.var,
                                    independent.var = independent.var,
