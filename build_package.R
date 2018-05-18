@@ -1,20 +1,29 @@
 
-build<-function(){
 
-rm(list=ls())
+all_objects<-ls()
+all_objects[!(all_objects %in% c("package.name","first.time")]
 
-detach("package:reachR")
-this_script_path<-(dirname(rstudioapi::getActiveDocumentContext()$path))
-setwd(this_script_path)
-getwd()
+build<-function(package.name,first.time=F){
+  rm(list=ls())
+  getwd()
+  # try(detach(paste("package",package.name,sep=":")))
+  this_script_path<-(dirname(rstudioapi::getActiveDocumentContext()$path))
+  setwd(this_script_path)
 
-reachr_files<-paste0("./R/", list.files("./R/"))
-sapply(reachr_files,source)
-
-require("roxygen2")
-require("devtools")
-roxygenize(clean=T)
+  
+  require("roxygen2")
+    print(first.time)
+  if(first.time){
+    setwd("..")
+    create(package.name)
+    setwd(package.name)
+  }
+  
+  package_source_files<-paste0("./R/", list.files("./R/"))
+  sapply(package_source_files,source)
+  require("devtools")
+  roxygenize(clean=T)
 }
 
 
-build()
+build("hypegrammaR",first.time = F)

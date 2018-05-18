@@ -39,5 +39,3 @@ confidence_intervals_num <- function(dependent.var,
   return(results)
  }
  
-confidence_intervals_num(dependent.var = dependent.var, design = design) 
-svymean(~as.numeric(age.speaker), design, na.rm = T)
