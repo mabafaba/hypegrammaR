@@ -1,10 +1,10 @@
 
 
-all_objects<-ls()
-all_objects[!(all_objects %in% c("package.name","first.time")]
+
 
 build<-function(package.name,first.time=F){
-  rm(list=ls())
+  all_objects<-ls()
+    rm(list=  all_objects[!(all_objects %in% c("package.name","first.time"))])
   getwd()
   # try(detach(paste("package",package.name,sep=":")))
   this_script_path<-(dirname(rstudioapi::getActiveDocumentContext()$path))
