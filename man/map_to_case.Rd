@@ -11,7 +11,7 @@ map_to_case(data, hypothesis.type, dependent.var, independent.var = NULL,
 \item{data}{missing documentation}
 }
 \value{
-a `survey` package design object
+a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
 }
 \description{
 creates a string that other functions can use to know what analysis case they are dealing with

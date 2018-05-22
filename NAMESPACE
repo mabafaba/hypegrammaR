@@ -3,3 +3,6 @@
 export(analyse_indicator)
 export(map_to_case)
 export(map_to_design)
+export(map_to_hypothesis_test)
+export(map_to_summary_statistic)
+export(map_to_visualisation)
