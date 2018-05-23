@@ -30,7 +30,7 @@ map_to_design <- function(data,
 #' @param dependent.var
 #' @param independent.var
 #' @param paired
-#' @return a `survey` package design object
+#' @return a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
 #' @examples map_to_design(data,cluster.var="cluster_id")
 #' @export
 map_to_case<-function(data,
@@ -76,11 +76,17 @@ case_not_implemented_error<-function(case,situation){
 
 
 
-#################################
-# map to summary statistic:     #
-#################################
-
-
+#' map to summary statistic
+#'
+#' selects an appropriate summary statistic function based on the analysis case
+#'
+#' @param case a string uniquely identifying the analysis case. output of \link{\code{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
+#' @return a _function_ that computes the relevant summary statistic
+#' @examples map_to_summary_statistic("group_difference_categorical_categorical")
+#' @examples my_case<- map_to_case( ... )
+#' my_sumstat <- map_to_summary_statistic(my_case)
+#' my_sumstat( ... )
+#' @export
 map_to_summary_statistic <- function(case) {
   # sanitise input:
   if(!is_valid_case_string(case)){stop("input to map_to_summary_statistic must be a valid analysis case")}
@@ -101,9 +107,19 @@ map_to_summary_statistic <- function(case) {
 
 }
 
-#################################
-# map to hypothesis test  :     #
-#################################
+
+
+#' map to hypothesis test
+#'
+#' selects an appropriate hypothesis test function based on the analysis case
+#'
+#' @param case a string uniquely identifying the analysis case. output of \link{\code{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
+#' @return a _function_ that computes the relevant hypothesis test
+#' @examples map_to_summary_statistic("group_difference_categorical_categorical")
+#' @examples my_case<- map_to_case( ... )
+#' my_hyptest <- map_to_hypothesis_test(my_case)
+#' my_hyptest( ... )
+#' @export
 map_to_hypothesis_test <- function(case) {
   # prefill all valid cases with 'not implemented' errors:
   hypothesis_test_functions<-list()
@@ -121,9 +137,26 @@ map_to_hypothesis_test <- function(case) {
   return(hypothesis_test_functions[[case]])
 }
 
+
 #################################
 # map to visualisation:         #
 #################################
+=======
+
+
+#' map to visualisation
+#'
+#' selects an appropriate visualisation function based on the analysis case
+#'
+#' @param case a string uniquely identifying the analysis case. output of \link{\code{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
+#' @return a _function_ that creates the relevant ggplot object
+#' @examples map_to_visualisation("group_difference_categorical_categorical")
+#' @examples my_case<- map_to_case( ... )
+#' my_vis_fun <- map_to_visualisation(my_case)
+#' my_ggplot_obj<-my_vis_fun( ... )
+#' my_ggplot_obj # plots the object
+#' @export
+
 map_to_visualisation <- function(case) {
   visualisation_functions<-list()
   # prefill all valid cases with 'not implemented' errors:

@@ -28,12 +28,12 @@ analyse_indicator(data, dependent.var, independent.var = NULL,
 A list with 1. the summary.statistic, 2. the hypothesis.test.result, and 3. the visualisation as a ggplot object
 }
 \description{
-Produce summary statistics, hypothesis tests and plot objects for a
+Produce summary statistics, hypothesis tests and plot objects for a hypothesis
 }
 \details{
 this function takes the data, information about your variables of interest, hypothesis type and sampling strategy. It selects the appropriate summary statistics, hypothesis test and visualisation and applies them.
+it uses \code{\link{map_to_case}},\code{\link{map_to_indicator}},\code{\link{map_to_hypothesis}},\code{\link{map_to_visualisation}}
 }
 \examples{
 plot_crayons()
-
 }
