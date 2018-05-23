@@ -2,7 +2,7 @@ hypothesis_test_chisquared <- function(independent.var = independent.var,
                                   dependent.var = data.dependent.var,
                                   design){
   formula_string<-paste0("~",independent.var, "+", dependent.var)
-  ttest <- svychisq (formula(formula_string), design, na.rm = TRUE)
+  chisq <- svychisq (formula(formula_string), design, na.rm = TRUE)
   results<-list()
   results$test.results <- c(chisq$statistic, chisq$p.value)
   results$test.parameters <- c(chisq$parameter, chisq$method)

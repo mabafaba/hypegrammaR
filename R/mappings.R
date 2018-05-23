@@ -19,7 +19,7 @@ map_to_design <- function(data,
       strata = names(strata.weights),
       weights = as.vector(strata.weights))
     return(survey.design)}
-
+#add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
 
 #' Map to case
 #'
@@ -97,7 +97,7 @@ map_to_summary_statistic <- function(case) {
   summary_functions$CASE_direct_reporting_numeric_ <- confidence_intervals_num
   summary_functions$CASE_direct_reporting_categorical_ <- percent_with_confints
   # summary_functions$CASE_group_difference_numerical_numerical <- function(...){stop(paste("summary statistic for case",case,"not implemented"))}hypothesis_test_one_sample_t
-  summary_functions$CASE_group_difference_numerical_categorical <- mean_or_median_with_confints
+  summary_functions$CASE_group_difference_numerical_categorical <- confidence_intervals_num_groups
 
 
 

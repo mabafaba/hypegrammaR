@@ -35,3 +35,19 @@ confidence_intervals_num <- function(dependent.var,
   return(results)
  }
  
+confidence_intervals_num_groups <- function(dependent.var, 
+                                     independent.var,
+                                     design, 
+                                     data = data){
+  formula_string <- paste0("~as.numeric(", dependent.var,")") 
+  by <- paste0("~", independent.var, sep = "")
+  summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T)
+  confints <- confint(summary, level = 0.95)
+  results<-list()
+  results$names <- dependent.var
+  results$numbers <- summary
+  results$min <- confints[,1]
+  results$max <- confints[,2]
+  return(results)
+}
+
