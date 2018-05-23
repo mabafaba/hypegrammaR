@@ -28,5 +28,4 @@ independent.var = NULL
 
 design <- map_to_design(data = data, cluster.var = NULL)
 case <- map_to_case(data = data, hypothesis.type = "direct_reporting", dependent.var = "age.speaker")
-map_to_
 analyse_indicator(data = data, dependent.var = "age.speaker", hypothesis.type = "direct_reporting")

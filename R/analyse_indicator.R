@@ -24,8 +24,6 @@ analyse_indicator<-function(data,
                             sampling.strategy.cluster=FALSE,
                             sampling.strategy.stratified=FALSE,
                             do.for.each.unique.value.in.var = NULL){
-
-
   
     
         # sanitise input
@@ -68,5 +66,4 @@ analyse_indicator<-function(data,
         
     }
   
-
 

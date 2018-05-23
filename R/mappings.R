@@ -57,6 +57,7 @@ list_all_cases<-function(implemented_only=F){
 
   return(c(
     "CASE_group_difference_categorical_categorical",
+    "CASE_group_difference_numerical_categorical",
     "CASE_direct_reporting_numeric_",
     "CASE_direct_reporting_categorical_"
   ))
@@ -90,7 +91,7 @@ map_to_summary_statistic <- function(case) {
   summary_functions$CASE_direct_reporting_numeric_ <- confidence_intervals_num
   summary_functions$CASE_direct_reporting_categorical_ <- percent_with_confints
   # summary_functions$CASE_group_difference_numerical_numerical <- function(...){stop(paste("summary statistic for case",case,"not implemented"))}hypothesis_test_one_sample_t
-  # summary_functions$CASE_group_difference_numerical_numerical <- hypothesis_test_one_sample_t
+  summary_functions$CASE_group_difference_numerical_categorical <- mean_or_median_with_confints
 
 
 
@@ -113,13 +114,12 @@ map_to_hypothesis_test <- function(case) {
 
   # add implemented cases:
   hypothesis_test_functions[["CASE_group_difference_categorical_categorical"]] <- hypothesis_test_chisquared
-  hypothesis_test_funcrtions[["CASE_direct_reporting_numerical_"]] <- hypothesis_test_empty
-  hypothesis_test_funcrtions[["CASE_direct_reporting_categorical_"]] <- hypothesis_test_empty
+  hypothesis_test_functions[["CASE_direct_reporting_numerical_"]] <- hypothesis_test_empty
+  hypothesis_test_functions[["CASE_direct_reporting_categorical_"]] <- hypothesis_test_empty
+  hypothesis_test_functions[["CASE_group_difference_numerical_categorical"]] <- hypothesis_test_t_two_sample
   # return function belonging to this case:
   return(hypothesis_test_functions[[case]])
 }
-
-
 
 #################################
 # map to visualisation:         #
@@ -137,6 +137,7 @@ map_to_visualisation <- function(case) {
   visualisation_functions[["CASE_group_difference_categorical_categorical"]] <- barchart_with_error_bars
   visualisation_functions[["CASE_direct_reporting_categorical_"]] <- barchart_with_error_bars
   visualisation_functions[["CASE_direct_reporting_numerical_"]] <- barchart_with_error_bars
+  visualisation_functions[["CASE_group_difference_numerical_categorical"]] <- barchart_with_error_bars
 
   return(visualisation_functions[[case]])
 }

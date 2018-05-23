@@ -1,7 +1,3 @@
-
-
-
-
 percent_with_confints <- function(independent.var = independent.var,
                                   dependent.var = data.dependent.var,
                                   design,
