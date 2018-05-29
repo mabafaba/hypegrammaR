@@ -76,8 +76,8 @@ results<-apply(analysisplan,1,function(x){
   # print(table(this_valid_data[,x["dependent.var"]]))
   # print(table(this_valid_data[,x["independent.var"]]))
   # print(x["independent.var"])
-  print(x["dependent.var"])
-  table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
+  # print(x["dependent.var"])
+  # table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
   analyse_indicator(this_valid_data,
                     dependent.var = x["dependent.var"],
                     independent.var = x["independent.var"] ,
@@ -91,9 +91,44 @@ results<-apply(analysisplan,1,function(x){
 
 
 
+names(results)<-analysisplan$dependent.var
 
 
-data<-data[,c(dependent.var,independent.var,"enter.the.survey.site.")]
+
+results$VAR.29...what.is.the.main.source.of.water.for.your.family.
+
+summarystat_dfs<-lapply(names(results),function(x){
+  print(x)
+  if(is.list(results[[x]]))
+  reformat<-results[[x]]$summary.statistic %>% as.data.frame %>% data.frame(
+    rep(results[[x]]$hypothesis.test.result$test.results[2],nrow(results[[x]]$summary.statistic %>% as.data.frame)) %>% as.data.frame
+
+  )else{
+    reformat<-NULL
+  }
+
+
+  })
+
+
+results3
+
+  results3<-lapply(summarystat_dfs,function(x){
+  if(is.data.frame(x)){if(nrow(x)!=0){x}else{NULL}}else{NULL}})
+
+results3 %>% lapply(function(x)colnames)
+
+
+lapply(1:nrow(analysisplan),function(x){
+  if(analysisplan$case[x]=="CASE_group_difference_categorical_categorical")
+    print((summarystat_dfs[[x]]$summary.statistic %>% as.data.frame %>% colnames))
+})
+
+
+results3 %>% lapply(function(x){colnames(x)==c("independent.var.value","dependent.var.value","numbers","se","min","max",".") }) %>% lapply(all)
+
+results3[[250]] %>% colnames
+
 
 table(list(data[["VAR.20...what.is.the.gender.of.the.head.of.the.family."]],
            data[["VAR.26...what.is.the.primary.reason.for.planning.to.leave.this.shelter..1"]]))
