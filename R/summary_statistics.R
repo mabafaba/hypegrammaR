@@ -1,18 +1,47 @@
-percent_with_confints <- function(independent.var = independent.var,
-                                  dependent.var = data.dependent.var,
+percent_with_confints <- function(dependent.var,
+                                  independent.var,
                                   design,
                                   na.rm = TRUE){
-  formula_string<-paste0("~",independent.var, "+", dependent.var)
+
+
+
+  formula_string<-paste0("~",independent.var, "+",dependent.var )
   f.table <- svytable(formula(formula_string), design)
-  
-  formula_err <- paste0("~", dependent.var, sep = "") 
-  by <- paste0(" ~", independent.var, sep = "")
-  error_bars <- svyby(formula(formula_err), formula(by), design, na.rm = T, svymean)
-  names_df <- sapply(rownames(f.table), paste0, colnames(f.table))
+
+  # if(design$variables %>%
+  #    split.data.frame(design$variables[[independent.var]]) %>%
+  #    lapply(nrow) %>%
+  #    unlist %>%
+  #    (function(x){x<2}) %>%
+  #    any){
+  #       warning("independent var must have at least two unique values");return(NULL)
+  #     }
+
+  formula_err <- paste0("~", dependent.var, sep = "")
+  by <- paste0(" ~",independent.var , sep = "")
+  summary.result.svyby <- svyby(formula(formula_err), formula(by), design, na.rm = T, svymean)
+  # fix weird column names:
+  colnames(summary.result.svyby)<-colnames(summary.result.svyby) %>% gsub(paste0("^se.",dependent.var),"",.) %>% gsub(paste0("^",dependent.var),"",.)
+
+
+
+
+  if(length(summary.result.svyby)==3 & length(summary.result.svyby[[2]])==2){return(list(ERROR="error calculating convidendce intervals. illformated output attached. might be that variable names too similar to other variable names. Try running again using design object without other variable columns."))}
+  # pick out the columns that are the standard error
+  independent.var.column<-1
+  dependent.var.n<-(ncol(summary.result.svyby)-1)/2
+  stat.columns<-2:(1+dependent.var.n)
+  se.columns<-(max(stat.columns)+1):ncol(summary.result.svyby)
+
+  standard_error <- summary.result.svyby[,c(independent.var.column,se.columns)] %>% melt(id.vars=c(independent.var))
+  stat <-         summary.result.svyby[,c(independent.var.column,stat.columns)] %>% melt(id.vars=c(independent.var))
+
+
   results<-list()
-  results$names <- c(names_df[,1], names_df[,2])
-  results$numbers <- as.numeric(c(prop.table(f.table, 1)[1,], prop.table(f.table, 1)[2,]))
-  results$se <- as.numeric(c(error_bars[,grep("se.", names(error_bars))][1,], error_bars[,grep("se.", names(error_bars))][2,]))
+  results$independent.var.value <- stat[,independent.var]
+  results$dependent.var.value <- stat[,"variable"]
+  results$numbers <-stat[,"value"]
+  results$se <- standard_error[,"value"]
   results$min <- results$numbers - results$se
   results$max <- results$numbers + results$se
   return(results)
@@ -20,9 +49,11 @@ percent_with_confints <- function(independent.var = independent.var,
 
 
 
-confidence_intervals_num <- function(dependent.var, 
+
+
+confidence_intervals_num <- function(dependent.var,
                                      independent.var = NULL,
-                                     design, 
+                                     design,
                                      data = data){
   formula_string<-paste0("~as.numeric(", dependent.var, ")")
   summary <- svymean(formula(formula_string), design, na.rm = T)
@@ -34,12 +65,12 @@ confidence_intervals_num <- function(dependent.var,
   results$max <- confints[,2]
   return(results)
  }
- 
-confidence_intervals_num_groups <- function(dependent.var, 
+
+confidence_intervals_num_groups <- function(dependent.var,
                                      independent.var,
-                                     design, 
+                                     design,
                                      data = data){
-  formula_string <- paste0("~as.numeric(", dependent.var,")") 
+  formula_string <- paste0("~as.numeric(", dependent.var,")")
   by <- paste0("~", independent.var, sep = "")
   summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T)
   confints <- confint(summary, level = 0.95)
@@ -50,4 +81,8 @@ confidence_intervals_num_groups <- function(dependent.var,
   results$max <- confints[,2]
   return(results)
 }
+
+
+
+
 
