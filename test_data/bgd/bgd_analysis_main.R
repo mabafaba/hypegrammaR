@@ -19,11 +19,11 @@ sf<-load_samplingframe(sampling.frame.file = "test_data/bgd/Sampling_frame.csv",
                        sampling.frame.stratum.column  = "camp.name",
                        data.stratum.column = "VAR.11...enter.the.survey.site.",
                        return.stratum.populations = T)
-
-questionnaire<-load_questionnaire(data = "test_data/bgd/BGD_Cross_camp.csv",
-                                  questions.file = "test_data/bgd/questionnaire_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv",
-                                  choices.file = "test_data/bgd/Choices_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv",
-                                  choices.label.column.to.use = "english")
+#
+# questionnaire<-load_questionnaire(data = "test_data/bgd/BGD_Cross_camp.csv",
+#                                   questions.file = "test_data/bgd/questionnaire_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv",
+#                                   choices.file = "test_data/bgd/Choices_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv",
+#                                   choices.label.column.to.use = "english")
 
 
 
@@ -42,10 +42,8 @@ remove_duplicate_columns<-function(data){
 
 
 
-grep("what.is.the.primary.reason.for.planning.to.leave.this.shelter.",colnames(data),fixed=T,value=T)
 data<-remove_duplicate_columns(data)
 
-grep("s.the.primary.reason.for.planning.to.leave.this.shel",colnames(data),value=T)
 analysisplan<-data.frame(
     repeat.for="VAR.11...enter.the.survey.site.",
     independent.var="VAR.20...what.is.the.gender.of.the.head.of.the.family.",
@@ -54,7 +52,7 @@ analysisplan<-data.frame(
     case=paste0("CASE_group_difference_",ifelse(data %>% sapply(is.numeric),"numerical","categorical"),"_categorical")
   ,stringsAsFactors = F)
 
-
+analysisplan %>% head
 analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
 
 results<-apply(analysisplan,1,function(x){

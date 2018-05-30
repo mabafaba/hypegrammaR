@@ -32,9 +32,9 @@ sanitise_group_difference<-function(data,dependent.var,independent.var){
 
 
 sanitise_data<-function(data,
-              dependent.var,
-              independent.var,
-              case){
+                        dependent.var,
+                        independent.var,
+                        case){
 
 
   dep_var_name_in_data_headers<- grep(paste0("^",dependent.var),colnames(data),value = T)
@@ -71,8 +71,8 @@ sanitise_data<-function(data,
 
   if((grep("group_difference",case) %>% length)>0){
     group_difference<-sanitise_group_difference(data,
-                              dependent.var = dependent.var,
-                              independent.var = independent.var)
+                                                dependent.var = dependent.var,
+                                                independent.var = independent.var)
     if(group_difference$success==F){return(group_difference)}
 
   }
@@ -81,7 +81,7 @@ sanitise_data<-function(data,
     if(length(unique(data[[dependent.var]]))>50){
       return(list(success=F,message="can not perform chisquared test on >50 unique values in the dependent variable."))
 
-          }
+    }
   }
 
 return(list(success=T,data=data))
