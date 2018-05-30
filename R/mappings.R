@@ -141,7 +141,6 @@ map_to_hypothesis_test <- function(case) {
 #################################
 # map to visualisation:         #
 #################################
-=======
 
 
 #' map to visualisation

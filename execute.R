@@ -9,11 +9,11 @@ library(survey)
 
 #Execute hypegrammaR
 
-data <- reachR:::read.csv.auto.sep("../validation/data/Kampala_AGORA_HH_Refugees_10052018.csv")
-questionnaire <-  load_questionnaire(data = "../data/kri_winter.csv", 
-                                     questions.file = "../data/kri_winter.csv",
-                                     choices.file = "../data/choices_kri_winter.csv", 
-                                    choices.label.column.to.use = "english")
+data <- reachR:::read.csv.auto.sep("./test_data/BGD_Cross_camp.csv")
+questionnaire <-  load_questionnaire(data = "./test_data/BGD_Cross_camp.csv", 
+                                     questions.file = "./test_data/Choices_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv",
+                                     choices.file = "./test_data/Choices_choices_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv", 
+                                    choices.label.column.to.use = "name")
 populations <- load_samplingframe(sampling.frame.file = "../validation/data/Agora_Kampala_sampling_frame.csv",
                                   sampling.frame.population.column = "population", 
                                   data.stratum.column = "group",

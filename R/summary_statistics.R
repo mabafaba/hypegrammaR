@@ -4,7 +4,6 @@ percent_with_confints <- function(independent.var = independent.var,
                                   na.rm = TRUE){
   formula_string<-paste0("~",independent.var, "+", dependent.var)
   f.table <- svytable(formula(formula_string), design)
-  
   formula_err <- paste0("~", dependent.var, sep = "") 
   by <- paste0(" ~", independent.var, sep = "")
   error_bars <- svyby(formula(formula_err), formula(by), design, na.rm = T, svymean)
@@ -12,12 +11,11 @@ percent_with_confints <- function(independent.var = independent.var,
   results<-list()
   results$names <- c(names_df[,1], names_df[,2])
   results$numbers <- as.numeric(c(prop.table(f.table, 1)[1,], prop.table(f.table, 1)[2,]))
-  results$se <- as.numeric(c(error_bars[,grep("se.", names(error_bars))][1,], error_bars[,grep("se.", names(error_bars))][2,]))
-  results$min <- results$numbers - results$se
-  results$max <- results$numbers + results$se
+  results$se <- SE(error_bars)
+  #results$min <- results$numbers - results$se
+  #results$max <- results$numbers + results$se
   return(results)
 }
-
 
 
 confidence_intervals_num <- function(dependent.var, 
@@ -41,11 +39,11 @@ confidence_intervals_num_groups <- function(dependent.var,
                                      data = data){
   formula_string <- paste0("~as.numeric(", dependent.var,")") 
   by <- paste0("~", independent.var, sep = "")
-  summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T)
+  summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T, keep.names = F)
   confints <- confint(summary, level = 0.95)
   results<-list()
-  results$names <- dependent.var
-  results$numbers <- summary
+  results$names <- summary[,1]
+  results$numbers <- summary[,2]
   results$min <- confints[,1]
   results$max <- confints[,2]
   return(results)

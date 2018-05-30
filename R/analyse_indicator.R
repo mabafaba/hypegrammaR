@@ -1,4 +1,7 @@
-
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+source("./hypothesis_tests.R")
+source("./mappings.R")
+source("./summary_statistics.R")
 
 #' Complete  analysis for one hypothesis
 #'
@@ -64,5 +67,13 @@ analyse_indicator<-function(data,
               ))
         
     }
-  
+
+
+#####Complete for multiple hypothesis 
+
+#INPUTS 
+#list of independent variables
+#list of dependent variables
+#list of hypotheses
+#OUTPUTS a csv files with results for each 
 
