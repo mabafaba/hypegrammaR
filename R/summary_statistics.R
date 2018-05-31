@@ -7,6 +7,7 @@ percent_with_confints <- function(dependent.var,
 
   formula_string<-paste0("~",independent.var, "+",dependent.var )
   f.table <- svytable(formula(formula_string), design)
+  p.table <- apply(f.table,1,function(x){x/sum(x)})
 
   # if(design$variables %>%
   #    split.data.frame(design$variables[[independent.var]]) %>%
@@ -39,9 +40,9 @@ percent_with_confints <- function(dependent.var,
   # stat <-         summary.result.svyby[,c(independent.var.column,stat.columns)] %>% melt(id.vars=c(independent.var))
   #
   #
-  if(nrow(f.table)>1){
+  if(nrow(p.table)>1){
 
-    f.table %>% t %>% melt -> ftable_flipped
+    p.table %>% melt -> ftable_flipped
     colnames(ftable_flipped)<-c("dependent.var.value","independent.var.value","numbers")
     results<-data.frame(ftable_flipped,se=NA,min=NA,max=NA)
   }else{
@@ -61,6 +62,7 @@ percent_with_confints <- function(dependent.var,
   # results<-f.table
   return(results)
 }
+
 
 
 
@@ -91,9 +93,16 @@ confidence_intervals_num <- function(dependent.var,
   confints <- confint(summary, level = 0.95)
   summary$min <- confints[,1]
   summary$max <- confints[,2]
-  dependent.var.value <- rep(NA, length(summary))
-  results<- as.data.frame(dependent.var.value, summary$min) 
+  dependent.var.value <- rep(NA, length(summary$min))
+  results<- data.frame(dependent.var.value, summary) 
   colnames(results) <- c("dependent.var.value","independent.var.value","numbers", "se", "min", "max")
   return(results)
 }
 
+
+  percent_with_confints(dependent.var = dependent.var, independent.var = independent.var, design = design)
+  
+  dependent.var <- "VAR.18...what.is.your.relationship.to.the.head.of.family."
+  independent.var <- "Camp.17"
+design <-  map_to_design(data = data, cluster.var = NULL)
+  

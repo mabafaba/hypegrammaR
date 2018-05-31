@@ -19,7 +19,7 @@ sf<-load_samplingframe(sampling.frame.file = "test_data/bgd/Sampling_frame.csv",
                        sampling.frame.stratum.column  = "camp.name",
                        data.stratum.column = "VAR.11...enter.the.survey.site.",
                        return.stratum.populations = T)
-#
+
 # questionnaire<-load_questionnaire(data = "test_data/bgd/BGD_Cross_camp.csv",
 #                                   questions.file = "test_data/bgd/questionnaire_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv",
 #                                   choices.file = "test_data/bgd/Choices_BGD_UNHCR_SiteProfile_KOBO_R3b_APRIL2018.csv",
@@ -29,6 +29,23 @@ sf<-load_samplingframe(sampling.frame.file = "test_data/bgd/Sampling_frame.csv",
 data<- load_data("./test_data/bgd/BGD_Cross_camp.csv")
 data<- data[,-which(colnames(data)==".please.record.the.location..precision")]
 colnames(data)<-paste0("VAR.",1:ncol(data),"...",colnames(data))
+data$VAR.11...enter.the.survey.site. <- gsub(" ", ".", data$VAR.11...enter.the.survey.site.)
+
+
+#####
+select_mulitpleify<-function(x){
+  separated<-lapply(unique(x),function(uniquex){
+    x==uniquex
+  }) %>% as.data.frame
+  colnames(separated)<-unique(x)
+  return(separated)
+}
+
+camps <- select_mulitpleify(data$VAR.11...enter.the.survey.site.)
+colnames(camps) <- paste0("VAR.", 1:ncol(camps), "...", colnames(camps))
+data <- cbind(data, camps)
+data %>% tail
+#######
 
 
 remove_duplicate_columns<-function(data){
@@ -40,21 +57,25 @@ remove_duplicate_columns<-function(data){
 
 
 data<-remove_duplicate_columns(data)
+data<-lapply(data,function(x){x[which(x=="")]<-NA;x}) %>% as.data.frame(stringsAsFactors=F)
 
-analysisplan<-data.frame(
-    repeat.for="VAR.11...enter.the.survey.site.",
-    independent.var="VAR.20...what.is.the.gender.of.the.head.of.the.family.",
+
+many_plans <- function(x){
+  analysisplan <- lapply(x, function(indep.var){
+  data.frame(independent.var= indep.var,
     dependent.var=names(data),
     hypothesis.type="group_difference",
     case=paste0("CASE_group_difference_",ifelse(data %>% sapply(is.numeric),"numerical","categorical"),"_categorical")
   ,stringsAsFactors = F)
+    #analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
+  })
+}  
 
-analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
+data.plan.per.camp <- many_plans(unique(data$VAR.11...enter.the.survey.site.))
 
-undebug(percent_with_confints)
-undebug(sanitise_group_difference)
 
-results<-apply(analysisplan,1,function(x){
+results <- lapply(data.plan.per.camp, function(y){
+  apply(y,1,function(x){
 
   this_valid_data<-data[
       which(
@@ -75,10 +96,9 @@ results<-apply(analysisplan,1,function(x){
   # print(table(this_valid_data[,x["dependent.var"]]))
   # print(table(this_valid_data[,x["independent.var"]]))
   # print(x["independent.var"])
-  print(x["dependent.var"])
-  if(nrow(this_valid_data)==0){print('provided data has no rows where dependent.var is not NA')}else{
+  if(nrow(this_valid_data)==0){
   # table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
-    analyse_indicator(this_valid_data,
+    result.camp <- analyse_indicator(this_valid_data,
                     dependent.var = x["dependent.var"],
                     independent.var = x["independent.var"] ,
                     # hypothesis.type =  x["hypothesis.type"],
@@ -87,10 +107,11 @@ results<-apply(analysisplan,1,function(x){
                     case=x["case"])
   }
   }
-)
+)})
 
 
-
+results[[1]]
+saveRDS(results, "results_iteration.rds")
 
 results %>% lapply(function(x){x$message}) %>% unlist %>% table %>% kable
 
