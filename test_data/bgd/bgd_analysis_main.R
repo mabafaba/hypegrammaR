@@ -82,7 +82,7 @@ data.plan.per.camp <- data.plan.per.camp[c(1,2)]
 
 
 results <- lapply(data.plan.per.camp, function(y){
-  apply(y,1,function(x){
+  results.camp <- apply(y,1,function(x){
   this_valid_data<-data[
       which(
         !(is.na(data[,x["dependent.var"]])) &
@@ -104,21 +104,17 @@ results <- lapply(data.plan.per.camp, function(y){
   # print(x["independent.var"])
 
   # table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
-    analyse_indicator(this_valid_data,
+    var.camp <- analyse_indicator(this_valid_data,
                     dependent.var = x["dependent.var"],
                     independent.var = x["independent.var"] ,
                     # hypothesis.type =  x["hypothesis.type"],
                     sampling.strategy.cluster = FALSE,
                     sampling.strategy.stratified = TRUE,
                     case=x["case"])
-  }
+    names(results.camp) <- y$dependent.var
+    }
 )
-  #names(result.camp) <- data.plan.per.camp$dependent.var
   })
-
-debug(analyse_indicator)
-
-results[[1]]
 
 
 
@@ -128,7 +124,7 @@ results[[1]]
 
 
 sumstatlist <- results%£%"summary.statistic"
-
+sumstatlist
 
 
 
