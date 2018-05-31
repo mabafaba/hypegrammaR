@@ -40,7 +40,7 @@ percent_with_confints <- function(dependent.var,
   # stat <-         summary.result.svyby[,c(independent.var.column,stat.columns)] %>% melt(id.vars=c(independent.var))
   #
   #
-  if(nrow(p.table)>1){
+  if(!is.null(p.table) & nrow(p.table)>1){
 
     p.table %>% melt -> ftable_flipped
     colnames(ftable_flipped)<-c("dependent.var.value","independent.var.value","numbers")
@@ -72,21 +72,22 @@ confidence_intervals_num <- function(dependent.var,
                                      independent.var = NULL,
                                      design,
                                      data = data){
-  formula_string<-paste0("~as.numeric(", dependent.var, ")")
-  summary <- svymean(formula(formula_string), design, na.rm = T)
-  confints <- confint(summary, level = 0.95)
-  results<-list()
-  results$names <- dependent.var
-  results$numbers <- summary
-  results$min <- confints[,1]
-  results$max <- confints[,2]
-  return(results)
+    formula_string<-paste0("~as.numeric(", dependent.var, ")")
+    summary <- svymean(formula(formula_string), design, na.rm = T)
+    confints <- confint(summary, level = 0.95)
+    results<-list()
+    results$names <- dependent.var
+    results$numbers <- summary
+    results$min <- confints[,1]
+    results$max <- confints[,2]
+    return(results)
  }
 
   confidence_intervals_num_groups <- function(dependent.var,
                                      independent.var,
                                      design,
-                                     data = data){
+                                     data){
+
   formula_string <- paste0("~as.numeric(", dependent.var,")")
   by <- paste0("~", independent.var, sep = "")
   summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T, keep.var = T)
@@ -99,10 +100,24 @@ confidence_intervals_num <- function(dependent.var,
   return(results)
 }
 
+# 
+#   percent_with_confints <- f(dependent.var = dependent.var, independent.var = independent.var, design = design)
+# 
+#     formula_string <- paste0("~as.numeric(", dependent.var,")")
+#     by <- paste0("~", independent.var, sep = "")
+#     summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T, keep.var = T)
+#     confints <- confint(summary, level = 0.95)
+#     summary$min <- confints[,1]
+#     summary$max <- confints[,2]
+#     dependent.var.value <- rep(NA, length(summary$min))
+#     results<- data.frame(dependent.var.value, summary)
+#     colnames(results) <- c("dependent.var.value","independent.var.value","numbers", "se", "min", "max")
+#     return(results)
+# }
 
-  percent_with_confints(dependent.var = dependent.var, independent.var = independent.var, design = design)
-  
-  dependent.var <- "VAR.18...what.is.your.relationship.to.the.head.of.family."
-  independent.var <- "Camp.17"
-design <-  map_to_design(data = data, cluster.var = NULL)
-  
+
+
+# dependent.var <- "VAR.18...what.is.your.relationship.to.the.head.of.family."
+# independent.var <- "Camp.17"
+# design <-  map_to_design(data = data, cluster.var = NULL)
+

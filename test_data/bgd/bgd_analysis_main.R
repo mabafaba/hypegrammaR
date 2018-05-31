@@ -27,7 +27,11 @@ sf<-load_samplingframe(sampling.frame.file = "test_data/bgd/Sampling_frame.csv",
 
 
 data<- load_data("./test_data/bgd/BGD_Cross_camp.csv")
+
 data<- data[,-which(colnames(data)==".please.record.the.location..precision")]
+
+data %>% str
+
 colnames(data)<-paste0("VAR.",1:ncol(data),"...",colnames(data))
 data$VAR.11...enter.the.survey.site. <- gsub(" ", ".", data$VAR.11...enter.the.survey.site.)
 
@@ -42,7 +46,7 @@ select_mulitpleify<-function(x){
 }
 
 camps <- select_mulitpleify(data$VAR.11...enter.the.survey.site.)
-colnames(camps) <- paste0("VAR.", 1:ncol(camps), "...", colnames(camps))
+#colnames(camps) <- paste0("VAR.", 1:ncol(camps), "...", colnames(camps))
 data <- cbind(data, camps)
 data %>% tail
 #######
@@ -61,22 +65,24 @@ data<-lapply(data,function(x){x[which(x=="")]<-NA;x}) %>% as.data.frame(stringsA
 
 
 many_plans <- function(x){
-  analysisplan <- lapply(x, function(indep.var){
-  data.frame(independent.var= indep.var,
+   lapply(x, function(indep.var){
+     analysisplan <-data.frame(independent.var= indep.var,
     dependent.var=names(data),
     hypothesis.type="group_difference",
     case=paste0("CASE_group_difference_",ifelse(data %>% sapply(is.numeric),"numerical","categorical"),"_categorical")
   ,stringsAsFactors = F)
-    #analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
-  })
+     analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
+     return(analysisplan)
+     })
 }  
 
 data.plan.per.camp <- many_plans(unique(data$VAR.11...enter.the.survey.site.))
 
+data.plan.per.camp <- data.plan.per.camp[c(1,2)]
+
 
 results <- lapply(data.plan.per.camp, function(y){
   apply(y,1,function(x){
-
   this_valid_data<-data[
       which(
         !(is.na(data[,x["dependent.var"]])) &
@@ -96,9 +102,9 @@ results <- lapply(data.plan.per.camp, function(y){
   # print(table(this_valid_data[,x["dependent.var"]]))
   # print(table(this_valid_data[,x["independent.var"]]))
   # print(x["independent.var"])
-  if(nrow(this_valid_data)==0){
+
   # table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
-    result.camp <- analyse_indicator(this_valid_data,
+    analyse_indicator(this_valid_data,
                     dependent.var = x["dependent.var"],
                     independent.var = x["independent.var"] ,
                     # hypothesis.type =  x["hypothesis.type"],
@@ -106,108 +112,117 @@ results <- lapply(data.plan.per.camp, function(y){
                     sampling.strategy.stratified = TRUE,
                     case=x["case"])
   }
-  }
-)})
+)
+  #names(result.camp) <- data.plan.per.camp$dependent.var
+  })
 
+debug(analyse_indicator)
 
 results[[1]]
-saveRDS(results, "results_iteration.rds")
-
-results %>% lapply(function(x){x$message}) %>% unlist %>% table %>% kable
 
 
 
-
-
-results %>% lapply(function(x){if(length(x)==4){print(names(x))}})
-results %>% lapply(nbam) %>% unlist %>% table
-
-results %>% lapply(function(x){x$hypothesis.test.result}) %>% lapply(names) %>% lapply(paste,collapse=":::") %>% unlist %>% table
-
-
-results %>% lapply(function(x){x$hypothesis.test.result}) %>% lapply(is.null) %>% unlist %>% table
-
-
-
-
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(if(length(x)==)) %>% unlist %>% table
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(function(x){if(is.list(x)){colnames(x) %>% paste(collapse=":::")}}) %>% unlist %>% table
-
-results %>% lapply(function(x))
-
-
-
-results$`260`
-
-results$`257`$summary.statistic
-results$`258`$summary.statistic
-
-
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(length) %>% unlist %>% table
-
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(names) %>% lapply(paste,collapse=":::") %>% unlist %>% table
-
-
-
-
-
-
-results$`239` %>% names
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# summarystat_dfs<-lapply(names(results),function(x){
-#   print(x)
-#   if(is.list(results[[x]]))
-#   reformat<-results[[x]]$summary.statistic %>% as.data.frame %>% data.frame(
-#     rep(results[[x]]$hypothesis.test.result$test.results[2],nrow(results[[x]]$summary.statistic %>% as.data.frame)) %>% as.data.frame
-#
-#   )else{
-#     reformat<-NULL
-#   }
-#
-#
-#   })
-debug(sanitise_group_difference)
-analyse_indicator(data,
-                  dependent.var ="VAR.5...hello.my.name.is.........i.work.for.reach..together.with.unhcr..we.are.currently.conducting.a.survey.to.understand.the.needs.of.refugees.from.myanmar..we.would.like.to.know.more.about.the.needs.of.your.family.and.to.what.services.you.have.access..we.also.may.ask.you.a.few.questions.about.yourself.personally..the.survey.usually.takes.between.30.and.45.minutes.to.complete..any.information.that.you.provide.will.be.kept.anonymous..this.is.voluntary.and.you.can.choose.not.to.answer.any.or.all.of.the.questions.if.you.want..you.may.also.choose.to.quit.at.any.point..however..we.hope.that.you.will.participate.since.your.views.are.important..participation.in.the.survey.does.not.have.any.impact.on.whether.you.or.your.family.receive.assistance..do.you.have.any.questions..may.i.begin.now.",
-                  independent.var = "VAR.11...enter.the.survey.site." ,
-                  # hypothesis.type =  x["hypothesis.type"],
-                  sampling.strategy.cluster = FALSE,
-                  sampling.strategy.stratified = FALSE,
-                  case="CASE_group_difference_categorical_categorical"
-)
-
-
-
-
-
-
-ct<-function(...){
-  table(list(...))
+`%£%`<- function(x,y){
+  lapply(x,function(x){x[[y]]})
 }
-ctdi<-function(){
-  ct(data[[dependent.var]],data[[independent.var]])
+
+
+sumstatlist <- results%£%"summary.statistic"
+
+
+
+
+pvals<-sumstats$`p value`
+pvals
+
+false_discovery_rate(p.values){
+  pvalues_sorted<-sort(pvals,decreasing = T)
+
 }
+
+
+
+
+sapply(results,getpval) %>% kable
+
+results_to_df<-function(results){
+
+  getpval<-function(result){
+    if(is.null(result)){return(NA)}
+    if(!is.list(result)){return(NA)}
+    if(is.null(result$hypothesis.test)){return(result$message)}
+    if(is.null(result$hypothesis.test$result)){return(result$message)}
+    if(is.null(result$hypothesis.test$result$p.value)){return(result$message)}
+
+    return(result$hypothesis.test$result$p.value)
+  }
+
+sumstats <- nameapply(sumstatlist,function(x,name){
+
+
+if (!is.null(x)) {
+    cbind(indicator=name,"p value"=getpval(results[[name]]),"test type"= results[[name]]$hypothesis.test$name, x)
+  }
+})  %>%  do.call(rbind,.)
+
+
+}
+
+
+sumstats%>% write.csv("male_vs_female.csv")
+
+
+
+sumstatlist %>% lapply(ncol) %>% unlist %>% table
+sumstats %>% lapply(colnames) %>% lapply(paste,collapse="  -  ")%>% unlist %>% table
+
+
+
+
+
+
+`%do.call%` <- function(x,y){
+  do.call(y,x)
+}
+
+sumstats %>% head
+
+
+sumstats %>% head
+
+
+hypothesis_test_t_two_sample
+
+
+
+
+(data$VAR.18...what.is.your.relationship.to.the.head.of.family. =="" )%>% table
+
+
+
+rbind.list<-function(x){
+  do.call(rbind,x)
+}
+
+
+
+
+
+
+
+
+nameapply<-function(x,FUN,...){
+  names<-names(x)
+  lapply(names,function(name){
+    x<-x[[name]]
+    # FUN(x,name=name,...)
+    do.call(FUN,list(x=x,name=name,...))
+  })
+}
+
+
+
+
+
+
 
