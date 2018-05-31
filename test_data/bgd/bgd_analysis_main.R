@@ -76,6 +76,7 @@ results<-apply(analysisplan,1,function(x){
   # print(table(this_valid_data[,x["independent.var"]]))
   # print(x["independent.var"])
   print(x["dependent.var"])
+  if(nrow(this_valid_data)==0){print('provided data has no rows where dependent.var is not NA')}else{
   # table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
     analyse_indicator(this_valid_data,
                     dependent.var = x["dependent.var"],
@@ -83,9 +84,10 @@ results<-apply(analysisplan,1,function(x){
                     # hypothesis.type =  x["hypothesis.type"],
                     sampling.strategy.cluster = FALSE,
                     sampling.strategy.stratified = TRUE,
-                    case=x["case"]
-                    )
-       })
+                    case=x["case"])
+  }
+  }
+)
 
 
 
