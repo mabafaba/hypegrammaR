@@ -70,30 +70,34 @@ confidence_intervals_num <- function(dependent.var,
                                      independent.var = NULL,
                                      design,
                                      data = data){
-  formula_string<-paste0("~as.numeric(", dependent.var, ")")
-  summary <- svymean(formula(formula_string), design, na.rm = T)
-  confints <- confint(summary, level = 0.95)
-  results<-list()
-  results$names <- dependent.var
-  results$numbers <- summary
-  results$min <- confints[,1]
-  results$max <- confints[,2]
-  return(results)
+    formula_string<-paste0("~as.numeric(", dependent.var, ")")
+    summary <- svymean(formula(formula_string), design, na.rm = T)
+    confints <- confint(summary, level = 0.95)
+    results<-list()
+    results$names <- dependent.var
+    results$numbers <- summary
+    results$min <- confints[,1]
+    results$max <- confints[,2]
+    return(results)
  }
 
   confidence_intervals_num_groups <- function(dependent.var,
                                      independent.var,
                                      design,
                                      data = data){
-  formula_string <- paste0("~as.numeric(", dependent.var,")")
-  by <- paste0("~", independent.var, sep = "")
-  summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T, keep.var = T)
-  confints <- confint(summary, level = 0.95)
-  summary$min <- confints[,1]
-  summary$max <- confints[,2]
-  dependent.var.value <- rep(NA, length(summary))
-  results<- as.data.frame(dependent.var.value, summary$min) 
-  colnames(results) <- c("dependent.var.value","independent.var.value","numbers", "se", "min", "max")
-  return(results)
+    formula_string <- paste0("~as.numeric(", dependent.var,")")
+    by <- paste0("~", independent.var, sep = "")
+    summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T, keep.var = T)
+    confints <- confint(summary, level = 0.95)
+    summary$min <- confints[,1]
+    summary$max <- confints[,2]
+    dependent.var.value <- rep(NA, length(summary$min))
+    results<- data.frame(dependent.var.value, summary)
+    colnames(results) <- c("dependent.var.value","independent.var.value","numbers", "se", "min", "max")
+    return(results)
 }
+
+
+
+
 

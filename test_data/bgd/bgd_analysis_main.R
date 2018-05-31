@@ -76,7 +76,6 @@ results<-apply(analysisplan,1,function(x){
   # print(table(this_valid_data[,x["independent.var"]]))
   # print(x["independent.var"])
   print(x["dependent.var"])
-  if(nrow(this_valid_data)==0){print('provided data has no rows where dependent.var is not NA')}else{
   # table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
     analyse_indicator(this_valid_data,
                     dependent.var = x["dependent.var"],
@@ -84,26 +83,115 @@ results<-apply(analysisplan,1,function(x){
                     # hypothesis.type =  x["hypothesis.type"],
                     sampling.strategy.cluster = FALSE,
                     sampling.strategy.stratified = TRUE,
-                    case=x["case"])
-  }
-  }
-)
+                    case=x["case"]
+                    )
+       })
 
 
 
+names(results)<-analysisplan$dependent.var
 
-
-`for`
-`(`
-
-
-
-results%£%"summary.statistic"
 
 `%£%`<- function(x,y){
-lapply(x,function(x){x[[y]]})
+  lapply(x,function(x){x[[y]]})
 }
 
+
+sumstatlist <- results%£%"summary.statistic"
+
+
+
+getpval<-function(result){
+  if(is.null(result)){return(NA)}
+  if(!is.list(result)){return(NA)}
+  if(is.null(result$hypothesis.test)){return(result$message)}
+  if(is.null(result$hypothesis.test$result)){return(result$message)}
+  if(is.null(result$hypothesis.test$result$p.value)){return(result$message)}
+
+  return(result$hypothesis.test$result$p.value)
+}
+
+sapply(results,getpval) %>% kable
+
+
+sumstats <- nameapply(sumstatlist,function(x,name){
+
+
+  if (!is.null(x)) {
+    cbind(indicator=name,"p value"=getpval(results[[name]]),"test type"= , x)
+  }
+})  %>%  do.call(rbind,.)
+
+
+sumstats%>% write.csv("male_vs_female.csv")
+
+
+
+sumstatlist %>% lapply(ncol) %>% unlist %>% table
+sumstats %>% lapply(colnames) %>% lapply(paste,collapse="  -  ")%>% unlist %>% table
+
+
+
+
+
+
+`%do.call%` <- function(x,y){
+  do.call(y,x)
+}
+
+sumstats %>% head
+
+
+sumstats %>% head
+
+
+hypothesis_test_t_two_sample
+
+
+
+
+
+rbind.list<-function(x){
+  do.call(rbind,x)
+}
+
+
+
+
+
+
+
+
+nameapply<-function(x,FUN,...){
+  names<-names(x)
+  lapply(names,function(name){
+    x<-x[[name]]
+    # FUN(x,name=name,...)
+    do.call(FUN,list(x=x,name=name,...))
+  })
+}
+
+
+expand.grid(unique(data$VAR.11...enter.the.survey.site.),names(data)) %>% tail
+
+
+
+
+
+list_of_lists<-lapply(1:10,function(x){list(a=1,b=2)})
+list_of_lists%£%"a"
+names(list_of_lists)<-LETTERS[1:10]
+
+
+
+nameapply(list_of_lists,function(x){paste(x$a)})=
+
+?eval
+
+`$`
+
+?.Primitive
+.Primitive("$")
 
 results %>% lapply(function(x){x$})
 

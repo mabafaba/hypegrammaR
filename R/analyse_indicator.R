@@ -91,7 +91,7 @@ analyse_indicator<-function(data,
             # visualisation<-visualisation+ggplot()...
         return(list(
                     summary.statistic=summary.result,
-                    hypothesis.test.result=hypothesis.test.result,
+                    hypothesis.test=hypothesis.test.result,
                     visualisation=visualisation,
                     message="success (or unidentified issue)"
               ))
