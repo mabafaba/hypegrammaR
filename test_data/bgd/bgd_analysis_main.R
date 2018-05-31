@@ -27,7 +27,16 @@ sf<-load_samplingframe(sampling.frame.file = "test_data/bgd/Sampling_frame.csv",
 
 
 data<- load_data("./test_data/bgd/BGD_Cross_camp.csv")
+
+
+
+
 data<- data[,-which(colnames(data)==".please.record.the.location..precision")]
+
+
+
+data %>% str
+
 colnames(data)<-paste0("VAR.",1:ncol(data),"...",colnames(data))
 
 
@@ -101,26 +110,42 @@ sumstatlist <- results%£%"summary.statistic"
 
 
 
-getpval<-function(result){
-  if(is.null(result)){return(NA)}
-  if(!is.list(result)){return(NA)}
-  if(is.null(result$hypothesis.test)){return(result$message)}
-  if(is.null(result$hypothesis.test$result)){return(result$message)}
-  if(is.null(result$hypothesis.test$result$p.value)){return(result$message)}
 
-  return(result$hypothesis.test$result$p.value)
+pvals<-sumstats$`p value`
+pvals
+
+false_discovery_rate(p.values){
+  pvalues_sorted<-sort(pvals,decreasing = T)
+
 }
+
+
+
 
 sapply(results,getpval) %>% kable
 
+results_to_df<-function(results){
+
+  getpval<-function(result){
+    if(is.null(result)){return(NA)}
+    if(!is.list(result)){return(NA)}
+    if(is.null(result$hypothesis.test)){return(result$message)}
+    if(is.null(result$hypothesis.test$result)){return(result$message)}
+    if(is.null(result$hypothesis.test$result$p.value)){return(result$message)}
+
+    return(result$hypothesis.test$result$p.value)
+  }
 
 sumstats <- nameapply(sumstatlist,function(x,name){
 
 
-  if (!is.null(x)) {
-    cbind(indicator=name,"p value"=getpval(results[[name]]),"test type"= , x)
+if (!is.null(x)) {
+    cbind(indicator=name,"p value"=getpval(results[[name]]),"test type"= results[[name]]$hypothesis.test$name, x)
   }
 })  %>%  do.call(rbind,.)
+
+
+}
 
 
 sumstats%>% write.csv("male_vs_female.csv")
@@ -150,6 +175,9 @@ hypothesis_test_t_two_sample
 
 
 
+(data$VAR.18...what.is.your.relationship.to.the.head.of.family. =="" )%>% table
+
+
 
 rbind.list<-function(x){
   do.call(rbind,x)
@@ -172,135 +200,8 @@ nameapply<-function(x,FUN,...){
 }
 
 
-expand.grid(unique(data$VAR.11...enter.the.survey.site.),names(data)) %>% tail
 
 
 
 
-
-list_of_lists<-lapply(1:10,function(x){list(a=1,b=2)})
-list_of_lists%£%"a"
-names(list_of_lists)<-LETTERS[1:10]
-
-
-
-nameapply(list_of_lists,function(x){paste(x$a)})=
-
-?eval
-
-`$`
-
-?.Primitive
-.Primitive("$")
-
-results %>% lapply(function(x){x$})
-
-
-
-x<-data.frame(a=runif(100),b=runif(100))
-
-
-x[,c(2,1)]
-
-
-
-
-x[,standard_format_cols]
-
-
-
-
-results %>% lapply(function(x){x$message}) %>% unlist %>% table %>% kable
-
-results %>% lapply(function(x){if(length(x)==4){print(names(x))}})
-results %>% lapply(nbam) %>% unlist %>% table
-
-results %>% lapply(function(x){x$hypothesis.test.result}) %>% lapply(names) %>% lapply(paste,collapse=":::") %>% unlist %>% table
-
-
-results %>% lapply(function(x){x$hypothesis.test.result}) %>% lapply(is.null) %>% unlist %>% table
-
-
-
-
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(if(length(x)==)) %>% unlist %>% table
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(function(x){if(is.list(x)){colnames(x) %>% paste(collapse=":::")}}) %>% unlist %>% table
-
-results %>% lapply(function(x))
-
-
-
-results$`260`
-
-results$`257`$summary.statistic
-results$`258`$summary.statistic
-
-
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(length) %>% unlist %>% table
-
-results %>% lapply(function(x){x$summary.statistic}) %>% lapply(names) %>% lapply(paste,collapse=":::") %>% unlist %>% table
-
-
-
-
-
-
-results$`239` %>% names
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# summarystat_dfs<-lapply(names(results),function(x){
-#   print(x)
-#   if(is.list(results[[x]]))
-#   reformat<-results[[x]]$summary.statistic %>% as.data.frame %>% data.frame(
-#     rep(results[[x]]$hypothesis.test.result$test.results[2],nrow(results[[x]]$summary.statistic %>% as.data.frame)) %>% as.data.frame
-#
-#   )else{
-#     reformat<-NULL
-#   }
-#
-#
-#   })
-debug(sanitise_group_difference)
-analyse_indicator(data,
-                  dependent.var ="VAR.5...hello.my.name.is.........i.work.for.reach..together.with.unhcr..we.are.currently.conducting.a.survey.to.understand.the.needs.of.refugees.from.myanmar..we.would.like.to.know.more.about.the.needs.of.your.family.and.to.what.services.you.have.access..we.also.may.ask.you.a.few.questions.about.yourself.personally..the.survey.usually.takes.between.30.and.45.minutes.to.complete..any.information.that.you.provide.will.be.kept.anonymous..this.is.voluntary.and.you.can.choose.not.to.answer.any.or.all.of.the.questions.if.you.want..you.may.also.choose.to.quit.at.any.point..however..we.hope.that.you.will.participate.since.your.views.are.important..participation.in.the.survey.does.not.have.any.impact.on.whether.you.or.your.family.receive.assistance..do.you.have.any.questions..may.i.begin.now.",
-                  independent.var = "VAR.11...enter.the.survey.site." ,
-                  # hypothesis.type =  x["hypothesis.type"],
-                  sampling.strategy.cluster = FALSE,
-                  sampling.strategy.stratified = FALSE,
-                  case="CASE_group_difference_categorical_categorical"
-)
-
-
-
-
-
-
-ct<-function(...){
-  table(list(...))
-}
-ctdi<-function(){
-  ct(data[[dependent.var]],data[[independent.var]])
-}
 
