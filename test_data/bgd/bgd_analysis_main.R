@@ -28,17 +28,9 @@ sf<-load_samplingframe(sampling.frame.file = "test_data/bgd/Sampling_frame.csv",
 
 data<- load_data("./test_data/bgd/BGD_Cross_camp.csv")
 
-
-
-
 data<- data[,-which(colnames(data)==".please.record.the.location..precision")]
 
-
-
-data %>% str
-
 colnames(data)<-paste0("VAR.",1:ncol(data),"...",colnames(data))
-
 
 remove_duplicate_columns<-function(data){
   colnames(data)<-gsub("\\.1$","",colnames(data))
@@ -60,8 +52,6 @@ analysisplan<-data.frame(
 
 analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
 
-undebug(percent_with_confints)
-undebug(sanitise_group_difference)
 
 results<-apply(analysisplan,1,function(x){
 
@@ -101,30 +91,36 @@ results<-apply(analysisplan,1,function(x){
 names(results)<-analysisplan$dependent.var
 
 
-`%£%`<- function(x,y){
-  lapply(x,function(x){x[[y]]})
+
+
+false_discovery_rate<-function(p.values,q=0.05){
+  # FDR according to Benjamini and Hochberg 1994
+  # http://engr.case.edu/ray_soumya/mlrg/controlling_fdr_benjamini95.pdf
+  p_i<-sort(p.values,decreasing = F)
+  m<-length(p_i)
+  i<-1:length(p_i)
+  critical_ps_per_i<-i/m*q
+  smaller_than_critical_per_i<- p_i < critical_ps_per_i
+  if(!smaller_than_critical_per_i[1]){return(0)}
+  if(all(smaller_than_critical_per_i)){return(1)}
+
+  first_not_smaller_than_critical<-min(which(!smaller_than_critical_per_i))
+  k<-first_not_smaller_than_critical-1
+  p_k<-p_i[k]
+  return(p_k)
 }
 
 
-sumstatlist <- results%£%"summary.statistic"
+map_list_of_results_to_dataframe<-function(analysis_indicator_results){
+
+  `%£%`<- function(x,y){
+    lapply(x,function(x){x[[y]]})
+  }
 
 
+  sumstatlist <- analysis_indicator_results%£%"summary.statistic"
 
 
-pvals<-sumstats$`p value`
-pvals
-
-false_discovery_rate(p.values){
-  pvalues_sorted<-sort(pvals,decreasing = T)
-
-}
-
-
-
-
-sapply(results,getpval) %>% kable
-
-results_to_df<-function(results){
 
   getpval<-function(result){
     if(is.null(result)){return(NA)}
@@ -140,12 +136,37 @@ sumstats <- nameapply(sumstatlist,function(x,name){
 
 
 if (!is.null(x)) {
-    cbind(indicator=name,"p value"=getpval(results[[name]]),"test type"= results[[name]]$hypothesis.test$name, x)
+    cbind(indicator=name,"p value"=getpval(analysis_indicator_results[[name]]),"test type"= analysis_indicator_results[[name]]$hypothesis.test$name, x)
   }
 })  %>%  do.call(rbind,.)
 
-
+return(sumstats)
 }
+
+
+
+result_table<-map_list_of_results_to_dataframe(results)
+result_table$indicator <- gsub("VAR\\.[0-9]*\\.\\.\\.","",result_table$indicator)
+result_table$indicator <- gsub("\\."," ",result_table$indicator)
+
+
+split_by_gender<-result_table %>% split.data.frame(result_table$independent.var.value)
+split_by_gender
+
+
+gender_as_cols<-data.frame("Indicator"=split_by_gender$Female$indicator,
+      "Answer choice"=split_by_gender$Female$dependent.var.value,
+      "p-Value" = split_by_gender$Female$`p value`,
+      "test name" = split_by_gender$Female$`test type`,
+      "Number Female HHH" = split_by_gender$Female$numbers,
+      "Numbers Male HHH"=split_by_gender$Male$numbers) %>% head
+
+
+
+gender_as_cols$absolut.difference<-abs(gender_as_cols$Numbers.Male.HHH-gender_as_cols$Number.Female.HHH)
+
+
+
 
 
 sumstats%>% write.csv("male_vs_female.csv")
@@ -156,39 +177,9 @@ sumstatlist %>% lapply(ncol) %>% unlist %>% table
 sumstats %>% lapply(colnames) %>% lapply(paste,collapse="  -  ")%>% unlist %>% table
 
 
-
-
-
-
-`%do.call%` <- function(x,y){
-  do.call(y,x)
-}
-
-sumstats %>% head
-
-
-sumstats %>% head
-
-
-hypothesis_test_t_two_sample
-
-
-
-
-(data$VAR.18...what.is.your.relationship.to.the.head.of.family. =="" )%>% table
-
-
-
 rbind.list<-function(x){
   do.call(rbind,x)
 }
-
-
-
-
-
-
-
 
 nameapply<-function(x,FUN,...){
   names<-names(x)
@@ -198,10 +189,3 @@ nameapply<-function(x,FUN,...){
     do.call(FUN,list(x=x,name=name,...))
   })
 }
-
-
-
-
-
-
-
