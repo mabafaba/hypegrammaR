@@ -89,11 +89,11 @@ confidence_intervals_num <- function(dependent.var,
   by <- paste0("~", independent.var, sep = "")
   summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T, keep.var = T)
   confints <- confint(summary, level = 0.95)
-  summary$dependent.var.value <- NA
   summary$min <- confints[,1]
   summary$max <- confints[,2]
-  results<- as.data.frame(summary) 
-  colnames(results) <- c("dependent.var.value", "independent.var.value","numbers", "se", "min", "max")
+  dependent.var.value <- rep(NA, length(summary))
+  results<- as.data.frame(dependent.var.value, summary$min) 
+  colnames(results) <- c("dependent.var.value","independent.var.value","numbers", "se", "min", "max")
   return(results)
 }
 
