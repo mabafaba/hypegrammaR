@@ -90,11 +90,37 @@ results<-apply(analysisplan,1,function(x){
 
 
 
+
+`for`
+`(`
+
+
+
+results%£%"summary.statistic"
+
+`%£%`<- function(x,y){
+lapply(x,function(x){x[[y]]})
+}
+
+
+results %>% lapply(function(x){x$})
+
+
+
+x<-data.frame(a=runif(100),b=runif(100))
+
+
+x[,c(2,1)]
+
+
+
+
+x[,standard_format_cols]
+
+
+
+
 results %>% lapply(function(x){x$message}) %>% unlist %>% table %>% kable
-
-
-
-
 
 results %>% lapply(function(x){if(length(x)==4){print(names(x))}})
 results %>% lapply(nbam) %>% unlist %>% table
