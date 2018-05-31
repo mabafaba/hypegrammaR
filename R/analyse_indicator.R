@@ -33,8 +33,8 @@ analyse_indicator<-function(data,
             if(!is.null(do.for.each.unique.value.in.var)){stop("do.for.each.unique.value.in.var must be NULL (not yet implemented)")}
             if(sampling.strategy.cluster){stop("cluster must be FALSE (not yet implemented)")}
             # data <- data[!is.na(data[,dependent.var]),]
-            if(nrow(data)==0){stop('provided data has no rows where dependent.var is not NA')}
-            if(all(is.na(data[,dependent.var]))){stop(paste('variable', dependent.var, 'can\'t be all NA'))}
+            # if(nrow(data)==0){stop('provided data has no rows where dependent.var is not NA')}
+            # if(all(is.na(data[,dependent.var]))){stop(paste('variable', dependent.var, 'can\'t be all NA'))}
 
         # map from input to analysis case:
         if(is.null(case)){
@@ -92,7 +92,8 @@ analyse_indicator<-function(data,
         return(list(
                     summary.statistic=summary.result,
                     hypothesis.test.result=hypothesis.test.result,
-                    visualisation=visualisation
+                    visualisation=visualisation,
+                    message="success (or unidentified issue)"
               ))
 
     }

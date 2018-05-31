@@ -52,7 +52,7 @@ analysisplan<-data.frame(
 analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
 
 undebug(percent_with_confints)
-debug(sanitise_group_difference)
+undebug(sanitise_group_difference)
 
 results<-apply(analysisplan,1,function(x){
 
@@ -87,12 +87,72 @@ results<-apply(analysisplan,1,function(x){
                     )
        })
 
-names(results)<-analysisplan$dependent.var
 
 
-results$VAR.22...does.this.family.have.infants.under.6.months.old.$summary.statistic
-lapply(results,function(x){if(!is.null(x)){print((x$summary.statistic))}})
-results$VAR.5...hello.my.name.is.........i.work.for.reach..together.with.unhcr..we.are.currently.conducting.a.survey.to.understand.the.needs.of.refugees.from.myanmar..we.would.like.to.know.more.about.the.needs.of.your.family.and.to.what.services.you.have.access..we.also.may.ask.you.a.few.questions.about.yourself.personally..the.survey.usually.takes.between.30.and.45.minutes.to.complete..any.information.that.you.provide.will.be.kept.anonymous..this.is.voluntary.and.you.can.choose.not.to.answer.any.or.all.of.the.questions.if.you.want..you.may.also.choose.to.quit.at.any.point..however..we.hope.that.you.will.participate.since.your.views.are.important..participation.in.the.survey.does.not.have.any.impact.on.whether.you.or.your.family.receive.assistance..do.you.have.any.questions..may.i.begin.now.
+
+results %>% lapply(function(x){x$message}) %>% unlist %>% table %>% kable
+
+
+
+
+
+results %>% lapply(function(x){if(length(x)==4){print(names(x))}})
+results %>% lapply(nbam) %>% unlist %>% table
+
+results %>% lapply(function(x){x$hypothesis.test.result}) %>% lapply(names) %>% lapply(paste,collapse=":::") %>% unlist %>% table
+
+
+results %>% lapply(function(x){x$hypothesis.test.result}) %>% lapply(is.null) %>% unlist %>% table
+
+
+
+
+results %>% lapply(function(x){x$summary.statistic}) %>% lapply(if(length(x)==)) %>% unlist %>% table
+results %>% lapply(function(x){x$summary.statistic}) %>% lapply(function(x){if(is.list(x)){colnames(x) %>% paste(collapse=":::")}}) %>% unlist %>% table
+
+results %>% lapply(function(x))
+
+
+
+results$`260`
+
+results$`257`$summary.statistic
+results$`258`$summary.statistic
+
+
+results %>% lapply(function(x){x$summary.statistic}) %>% lapply(length) %>% unlist %>% table
+
+results %>% lapply(function(x){x$summary.statistic}) %>% lapply(names) %>% lapply(paste,collapse=":::") %>% unlist %>% table
+
+
+
+
+
+
+results$`239` %>% names
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # summarystat_dfs<-lapply(names(results),function(x){
 #   print(x)
