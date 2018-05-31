@@ -3,12 +3,6 @@
 
 
 
-
-
-
-
-
-
 reality<-c(0:100)
 target<-c(0:100)
 seq(0,100,5) %>% length

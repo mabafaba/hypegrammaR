@@ -26,12 +26,9 @@ sf<-load_samplingframe(sampling.frame.file = "test_data/bgd/Sampling_frame.csv",
 #                                   choices.label.column.to.use = "english")
 
 
-
 data<- load_data("./test_data/bgd/BGD_Cross_camp.csv")
 data<- data[,-which(colnames(data)==".please.record.the.location..precision")]
 colnames(data)<-paste0("VAR.",1:ncol(data),"...",colnames(data))
-
-# data<- data[,-which(colnames(data)=="what.is.your.relationship.to.the.head.of.family.")]
 
 
 remove_duplicate_columns<-function(data){
@@ -52,8 +49,10 @@ analysisplan<-data.frame(
     case=paste0("CASE_group_difference_",ifelse(data %>% sapply(is.numeric),"numerical","categorical"),"_categorical")
   ,stringsAsFactors = F)
 
-analysisplan %>% head
 analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
+
+undebug(percent_with_confints)
+debug(sanitise_group_difference)
 
 results<-apply(analysisplan,1,function(x){
 
@@ -64,19 +63,21 @@ results<-apply(analysisplan,1,function(x){
         ),
       ]
 
-  if(length(grep("group_difference",x["case"])) > 0 ){
-    if(length(table(this_valid_data[,x["independent.var"]])) < 2 |
-       length(table(this_valid_data[,x["dependent.var"]])) < 2 |
-       length(unique(this_valid_data[,x["dependent.var"]]))==nrow(this_valid_data)){
-      return("depvar or indepvar less than 2 factors")
-    }
-  }
+  # if(length(grep("group_difference",x["case"])) > 0 ){
+  #   if(length(table(this_valid_data[,x["independent.var"]])) < 2 |
+  #      length(table(this_valid_data[,x["dependent.var"]])) < 2 |
+  #      length(unique(this_valid_data[,x["dependent.var"]]))==nrow(this_valid_data)){
+  #     return("depvar or indepvar less than 2 factors")
+  #   }
+  # }
+
+
   # print(table(this_valid_data[,x["dependent.var"]]))
   # print(table(this_valid_data[,x["independent.var"]]))
   # print(x["independent.var"])
-  # print(x["dependent.var"])
+  print(x["dependent.var"])
   # table(list(data[[x["dependent.var"]]],data[[x["independent.var"]]])) %>% table %>% print
-  analyse_indicator(this_valid_data,
+    analyse_indicator(this_valid_data,
                     dependent.var = x["dependent.var"],
                     independent.var = x["independent.var"] ,
                     # hypothesis.type =  x["hypothesis.type"],
@@ -86,86 +87,29 @@ results<-apply(analysisplan,1,function(x){
                     )
        })
 
-
-
-
 names(results)<-analysisplan$dependent.var
 
 
+results$VAR.22...does.this.family.have.infants.under.6.months.old.$summary.statistic
+lapply(results,function(x){if(!is.null(x)){print((x$summary.statistic))}})
+results$VAR.5...hello.my.name.is.........i.work.for.reach..together.with.unhcr..we.are.currently.conducting.a.survey.to.understand.the.needs.of.refugees.from.myanmar..we.would.like.to.know.more.about.the.needs.of.your.family.and.to.what.services.you.have.access..we.also.may.ask.you.a.few.questions.about.yourself.personally..the.survey.usually.takes.between.30.and.45.minutes.to.complete..any.information.that.you.provide.will.be.kept.anonymous..this.is.voluntary.and.you.can.choose.not.to.answer.any.or.all.of.the.questions.if.you.want..you.may.also.choose.to.quit.at.any.point..however..we.hope.that.you.will.participate.since.your.views.are.important..participation.in.the.survey.does.not.have.any.impact.on.whether.you.or.your.family.receive.assistance..do.you.have.any.questions..may.i.begin.now.
 
-results$VAR.29...what.is.the.main.source.of.water.for.your.family.
-
-summarystat_dfs<-lapply(names(results),function(x){
-  print(x)
-  if(is.list(results[[x]]))
-  reformat<-results[[x]]$summary.statistic %>% as.data.frame %>% data.frame(
-    rep(results[[x]]$hypothesis.test.result$test.results[2],nrow(results[[x]]$summary.statistic %>% as.data.frame)) %>% as.data.frame
-
-  )else{
-    reformat<-NULL
-  }
-
-
-  })
-
-
-results3
-
-  results3<-lapply(summarystat_dfs,function(x){
-  if(is.data.frame(x)){if(nrow(x)!=0){x}else{NULL}}else{NULL}})
-
-results3 %>% lapply(function(x)colnames)
-
-
-lapply(1:nrow(analysisplan),function(x){
-  if(analysisplan$case[x]=="CASE_group_difference_categorical_categorical")
-    print((summarystat_dfs[[x]]$summary.statistic %>% as.data.frame %>% colnames))
-})
-
-
-results3 %>% lapply(function(x){colnames(x)==c("independent.var.value","dependent.var.value","numbers","se","min","max",".") }) %>% lapply(all)
-
-results3[[250]] %>% colnames
-
-
-table(list(data[["VAR.20...what.is.the.gender.of.the.head.of.the.family."]],
-           data[["VAR.26...what.is.the.primary.reason.for.planning.to.leave.this.shelter..1"]]))
-
-
-sanitise_data %>% debug
-sanitise_group_difference %>% debug
-sanitise_data(data = data,dependent.var = "VAR.26...what.is.the.primary.reason.for.planning.to.leave.this.shelter..1",
-                independent.var = "VAR.20...what.is.the.gender.of.the.head.of.the.family.",case = "CASE_group_difference_categorical_categorical")
-
-table(data[["VAR.26...what.is.the.primary.reason.for.planning.to.leave.this.shelter..1"]])
-
-
-table("VAR.26...what.is.the.primary.reason.for.planning.to.leave.this.shelter..1")
-
-
-data[110,]
-table(data[1:109,1:2])
-table(data[1:109,1:2])
-data[c(108,109,110,112),]
-
-
-
-datasubset<-data[c(90:110),1:2]
-datasubset<-data.frame(.please.record.the.location..precision=as.character(data[[".please.record.the.location..precision"]])
-
-                       )
-rownames(datasubset)<-c(1:111)
-
-
-independent.var
-"what.is.the.gender.of.the.head.of.the.family."
-dependent.var
-"what.is.the.primary.reason.for.planning.to.leave.this.shelter."
-
-debug(percent_with_confints)
+# summarystat_dfs<-lapply(names(results),function(x){
+#   print(x)
+#   if(is.list(results[[x]]))
+#   reformat<-results[[x]]$summary.statistic %>% as.data.frame %>% data.frame(
+#     rep(results[[x]]$hypothesis.test.result$test.results[2],nrow(results[[x]]$summary.statistic %>% as.data.frame)) %>% as.data.frame
+#
+#   )else{
+#     reformat<-NULL
+#   }
+#
+#
+#   })
+debug(sanitise_group_difference)
 analyse_indicator(data,
-                  dependent.var ="VAR.19...what.is.your.relationship.to.the.head.of.family.",
-                  independent.var = "VAR.20...what.is.the.gender.of.the.head.of.the.family." ,
+                  dependent.var ="VAR.5...hello.my.name.is.........i.work.for.reach..together.with.unhcr..we.are.currently.conducting.a.survey.to.understand.the.needs.of.refugees.from.myanmar..we.would.like.to.know.more.about.the.needs.of.your.family.and.to.what.services.you.have.access..we.also.may.ask.you.a.few.questions.about.yourself.personally..the.survey.usually.takes.between.30.and.45.minutes.to.complete..any.information.that.you.provide.will.be.kept.anonymous..this.is.voluntary.and.you.can.choose.not.to.answer.any.or.all.of.the.questions.if.you.want..you.may.also.choose.to.quit.at.any.point..however..we.hope.that.you.will.participate.since.your.views.are.important..participation.in.the.survey.does.not.have.any.impact.on.whether.you.or.your.family.receive.assistance..do.you.have.any.questions..may.i.begin.now.",
+                  independent.var = "VAR.11...enter.the.survey.site." ,
                   # hypothesis.type =  x["hypothesis.type"],
                   sampling.strategy.cluster = FALSE,
                   sampling.strategy.stratified = FALSE,
@@ -177,25 +121,10 @@ analyse_indicator(data,
 
 
 
-data$.please.record.the.location..precision <-sample(c("a","b","c"),nrow(data),T)
-
-
-
-undebug(percent_with_confints)
-grep("what.is.your.family.s.first.priority.need.",colnames(data),value=T)
-
-doublescolnames(data) %>% table
-
-
-
-
-
-
-data$what.is.your.relationship.to.the.head.of.family..1==data$what.is.your.relationship.to.the.head.of.family.
-  data$what.is.your.relationship
-  grep("what.is.your.relationship.to.the.head.of.family..1$",c("what.is.your.relationship.to.the.head.of.family..1","asdf"))
-"what.is.your.relationship.to.the.head.of.family..1" %in% colnames(data)
-
-grep("what.is.your.relationship.to.the.head.of.family.",colnames(data))
-
+ct<-function(...){
+  table(list(...))
+}
+ctdi<-function(){
+  ct(data[[dependent.var]],data[[independent.var]])
+}
 
