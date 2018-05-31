@@ -81,23 +81,19 @@ confidence_intervals_num <- function(dependent.var,
   return(results)
  }
 
-confidence_intervals_num_groups <- function(dependent.var,
+  confidence_intervals_num_groups <- function(dependent.var,
                                      independent.var,
                                      design,
                                      data = data){
   formula_string <- paste0("~as.numeric(", dependent.var,")")
   by <- paste0("~", independent.var, sep = "")
-  summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T)
+  summary <- svyby(formula(formula_string), formula(by), design, svymean, na.rm = T, keep.var = T)
   confints <- confint(summary, level = 0.95)
-  results<-list()
-  results$names <- dependent.var
-  results$numbers <- summary
-  results$min <- confints[,1]
-  results$max <- confints[,2]
+  summary$dependent.var.value <- NA
+  summary$min <- confints[,1]
+  summary$max <- confints[,2]
+  results<- as.data.frame(summary) 
+  colnames(results) <- c("dependent.var.value", "independent.var.value","numbers", "se", "min", "max")
   return(results)
 }
-
-
-
-
 
