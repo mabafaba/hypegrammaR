@@ -7,6 +7,9 @@ select_mulitpleify<-function(x){
 }
 
 
+
+
+
 remove_duplicate_columns<-function(data){
   colnames(data)<-gsub("\\.1$","",colnames(data))
   data[,!duplicated(colnames(data))]

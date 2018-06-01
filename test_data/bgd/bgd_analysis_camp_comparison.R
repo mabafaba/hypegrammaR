@@ -12,27 +12,13 @@ data <- cbind(data, camps)
 
 analysisplan<-map_to_analysis_plan_all_vars_as_dependent(each.x.as.independent.in.var = "VAR.11...enter.the.survey.site.",data = data)
 
-results <- apply_data_analysis_plan(data,analysisplan[1:20,])
+results <- apply_data_analysis_plan(data,analysisplan)
 
 result_table <- map_list_of_results_to_dataframe(results)
 result_table %>% write.csv("camp_comparison.csv")
 
-# result_table %>% aggregate.data.frame(by=list(result_table$indicator,result_table$independent.var.value),FUN = max)
 
+split_by_in_camp_true<-result_table %>% split.data.frame(result_table$independent.var.value)
 
+data.frame("other camps"=split_by_in_camp_true[[1]],"this camp"=split_by_in_camp_true[[2]]$numbers) %>% write.csv("camp_comparison.csv")
 
-
-
-
-
-
-maxORmode<-function (x, when.tie = NA, mean.when.fraction.numeric.greater.than = 1)
-{
-  if (is.numeric.fuzzy(as.character(x), minfrac = mean.when.fraction.numeric.greater.than)) {
-    return(suppressWarnings(x %>% as.character %>% as.numeric %>%
-                              hasdata %>% median))
-  }
-  else {
-    return(x %>% hasdata %>% Mode(when.tie = when.tie))
-  }
-}
