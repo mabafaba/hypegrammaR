@@ -131,3 +131,15 @@ map_to_analysis_plan_all_vars_as_dependent <- function(each.x.as.independent.in.
 
 
 
+
+many_plans <- function(x){
+  lapply(x, function(indep.var){
+    analysisplan <-data.frame(independent.var= indep.var,
+                              dependent.var=names(data),
+                              hypothesis.type="group_difference",
+                              case=paste0("CASE_group_difference_",ifelse(data %>% sapply(is.numeric),"numerical","categorical"),"_categorical")
+                              ,stringsAsFactors = F)
+    analysisplan <- analysisplan[analysisplan[,"dependent.var"]!= analysisplan[,"independent.var"],]
+    return(analysisplan)
+  })
+}
