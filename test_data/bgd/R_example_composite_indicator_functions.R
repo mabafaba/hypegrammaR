@@ -1,14 +1,15 @@
-# Internal function that calculates the weight for each element of the composite indicator
-composite_indicator_elements <- function(x, y, z){
-  sum <- data[x][[1]] %in% y ## strange that data[x] transforms it into a list but a priori taking the first element will always get to the data in vector form
-  sum[sum == TRUE] <- z
-  sum[sum == FALSE] <- 0
-  return(sum)
+# Internal function that recodes each element (variable) of the composite indicator into a vector with value = weight if the critical value is met and 0 otherwise
+recode.elements <- function(vector, critical.value, weight){
+  recoded.v <- vector %in% critical.value ## recodes the vector into T/F depending on whether the value matches the critical value. 
+  recoded.v[recoded.v == TRUE] <- weight
+  recoded.v[recoded.v == FALSE] <- 0
+  return(recoded.v)
 }
 
-# sum the individual elements to make the composite indicator
-# input sanitation should check that parameter, critical value and weight all have the same length. could eventually also be loaded as a df?
-compose_indicator <- function(parameter, critical.value, weight){
-  value_per_indicator <- mapply(composite.indicator.elements, parameter, critical.value, weight) %>% as.data.frame
-  indicator <- rowSums(value_per_indicator) / max(rowSums(value_per_indicator))
+# Builds the composite indicator by summing the recoded individual elements. 
+compose_indicator <- function(data, parameter, critical.value, weight){
+  data_ci <- data[match(parameter, names(data))] #take a subset of the data with only the columns needed for the composite indicator
+  value_per_indicator <- mapply(recode.elements, data_ci, critical.value, weight) %>% as.data.frame
+  indicator <- rowSums(value_per_indicator) / max(rowSums(value_per_indicator)) #Divides by the maximum to get a composite indicator >1
   return(indicator)}
+
