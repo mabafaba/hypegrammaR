@@ -1,0 +1,7 @@
+"","variables","critical.values","weights"
+"1","VAR.58...what.is.are.the.problem.s..related.to.the.latrine.if.any..it.is.not.safe..no.door..no.lock..etc..","1",0.5
+"2","VAR.99...does.the.shelter.door.have.a.lock.for.the.shelter.to.be.locked.from.the.inside.","No",0.7
+"3","VAR.100...is.your.family.sharing.the.shelter.with.another.family.","Yes",1
+"4","VAR.101...does.your.family.have.documentation.that.shows.your.address.in.myanmar.","No",0.5
+"5","VAR.103...what.are.the.top.three.main.safety.and.security.concerns.for.your.family.","None/no others",-1
+"6","VAR.251...if.you.wanted.to.complain.or.raise.a.problem.related.to.assistance.in.the.camps..where.would.you.go..i.don.t.know","1",1
