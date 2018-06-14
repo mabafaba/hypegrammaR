@@ -1,8 +1,8 @@
 # Internal function that recodes each element (variable) of the composite indicator into a vector with value = weight if the critical value is met and 0 otherwise
-recode.elements <- function(vector, critical.value, weight){
-  recoded.v <- vector %in% critical.value ## recodes the vector into T/F depending on whether the value matches the critical value. 
-  recoded.v[recoded.v == TRUE] <- weight
-  recoded.v[recoded.v == FALSE] <- 0
+recode.binary <- function(x, from, to, otherwise = 0){
+  recoded.v <- x %in% from ## recodes the vector into T/F depending on whether the value matches the critical value. 
+  recoded.v[recoded.v == TRUE] <- to
+  recoded.v[recoded.v == FALSE] <- otherwise
   return(recoded.v)
 }
 

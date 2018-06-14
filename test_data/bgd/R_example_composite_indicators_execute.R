@@ -27,7 +27,7 @@ parameters <- c("VAR.58...what.is.are.the.problem.s..related.to.the.latrine.if.a
 "VAR.251...if.you.wanted.to.complain.or.raise.a.problem.related.to.assistance.in.the.camps..where.would.you.go..i.don.t.know") 
 
 critical.values <- c(1, "No", "Yes", "No", "None/no others", 1)# the value the variable should take to be counted (in the same order as the variables)
-weights <- c(0.5, 0.7, 1, 0.5, 1, -1) #the weights in the final indicator associated with taking on that value
+weights <- c(0.5, 1, 0.3, 1, -1, 1) #the weights in the final indicator associated with taking on that value
 ################# 
 
 ################# 
