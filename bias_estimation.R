@@ -3,16 +3,19 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 source("./R/hypothesis_tests.R")
 source("./R/mappings.R")
 source("./R/summary_statistics.R")
+source("./dependencies.R")
 
 library(dplyr)
 library(data.table)
 library(reachR)
-data_ref <- reachR:::read.csv.auto.sep("./test_data/Kampala_AGORA_HH_Refugees_10052018.csv")
+data_ref <- reachR:::read.csv.auto.sep("./test_data/Clean_Data_AGORA_HH_RandomSample_Analysis_04062018.csv", stringsAsFactors = F)
 data_ref <- data_ref[c(1:705),] 
 data_ref %>% tail
 r <- c()
 
-data_ref$feel.safe
+data_ref$status
+
+names(data_ref)
 
 split.value <- "sample"
 weight.column <- "weight"
@@ -80,6 +83,20 @@ summary.statistics <- confidence_intervals_num_groups(dependent.var = dependent.
 hypothesis.test.results <- hypothesis_test_t_two_sample(independent.var = independent.var, dependent.var = dependent.var, design)
 
 
+
+data<-lapply(data_ref,function(x){x[which(x=="NR")]<-NA;x}) %>% as.data.frame(stringsAsFactors=F)
+data<-lapply(data, function(x){if(is.numeric.fuzzy.convert(x, minfrac = 0.9) == TRUE)
+  {x <- as.numeric(as.character(x))}else
+  {x <- as.character(x)}; x}) %>% as.data.frame(stringsAsFactors = F)
+
+data$hh.head.sex
+
+true <- data %>% filter(name.slum == "Mengo" & hh.head.sex == "female")
+
+total <- data %>% filter(name.slum == "Kisenyi_III")
+
+true$assistance.need %>% ftable %>% prop.table
+nrow(true) / nrow(total)
 #####################
 
 
