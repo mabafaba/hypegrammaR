@@ -22,3 +22,7 @@ split_by_in_camp_true<-result_table %>% split.data.frame(result_table$independen
 
 data.frame("other camps"=split_by_in_camp_true[[1]],"this camp"=split_by_in_camp_true[[2]]$numbers) %>% write.csv("camp_comparison.csv")
 
+
+
+
+

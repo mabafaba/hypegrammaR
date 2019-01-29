@@ -13,7 +13,7 @@ map_to_design <- function(data,
   if(is.null(cluster.var)){
     cluster.ids <- as.formula(c("~1"))}else{
     cluster.ids <- cluster.var}
-  strata.weights <- reachR:::weights_of(data)
+  strata.weights <- weights_of(data)
   survey.design <- svydesign(data = data,
       ids = formula(cluster.ids),
       strata = names(strata.weights),
@@ -58,8 +58,10 @@ list_all_cases<-function(implemented_only=F){
   return(c(
     "CASE_group_difference_categorical_categorical",
     "CASE_group_difference_numerical_categorical",
-    "CASE_direct_reporting_numeric_",
-    "CASE_direct_reporting_categorical_"
+    "CASE_direct_reporting_numerical_",
+    "CASE_direct_reporting_categorical_",
+    "CASE_direct_reporting_categorical_categorical",
+    "CASE_direct_reporting_numerical_categorical"
   ))
 }
 
@@ -173,5 +175,17 @@ map_to_visualisation <- function(case) {
 
   return(visualisation_functions[[case]])
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
