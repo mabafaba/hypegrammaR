@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_to_result.R
 \name{map_to_result}
 \alias{map_to_result}
-\title{Complete  analysis for one hypothesis}
+\title{Map to results from data, variable names & case}
 \usage{
 map_to_result(data, dependent.var, independent.var = NULL, case,
   cluster.variable.name = NULL, weighting = function(df) {     rep(1,
@@ -11,22 +11,19 @@ map_to_result(data, dependent.var, independent.var = NULL, case,
 \arguments{
 \item{dependent.var}{string with the column name in `data` of the dependent variable}
 
+\item{case}{the analysis case, created with map_to_case().}
+
 \item{cluster.variable.name}{if cluster sampling, provide the name of the variable in the dataset that denotes the cluster}
 
 \item{weighting}{A function that generates weights from a dataframe. You can create it with surveyweights::weighting_fun_from_samplingframe()}
 
 \item{independen.var}{string with the column name in `data` of the independent variable}
-
-\item{hypothesis.type}{the type of hypothesis as a string. Allowed values are "direct_reporting", "group_difference", "limit", "correlation" or "change"}
-
-\item{do.for.each.unique.value.in.var}{if you want to repeat the analysis for multiple subsets of the data, specify the column name in `data` by which to split the dataset}
+}
+\value{
+A list with 1. the summary.statistic and 2. the hypothesis.test result
 }
 \description{
 Produce summary statistics, hypothesis tests and plot objects for a hypothesis
-}
-\details{
-this function takes the data, information about your variables of interest, hypothesis type and sampling strategy. It selects the appropriate summary statistics, hypothesis test and visualisation and applies them.
-#' @return A list with 1. the summary.statistic, 2. the hypothesis.test.result, and 3. the visualisation as a ggplot object
 }
 \examples{
 plot_crayons()

@@ -2,12 +2,12 @@
 % Please edit documentation in R/mappings.R
 \name{map_to_summary_statistic}
 \alias{map_to_summary_statistic}
-\title{map to summary statistic}
+\title{Map to summary statistic}
 \usage{
 map_to_summary_statistic(case)
 }
 \arguments{
-\item{case}{a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}}
+\item{case}{a string uniquely identifying the analysis case. output of \link{\code{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}}
 }
 \value{
 a _function_ that computes the relevant summary statistic

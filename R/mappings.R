@@ -29,7 +29,51 @@ map_to_design <- function(data,
     return(survey.design)}
 #add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
 
+
+
+
 #' Map to case
+#'
+#' creates a string that other functions can use to know what analysis case they are dealing with
+#'
+#' @param data missing documentation
+#' @param hypothesis.type
+#' @param dependent.var.type
+#' @param independent.var.type
+#' @return a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
+#' @examples map_to_case()
+#' @export
+guess_to_case<-function(hypothesis.type,
+                        dependent.var.type=NULL,
+                        independent.var.type=NULL
+                        ){
+
+    if(!(independent.var.type %in% c("numerical","categorical"))){
+      stop("dependent.var.type must be either 'categorical', 'numerical' or left empty (guessing from data)")
+    }
+
+
+    if(!(dependent.var.type %in% c("numerical","categorical"))){
+      stop(  "dependent.var.type must be either 'categorical', 'numerical' or left empty (guessing from data)")
+    }
+
+
+  variable.type <- paste0(dependent.var.type, "_",
+                          independent.var.type)
+  case <- paste(c("CASE",hypothesis.type,variable.type, paired), collapse = "_")
+  class(case)<-"analysis_case"
+  return(case)
+}
+
+
+
+
+
+
+
+
+
+#' Guess the  case
 #'
 #' creates a string that other functions can use to know what analysis case they are dealing with
 #'
@@ -41,7 +85,7 @@ map_to_design <- function(data,
 #' @return a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
 #' @examples map_to_design(data,cluster_variable_name="cluster_id")
 #' @export
-map_to_case<-function(data,
+guess_to_case<-function(data,
                       hypothesis.type,
                       dependent.var,
                       independent.var = NULL,
@@ -307,11 +351,16 @@ map_to_file<-function(object,filename,...){
 #' mydata_subset<-mydata[1:100,]
 #' subset_weights<- weighting(mydata)
 #' @export
-map_to_weighting<-function(...){
+map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.population.column = "population",
+                           sampling.frame.stratum.column = "stratum", data = NULL){
   surveyweights::weighting_fun_from_samplingframe(...)
 }
 
 
-
-
+#' presentable p-value format
+#' @export
+label_pvalue <- function(x, digits = 3){
+  if (x < 10^-digits) return(paste('<', 10^-digits))
+  paste('=', myround(x, digits))
+}
 

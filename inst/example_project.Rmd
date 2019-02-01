@@ -1,0 +1,69 @@
+---
+title: "Example Analysis"
+author: "Martin Barner"
+date: "1 February 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r,include=F,echo=F}
+library(hypegrammaR)
+
+assessment_data<-load_data("../tests/testthat/data.csv")
+
+samplingframe<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+
+weights<-map_to_weighting(sampling.frame = samplingframe,
+                               data.stratum.column = "stratification",
+                               sampling.frame.population.column = "population",
+                               sampling.frame.stratum.column = "strata names",
+                               data = assessment_data)
+
+```
+
+
+
+
+
+# Needs Overview
+
+How do needs differ across regions? We will look at this by sector.
+
+## Health
+
+```{r,include=F,warning=F,echo=F}
+
+
+case<-map_to_case(assessment_data,
+                  hypothesis.type = "group_difference",
+                  dependent.var = "health_need",
+                  independent.var = "region")
+
+
+result<-map_to_result(assessment_data,dependent.var = "health_need",independent.var = "region",case=case)
+
+
+```
+
+
+```{r,warning=F,echo=F}
+
+result %>% map_to_visualisation
+
+
+```
+```{r,include=F}
+label_pvalue <- function(x, digits = 3){
+  if (x < 10^-digits) return(paste('<', 10^-digits))
+  paste('=', myround(x, digits))
+}
+
+```
+It appears that the health need differ significantly (p `r label_pvalue(result$hypothesis.test$result$p.value)`) across regions. 
+
+
+

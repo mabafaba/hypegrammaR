@@ -4,7 +4,7 @@ author: "Barner M., Henzler E."
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Speaking with the Grammar of Hypothesis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,14 +20,12 @@ knitr::opts_chunk$set(
 
 ## Main steps
 
+
+
 Any analysis with HypegrammaR follows the same structure:
 
-- identify the main parameters of your assesment and _load_ your *raw inputs* from csv files:
-  - you *data*
-  - *sampling frame(s)*
-  - *questionnaire* choices and question sheet.
-
-- decide the main parameters of your analysis:
+- Load your input data
+- decide your analysis parameters
     - what type of hypothesis do you have?
     - what are the the dependent and independent variables, and what are their data types?
 - _map_ from your main parameters to a distinct *analysis case*.
@@ -38,33 +36,47 @@ Any analysis with HypegrammaR follows the same structure:
 
 ## Example
 
-### load hypegrammaR package
-```{r}
+### Load the hypegrammaR package
+```{r,warning=FALSE,message=FALSE}
 library(hypegrammaR)
 
 ```
 
-### Load your files with the appropriate functions:
+### Load your files
+
+All input files are expected as csv files.
+
+Each input we usually expect with an assessment has it's own function to load it. They check that the format is in line with what is expected, make sure they play well with each other and prepare the functionality they are used for.
+
+First the data. A csv file with data in standard Kobo format.
 ```{r}
 assessment_data<-load_data(file = "../tests/testthat/data.csv")
+```
 
-sampling_frame<-hypegrammaR::load_samplingframe("../tests/testthat/test_samplingframe.csv")
+Then a sampling frame. A csv file with one column with strata names, one column with population numbers. The strata names must match exactly some values in the data. We must tell the loading function which column is what in the sampling frame.
+```{r}
+sampling_frame<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+```
 
+Finally the questionnaire, which depends on the question and the choices sheet as a csv.
+
+```{r}
 questionnaire<-load_questionnaire(data = assessment_data,
                                              questions.file = "../tests/testthat/kobo questions.csv",
                                              choices.file = "../tests/testthat/kobo choices.csv",
                                   choices.label.column.to.use = "label::English"
                                              )
 
-
 ```
 
 ### _Map_ to the analysis case
 You need to know:
+
 - The hypothesis type. Currently implemented are:
   - `direct_reporting`
   - `group_difference`
 - the names of the columns that are your dependent and independent variables
+
 ```{r}
 
 case <- map_to_case(data = assessment_data,
