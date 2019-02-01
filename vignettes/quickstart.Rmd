@@ -1,0 +1,294 @@
+---
+title: "Quickstart"
+author: "Martin Barner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quickstart}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+## Pretext
+The hypegrammaR package implements the [IMPACT quantitative data analysis guidelines](http://example.com). While this guide works on its own, all of this will make a lot more sense if you read those first.
+
+## What you need:
+So you want to analyse some data. cool.
+get all your stuff as csv files first. All your stuff means:
+
+### 1. The simplest case (simple random sampling, no labels, no skiplogic, no special handling of select_multiple questions)
+  - your data as a csv file
+  
+### 2. For stratified/cluster sampling:
+  - your sampling frame(s) as csv file(s)
+  
+### 3. To analyse select_multiple, to add labels and to correctly analyse skiplogic:
+  - your kobo questionnaire questions sheet if you have it
+  - your kobo questionnaire choices sheet if you have it
+
+
+## Simplest Case
+Let's assume for now that we have nothing but the data from a simple random survey design (not weighted, no cluster sampling..) .
+
+
+### Preparation
+
+Install the hypegrammaR package (this line you only have to run _once_ when using hypegrammaR for the first time, or to update to a new version):
+```{r, eval=F,echo=T,message=F,warning=FALSE,error=F}
+devtools::install_github("mabafaba/hypegrammaR",build_opts = c())
+```
+(the `build_opts = c()` makes sure the package includes extra help pages & documentation)
+
+Load the hypegrammaR package:
+```{r, eval=T,echo=T,message=F,warning=FALSE,error=F}
+library(hypegrammaR)
+```
+
+Load the data:
+```{r load, eval=T}
+mydata<-read.csv("../tests/testthat/data.csv")
+```
+
+### Run the analysis
+
+Identify your analysis parameters.
+
+- what is are the dependent and independent variables, and what are their data types?
+    - this Example: "nutrition_need" (numerical) and "region" (categorical)
+- what is your sampling strategy?
+    - this Example: simple random = not stratified, not clustered
+- what type of hypothesis do you have?
+    - this Example: the difference between groups
+
+
+Now we can use the function `analyse_indicator` with the above as parameters:
+```{r,warning=F}
+result<-analyse_indicator(
+                  data = mydata,
+                  dependent.var = "nutrition_need",
+                  independent.var = "region",
+                  hypothesis.type = "group_difference",
+                  independent.var.type = "categorical",
+                  dependent.var.type="numerical")
+
+```
+
+You can find out what exactly you can/should enter for these parameters by running `?analyse_indicator`, which will open the help page for the function (this works for any function)
+
+
+### See the results
+
+The `analyse_indicator` function gives you a number of things:
+
+- A log message
+- Meta information: a log of your inputs, what analysis case was used etc.
+- The summary statistics (e.g. averages, percentages, ...)
+- The hypothesis test results
+- A visualisation
+
+#### The log message
+
+First, a message telling you how it went:
+```{r}
+result$message
+```
+That's what we want to see. If something went wrong, it should tell you here what happened.
+
+#### meta information
+
+```{r}
+result$parameters
+```
+As you can see, it remembers what your input parameters were. It also added a standardised name of the analysis case.
+
+#### The summary statistic
+
+```{r}
+result$summary.statistic
+```
+
+In this case, "numbers" are averages, because the input variable was numerical. `min` and `max` is the corresponding confidence interval. `dependent.var.value` give the corresponding variable values if they are categorical (`NA` otherwise.)
+The summary statistic will _always_ be organised with exactly these columns, no matter what analysis you did. This is so that if you add a new visualisations or ouput format, it will work for any output from this function.
+
+#### The hypothesis test
+
+Next, there's information on which (if any) hypothesis test was used and the p value:
+```{r}
+result$hypothesis.test
+
+```
+ou'll probably be most interested in the p-value and the type of test that was used.
+
+#### The visualisation
+
+Finally, it returned a _plot function_ that is appropriate to visualise the type of analysis that was performed:
+
+```{r, warning=F}
+labels_summary_statistic<-function(x){x}
+visualise<-map_to_visualisation(result$parameters$case)
+
+myvisualisation<-visualise(result)
+
+myvisualisation
+
+```
+
+For advanced users (that know ggplot): The visualisation function returns a ggplot object, so you can add/overwrite ggplot stuff; for example:
+```{r,warning=F}
+myvisualisation+coord_polar()
+
+```
+
+### Save/export the results
+To save/export any results, you can use the generic `map_to_file` function. For example:
+
+```{r,eval=F}
+map_to_file(results$summary.statistics,"summary_stat.csv")
+map_to_file(myvisualisation,"barchart.jpg",width="5",height="5")
+
+```
+You will find the files in your current working directory (which you can find out with `getwd()`)
+
+## Stratified Samples
+For the weighting, we'll use IMPACT's `surveyweights` package. It was installed when you installed `hypegrammaR`. Load it:
+```{r}
+library(surveyweights)
+```
+For stratified samples, we need to provide a _sampling frame_.
+```{r}
+mysamplingframe<-read.csv("../tests/testthat/test_samplingframe.csv")
+
+```
+The sampling frame must have exactly one row per stratum; one column for the strata names, one column for the population numbers. Our example data frame looks like this:
+
+```{r}
+head(mysamplingframe)
+
+```
+The names must match _exactly_ the values in a column of the data; in this case it is `mydata$stratification`.
+
+```{r}
+head(mydata$stratification)
+```
+Now we can create a "weighter" object:
+```{r}
+myweighter<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
+                                             data.stratum.column = "stratification",
+                                             sampling.frame.population.column = "population",
+                                             sampling.frame.stratum.column = "strata.names")
+```
+
+Now we can use `analyse_indicator` just like before, but pass it the weighter we just created, so the weighting will be applied (pay attention to the last argument):
+
+```{r}
+result<-analyse_indicator(
+                  data = mydata,
+                  dependent.var = "nutrition_need",
+                  independent.var = "region",
+                  hypothesis.type = "group_difference",
+                  independent.var.type = "categorical",
+                  dependent.var.type="numerical",
+                  weighting = myweighter)
+
+
+result$summary.statistic
+
+```
+
+
+
+
+## Cluster Samples
+
+### without extra weighting
+If the clusters don't need to be weighted (in addition to the strata), all you need is to tell `analyse_indicator` which data variable identifies the cluster:
+
+```{r}
+
+result<-analyse_indicator(
+                  data = mydata,
+                  dependent.var = "nutrition_need",
+                  independent.var = "region",
+                  hypothesis.type = "group_difference",
+                  independent.var.type = "categorical",
+                  dependent.var.type="numerical",
+                  weighting = myweighter,
+                  cluster.variable.name = "village")
+
+
+```
+
+
+## With extra weighting
+If the clustering comes with it's own weights (if records in different clusters within the same stratum had different probabilities to be selected probabilities), you need to load the sampling frame in the same way you did for the stratification, then combine the two weighting functions:
+
+```{r,eval=F}
+
+samplingframe2<-read.csv("../tests/testthat/test_samplingframe2.csv")
+
+myweighting_cluster<-weighting_fun_from_samplingframe(samplingframe2,
+                                                    data.stratum.column = "village",
+                                                    sampling.frame.population.column = "populations",
+                                                    sampling.frame.stratum.column = "village.name")
+
+
+combined_weighting<-combine_weighting_functions(myweighing,myweighting_cluster)
+
+result<-analyse_indicator(
+                  data = mydata,
+                  dependent.var = "nutrition_need",
+                  independent.var = "region",
+                  hypothesis.type = "group_difference",
+                  independent.var.type = "categorical",
+                  dependent.var.type="numerical",
+                  weighting = combined_weighting,
+                  cluster.variable.name = "village")
+
+
+
+```
+
+
+
+## Using the Questionnaire
+If we further load the questionnaire, we can do some extra cool stuff:
+
+- Better analyse select_multiple questions
+- Automatically identify data types
+- Put proper labels on plots
+
+### Loading the questionnaire
+```{r}
+require("koboquest")
+questionnaire<- load_questionnaire(mydata,
+                              questions.file = "../tests/testthat/kobo questions.csv",
+                              choices.file = "../tests/testthat/kobo choices.csv")
+
+
+
+result<-analyse_indicator(mydata,
+                  dependent.var = "accesstomarket",
+                  independent.var = "region",
+                  dependent.var.type = "categorical",
+                  independent.var.type = "categorical",
+                  hypothesis.type = "group_difference",
+                  weighting=myweighter)
+
+
+vis<-map_to_visualisation(result)
+
+
+```
+
+
+  
+  
+  
+  
+  

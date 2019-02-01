@@ -5,7 +5,7 @@
 \title{Map to case}
 \usage{
 map_to_case(data, hypothesis.type, dependent.var, independent.var = NULL,
-  paired = NULL)
+  dependent.var.type = NULL, independent.var.type = NULL, paired = NULL)
 }
 \arguments{
 \item{data}{missing documentation}
@@ -17,5 +17,5 @@ a string that other functions can use to know what analysis case they are dealin
 creates a string that other functions can use to know what analysis case they are dealing with
 }
 \examples{
-map_to_design(data,cluster.var="cluster_id")
+map_to_design(data,cluster_variable_name="cluster_id")
 }

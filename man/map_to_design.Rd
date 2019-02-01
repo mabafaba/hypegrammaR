@@ -4,10 +4,10 @@
 \alias{map_to_design}
 \title{Map to Design}
 \usage{
-map_to_design(data, cluster.var = NULL)
+map_to_design(data, cluster_variable_name = NULL, weighting_function = NULL)
 }
 \arguments{
-\item{cluster.var}{if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?}
+\item{weighting_function}{if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?}
 }
 \value{
 a `survey` package design object
@@ -19,5 +19,5 @@ creates a `survey` design object from the data
 create a `survey` package design object from the data and information on the sampling strategy
 }
 \examples{
-map_to_design(data,cluster.var="cluster_id")
+map_to_design(data,cluster_variable_name="cluster_id")
 }
