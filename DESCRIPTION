@@ -13,7 +13,12 @@ Imports:
     dplyr,
     reshape2,
     questionr,
-    koboquest
+    koboquest,
+    data.table,
+    surveyweights
+Remotes:
+    mabafaba/koboquest,
+    mabafaba/surveyweightscd
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

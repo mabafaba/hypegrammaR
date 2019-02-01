@@ -1,0 +1,137 @@
+---
+title: "The Grammar of Hypothesis"
+author: "Barner M., Henzler E."
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Logic
+
+## Main steps
+
+Any analysis with HypegrammaR follows the same structure:
+
+- identify the main parameters of your assesment and _load_ your *raw inputs* from csv files:
+  - you *data*
+  - *sampling frame(s)*
+  - *questionnaire* choices and question sheet.
+
+- decide the main parameters of your analysis:
+    - what type of hypothesis do you have?
+    - what are the the dependent and independent variables, and what are their data types?
+- _map_ from your main parameters to a distinct *analysis case*.
+- _map_ your *raw inputs* and *analysis case* to receive an analysis *result*
+- _map_ your *result* to a *visualisation* / *table* or other appropriate outputs
+- _map_ your outputs to a *file*
+
+
+## Example
+
+### load hypegrammaR package
+```{r}
+library(hypegrammaR)
+
+```
+
+### Load your files with the appropriate functions:
+```{r}
+assessment_data<-load_data(file = "../tests/testthat/data.csv")
+
+sampling_frame<-hypegrammaR::load_samplingframe("../tests/testthat/test_samplingframe.csv")
+
+questionnaire<-load_questionnaire(data = assessment_data,
+                                             questions.file = "../tests/testthat/kobo questions.csv",
+                                             choices.file = "../tests/testthat/kobo choices.csv",
+                                  choices.label.column.to.use = "label::English"
+                                             )
+
+
+```
+
+### _Map_ to the analysis case
+You need to know:
+- The hypothesis type. Currently implemented are:
+  - `direct_reporting`
+  - `group_difference`
+- the names of the columns that are your dependent and independent variables
+```{r}
+
+case <- map_to_case(data = assessment_data,
+                    hypothesis.type = "group_difference",
+                    dependent.var = "number_simultaneous_unmet_need",
+                    independent.var = "region")
+
+```
+### _Map_ to weighting
+```{r}
+
+weighting <- map_to_weighting( sampling.frame = sampling_frame,
+                               data.stratum.column = "stratification",
+                               sampling.frame.population.column = "population",
+                               sampling.frame.stratum.column = "strata names",
+                               data = assessment_data)
+
+```
+
+
+## Now put it all together and _Map_ to the result:
+
+```{r}
+
+result<-map_to_result(data = assessment_data,
+              dependent.var = "number_simultaneous_unmet_need",
+              independent.var =   "region",
+              case = case,
+              weighting = weighting)
+```
+
+
+## _Map_ to usable outputs
+### Chart
+```{r,warning=FALSE}
+
+chart<-map_to_visualisation(result)
+heatmap<-map_to_visualisation_heatmap(result)
+chart
+heatmap
+```
+### gimme Labels!
+```{r,warning=FALSE}
+result %>% map_to_labeled(questionnaire) -> result_labeled
+chart <- result_labeled %>% map_to_visualisation
+heatmap <- result_labeled %>% map_to_visualisation_heatmap
+
+
+```
+
+
+### Save as files
+
+```{r, eval=FALSE}
+map_to_file(chart,"barchart.jpg")
+map_to_file(result$summary.statistic,"summary_statistics.csv")
+
+```
+
+The grammar is built from two types of elements:
+- "Blocks": Take the output of a mapping
+- "Mappings": Decide what to do, call a "block" that does it, and returns another block.
+
+
+
+
+
+
+
+

@@ -130,12 +130,9 @@ ou'll probably be most interested in the p-value and the type of test that was u
 Finally, it returned a _plot function_ that is appropriate to visualise the type of analysis that was performed:
 
 ```{r, warning=F}
-labels_summary_statistic<-function(x){x}
-visualise<-map_to_visualisation(result$parameters$case)
+myvisualisation<-map_to_visualisation(result)
 
-myvisualisation<-visualise(result)
 
-myvisualisation
 
 ```
 

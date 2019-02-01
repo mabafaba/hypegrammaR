@@ -114,12 +114,11 @@ case_not_implemented_error<-function(case,situation){
 }
 
 
-
-#' map to summary statistic
+#' Map to summary statistic
 #'
 #' selects an appropriate summary statistic function based on the analysis case
 #'
-#' @param case a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
+#' @param case a string uniquely identifying the analysis case. output of \link{\code{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
 #' @return a _function_ that computes the relevant summary statistic
 #' @examples map_to_summary_statistic("group_difference_categorical_categorical")
 #' @examples my_case<- map_to_case( ... )
@@ -132,11 +131,19 @@ map_to_summary_statistic <- function(case) {
 
   # define summary functions for all cases:
   summary_functions<-list()
-  summary_functions$CASE_group_difference_categorical_categorical <- percent_with_confints
-  summary_functions$CASE_direct_reporting_numeric_ <- confidence_intervals_num
+
+  # DIRECT REPORTING
+  # dependent is numerical:
+  summary_functions$CASE_direct_reporting_numerical_ <- confidence_intervals_mean
+  summary_functions$CASE_direct_reporting_numerical_categorical<- confidence_intervals_mean_groups
+  # dependent is categorical:
   summary_functions$CASE_direct_reporting_categorical_ <- percent_with_confints
-  # summary_functions$CASE_group_difference_numerical_numerical <- function(...){stop(paste("summary statistic for case",case,"not implemented"))}hypothesis_test_one_sample_t
-  summary_functions$CASE_group_difference_numerical_categorical <- confidence_intervals_num_groups
+  summary_functions$CASE_direct_reporting_categorical_categorical <- percent_with_confints_groups
+
+  # GROUP DIFFERENCE
+  # dependent is categorical:
+  summary_functions$CASE_group_difference_categorical_categorical <- percent_with_confints_groups
+  summary_functions$CASE_group_difference_numerical_categorical <- confidence_intervals_mean_groups
 
 
 
@@ -194,7 +201,7 @@ map_to_hypothesis_test <- function(case) {
 #' my_ggplot_obj<-my_vis_fun( ... )
 #' my_ggplot_obj # plots the object
 #' @export
-map_to_visualisation <- function(result) {
+map_to_visualisation <- function(result,questionnaire=NULL) {
 
   invalid_input_message<-"'result' parameter not a valid hypegrammaR result object."
 
@@ -276,25 +283,34 @@ map_to_file<-function(object,filename,...){
   return(object)
 }
 
-#' Create weighting from a sampling frame
+#' creates a weighting function from a sampling frame
 #'
-#' @inheritParams surveyweights::weighting_fun_from_samplingframe
-#' @details Create a 'weighter' function from a sampling frame data frame. Uses surveyweights::weighting_fun_from_samplingframe()
+#' @param sampling.frame.file data frame containing the sampling frame. should contain columns "stratum" and "population", otherwise column names must be specified.
+#' @param sampling.frame.population.column sampling frame name of column holding population counts. defaults to "population"
+#' @param sampling.frame.stratum.column sampling frame name of column holding stratum names. defaults to "stratum". Stratum names must match exactly values in:
+#' @param data.stratum.column data column name that holds the record's strata names
+#' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
+#' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
+#' @examples
+#' # laod data and sampling frames:
+#' mydata<-read.csv("mydata.csv")
+#' mysamplingframe<-read.csv("mysamplingframe.csv")
+#' # create weighting function:
+#' weighting<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
+#'                                  data.stratum.column = "strata_names",
+#'                                  sampling.frame.population.column = "pop",
+#'                                  sampling.frame.stratum.column = "strat_name")
+#' # use weighting function:
+#' mydata$weights<-weighting(mydata)
+#'
+#' # this also works on subsets of the data:
+#' mydata_subset<-mydata[1:100,]
+#' subset_weights<- weighting(mydata)
 #' @export
 map_to_weighting<-function(...){
   surveyweights::weighting_fun_from_samplingframe(...)
 }
 
-
-#' Create questionnaire from csv files
-#'
-#'
-#' @details This enables new functions associated with the questionnaire. It uses load_questionnaire() from the koboquest package.
-#' @inheritParams koboquest::load_questionnaire
-#' @export
-map_to_questionnaire<-function(...){
-  koboquest::load_questionnaire(...)
-}
 
 
 

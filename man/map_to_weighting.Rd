@@ -2,13 +2,40 @@
 % Please edit documentation in R/mappings.R
 \name{map_to_weighting}
 \alias{map_to_weighting}
-\title{Create weighting from a sampling frame}
+\title{creates a weighting function from a sampling frame}
 \usage{
 map_to_weighting(...)
 }
-\description{
-Create weighting from a sampling frame
+\arguments{
+\item{sampling.frame.file}{data frame containing the sampling frame. should contain columns "stratum" and "population", otherwise column names must be specified.}
+
+\item{sampling.frame.population.column}{sampling frame name of column holding population counts. defaults to "population"}
+
+\item{sampling.frame.stratum.column}{sampling frame name of column holding stratum names. defaults to "stratum". Stratum names must match exactly values in:}
+
+\item{data.stratum.column}{data column name that holds the record's strata names}
+
+\item{data}{optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.}
 }
-\details{
-Create a 'weighter' function from a sampling frame data frame. Uses surveyweights::weighting_fun_from_samplingframe()
+\value{
+returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
+}
+\description{
+creates a weighting function from a sampling frame
+}
+\examples{
+# laod data and sampling frames:
+mydata<-read.csv("mydata.csv")
+mysamplingframe<-read.csv("mysamplingframe.csv")
+# create weighting function:
+weighting<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
+                                 data.stratum.column = "strata_names",
+                                 sampling.frame.population.column = "pop",
+                                 sampling.frame.stratum.column = "strat_name")
+# use weighting function:
+mydata$weights<-weighting(mydata)
+
+# this also works on subsets of the data:
+mydata_subset<-mydata[1:100,]
+subset_weights<- weighting(mydata)
 }

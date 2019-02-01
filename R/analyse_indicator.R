@@ -1,8 +1,3 @@
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-source("./hypothesis_tests.R")
-source("./mappings.R")
-source("./summary_statistics.R")
-
 #' Complete  analysis for one hypothesis
 #'
 #' Produce summary statistics, hypothesis tests and plot objects for a hypothesis
