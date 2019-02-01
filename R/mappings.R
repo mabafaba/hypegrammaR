@@ -43,7 +43,7 @@ map_to_design <- function(data,
 #' @return a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
 #' @examples map_to_case()
 #' @export
-guess_to_case<-function(hypothesis.type,
+map_to_case<-function(hypothesis.type,
                         dependent.var.type=NULL,
                         independent.var.type=NULL
                         ){
@@ -57,7 +57,7 @@ guess_to_case<-function(hypothesis.type,
       stop(  "dependent.var.type must be either 'categorical', 'numerical' or left empty (guessing from data)")
     }
 
-
+  paired=NULL
   variable.type <- paste0(dependent.var.type, "_",
                           independent.var.type)
   case <- paste(c("CASE",hypothesis.type,variable.type, paired), collapse = "_")
@@ -353,7 +353,10 @@ map_to_file<-function(object,filename,...){
 #' @export
 map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.population.column = "population",
                            sampling.frame.stratum.column = "stratum", data = NULL){
-  surveyweights::weighting_fun_from_samplingframe(...)
+  surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
+                                                  data.stratum.column = data.stratum.column,
+                                                  sampling.frame.population.column = sampling.frame.population.column,
+                                                  sampling.frame.stratum.column = sampling.frame.stratum.column)
 }
 
 

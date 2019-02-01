@@ -2,7 +2,10 @@
 title: "Example Analysis"
 author: "Martin Barner"
 date: "1 February 2019"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -23,6 +26,12 @@ weights<-map_to_weighting(sampling.frame = samplingframe,
                                sampling.frame.stratum.column = "strata names",
                                data = assessment_data)
 
+questionnaire<-load_questionnaire(data = assessment_data,
+                                             questions.file = "../tests/testthat/kobo questions.csv",
+                                             choices.file = "../tests/testthat/kobo choices.csv",
+                                  choices.label.column.to.use = "label::English"
+                                             )
+
 ```
 
 
@@ -38,13 +47,15 @@ How do needs differ across regions? We will look at this by sector.
 ```{r,include=F,warning=F,echo=F}
 
 
-case<-map_to_case(assessment_data,
-                  hypothesis.type = "group_difference",
-                  dependent.var = "health_need",
-                  independent.var = "region")
+case<-map_to_case(hypothesis.type = "group_difference",
+                  dependent.var.type = "numerical",
+                  independent.var = "categorical")
 
 
-result<-map_to_result(assessment_data,dependent.var = "health_need",independent.var = "region",case=case)
+result<-map_to_result(assessment_data,
+                      dependent.var = "health_need",
+                      independent.var = "region",
+                      case=case)
 
 
 ```
@@ -52,7 +63,7 @@ result<-map_to_result(assessment_data,dependent.var = "health_need",independent.
 
 ```{r,warning=F,echo=F}
 
-result %>% map_to_visualisation
+result %>% map_to_labeled(questionnaire) %>% map_to_visualisation
 
 
 ```
@@ -64,6 +75,16 @@ label_pvalue <- function(x, digits = 3){
 
 ```
 It appears that the health need differ significantly (p `r label_pvalue(result$hypothesis.test$result$p.value)`) across regions. 
+We can see that less clearly in an angular chart:
+
+```{r,echo=F}
+map_to_visualisation_heatmap(result)
+```
+
+And of course completely unreadable would be a table, but hey:
+```{r,echo=F,asis=T}
+result %>% map_to_table
+```
 
 
 

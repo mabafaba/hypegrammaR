@@ -36,13 +36,15 @@ Any analysis with HypegrammaR follows the same structure:
 
 ## Example
 
-### Load the hypegrammaR package
+### Once per Assessment
+
+#### Load the hypegrammaR package
 ```{r,warning=FALSE,message=FALSE}
 library(hypegrammaR)
 
 ```
 
-### Load your files
+#### Load your files
 
 All input files are expected as csv files.
 
@@ -69,6 +71,20 @@ questionnaire<-load_questionnaire(data = assessment_data,
 
 ```
 
+
+### _Map_ to weighting
+```{r}
+
+weighting <- map_to_weighting( sampling.frame = sampling_frame,
+                               data.stratum.column = "stratification",
+                               sampling.frame.population.column = "population",
+                               sampling.frame.stratum.column = "strata names",
+                               data = assessment_data)
+
+```
+
+### For each Hypothesis
+
 ### _Map_ to the analysis case
 You need to know:
 
@@ -79,20 +95,9 @@ You need to know:
 
 ```{r}
 
-case <- map_to_case(data = assessment_data,
-                    hypothesis.type = "group_difference",
-                    dependent.var = "number_simultaneous_unmet_need",
-                    independent.var = "region")
-
-```
-### _Map_ to weighting
-```{r}
-
-weighting <- map_to_weighting( sampling.frame = sampling_frame,
-                               data.stratum.column = "stratification",
-                               sampling.frame.population.column = "population",
-                               sampling.frame.stratum.column = "strata names",
-                               data = assessment_data)
+case <- map_to_case(hypothesis.type = "group_difference",
+                    dependent.var.type = "numerical",
+                    independent.var = "categorical")
 
 ```
 
