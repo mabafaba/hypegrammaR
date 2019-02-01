@@ -1,29 +1,29 @@
+setwd("./hypegrammaR/")
+require("devtools")
+usethis::use_testthat()
+usethis::use_build_ignore("build_package.R")
+usethis::use_build_ignore(".*\\.R")
 
 
 
 
-build<-function(package.name,first.time=F){
-  all_objects<-ls()
-    rm(list=  all_objects[!(all_objects %in% c("package.name","first.time"))])
-  getwd()
-  # try(detach(paste("package",package.name,sep=":")))
-  this_script_path<-(dirname(rstudioapi::getActiveDocumentContext()$path))
-  setwd(this_script_path)
-
-  
-  require("roxygen2")
-    print(first.time)
-  if(first.time){
-    setwd("..")
-    create(package.name)
-    setwd(package.name)
-  }
-  
-  package_source_files<-paste0("./R/", list.files("./R/"))
-  sapply(package_source_files,source)
-  require("devtools")
-  roxygenize(clean=T)
-}
+# data<-read.csv("../msna18/internal/input_files/data.csv")
+#
+# q<-koboquest::load_questionnaire(data,
+#                                     questions.file = "../msna18/internal/input_files/kobo questions.csv",
+#                                     choices.file = "../msna18/internal/input_files/kobo choices.csv"
+#                                     )
+# data
+# question_is_categorical("village")
+# require("koboquest")
+#
+# analyse_indicator(data = data,
+#                   dependent.var = "dependencyratio",
+#                   independent.var = "sum_nutrition_need",
+#                   hypothesis.type = "group_difference",sampling.strategy.cluster = F,case = "CASE_group_difference_categorical_categorical",sampling.strategy.stratified = F)
+#
+#
+#
+#
 
 
-build("hypegrammaR",first.time = F)

@@ -5,24 +5,22 @@
 \title{Complete  analysis for one hypothesis}
 \usage{
 analyse_indicator(data, dependent.var, independent.var = NULL,
-  hypothesis.type, sampling.strategy.cluster = FALSE,
-  sampling.strategy.stratified = FALSE,
-  do.for.each.unique.value.in.var = NULL)
+  dependent.var.type, independent.var.type, hypothesis.type,
+  cluster.variable.name = NULL, weighting = function(df) {     rep(1,
+  nrow(df)) }, case = NULL)
 }
 \arguments{
-\item{data}{}
-
 \item{dependent.var}{string with the column name in `data` of the dependent variable}
 
 \item{hypothesis.type}{the type of hypothesis as a string. Allowed values are "direct_reporting", "group_difference", "limit", "correlation" or "change"}
 
-\item{sampling.strategy.cluster}{set to TRUE if you used cluster sampling}
+\item{cluster.variable.name}{if cluster sampling, provide the name of the variable in the dataset that denotes the cluster}
 
-\item{sampling.strategy.stratified}{set to TRUE if you used stratified sampling}
-
-\item{do.for.each.unique.value.in.var}{if you want to repeat the analysis for multiple subsets of the data, specify the column name in `data` by which to split the dataset}
+\item{weighting}{A function that generates weights from a dataframe. You can create it with surveyweights::weighting_fun_from_samplingframe()}
 
 \item{independen.var}{string with the column name in `data` of the independent variable}
+
+\item{do.for.each.unique.value.in.var}{if you want to repeat the analysis for multiple subsets of the data, specify the column name in `data` by which to split the dataset}
 }
 \value{
 A list with 1. the summary.statistic, 2. the hypothesis.test.result, and 3. the visualisation as a ggplot object
