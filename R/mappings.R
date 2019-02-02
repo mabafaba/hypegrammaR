@@ -32,68 +32,6 @@ map_to_design <- function(data,
 
 
 
-list_all_cases<-function(implemented_only=F){
-
-  if(!implemented_only){
-    hypothesis_types<-c("direct_reporting","group_difference","limit","correlation","change")
-    dependent.var.types<-c("numerical","categorical")
-    independent.var.types<-c("numerical","categorical")
-    valid_cases<- apply(expand.grid("CASE",hypothesis_types, dependent.var.types,independent.var.types), 1, paste, collapse="_")
-    return(valid_cases)
-  }
-
-  return(c(
-    "CASE_group_difference_categorical_categorical",
-    "CASE_group_difference_numerical_categorical",
-    "CASE_direct_reporting_numerical_",
-    "CASE_direct_reporting_categorical_",
-    "CASE_direct_reporting_categorical_categorical",
-    "CASE_direct_reporting_numerical_categorical"
-  ))
-}
-
-
-is_valid_case_string<-function(x,implemented_only=T){
-
-  return(x %in% list_all_cases(implemented_only = implemented_only))
-
-}
-
-case_not_implemented_error<-function(case,situation){
-  stop(paste(situation,":  case", case, "not implemented"))
-}
-
-
-
-
-
-#' map to hypothesis test
-#'
-#' selects an appropriate hypothesis test function based on the analysis case
-#'
-#' @param case a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
-#' @return a _function_ that computes the relevant hypothesis test
-#' @examples map_to_summary_statistic("group_difference_categorical_categorical")
-#' @examples my_case<- map_to_case( ... )
-#' my_hyptest <- map_to_hypothesis_test(my_case)
-#' my_hyptest( ... )
-#' @export
-map_to_hypothesis_test <- function(case) {
-  # prefill all valid cases with 'not implemented' errors:
-  hypothesis_test_functions<-list()
-  hypothesis_test_functions<-lapply(list_all_cases(implemented_only = F),function(x){
-    function(...){stop(paste("not implemented: hypothesis test for case",x,".\n the geneva data unit can help!"))}
-  })
-  names(hypothesis_test_functions)<-list_all_cases(implemented_only = F)
-
-  # add implemented cases:
-  hypothesis_test_functions[["CASE_group_difference_categorical_categorical"]] <- hypothesis_test_chisquared
-  hypothesis_test_functions[["CASE_direct_reporting_numerical_"]] <- hypothesis_test_empty
-  hypothesis_test_functions[["CASE_direct_reporting_categorical_"]] <- hypothesis_test_empty
-  hypothesis_test_functions[["CASE_group_difference_numerical_categorical"]] <- hypothesis_test_t_two_sample
-  # return function belonging to this case:
-  return(hypothesis_test_functions[[case]])
-}
 
 
 #################################

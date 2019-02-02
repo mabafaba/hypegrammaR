@@ -463,7 +463,7 @@ summary_statistic_rank <-
 
 ###function that takes a variable (vector of values) and checks if it has more than one unique values
 var_more_than_n <- function(var, n) {
-  var <- na.rm(var)
+  var <- var[!is.na(var)]
   var <- trimws(var)
   if (length(unique(var[var != ""])) > n) {
     return(TRUE)

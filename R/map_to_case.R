@@ -1,5 +1,39 @@
 
 
+list_all_cases<-function(implemented_only=F){
+
+  if(!implemented_only){
+    hypothesis_types<-c("direct_reporting","group_difference","limit","correlation","change")
+    dependent.var.types<-c("numerical","categorical")
+    independent.var.types<-c("numerical","categorical")
+    valid_cases<- apply(expand.grid("CASE",hypothesis_types, dependent.var.types,independent.var.types), 1, paste, collapse="_")
+    return(valid_cases)
+  }
+
+  return(c(
+    "CASE_group_difference_categorical_categorical",
+    "CASE_group_difference_numerical_categorical",
+    "CASE_direct_reporting_numerical_",
+    "CASE_direct_reporting_categorical_",
+    "CASE_direct_reporting_categorical_categorical",
+    "CASE_direct_reporting_numerical_categorical"
+  ))
+}
+
+
+is_valid_case_string<-function(x,implemented_only=T){
+
+  return(x %in% list_all_cases(implemented_only = implemented_only))
+
+}
+
+case_not_implemented_error<-function(case,situation){
+  stop(paste(situation,":  case", case, "not implemented"))
+}
+
+
+
+
 
 #' Map to case
 #'

@@ -91,10 +91,19 @@ result %>% map_to_labeled(questionnaire) %>% map_to_table
 
 ## Experienced
 ```{r,echo=F,asis=T,warning=FALSE}
-case<-map_to_case(hypothesis.type = 'direct_reporting',dependent.var.type = 'categorical',independent.var.type = 'categorical')
+case<-map_to_case(hypothesis.type = 'group_difference',dependent.var.type = 'categorical',independent.var.type = 'categorical')
+design<-map_to_design(assessment_data,weighting_function = weights)
 
-edu1<-map_to_result(assessment_data,dependent.var = "hhexperienced",independent.var = 'region',case = case)
 
+
+sumstat<-map_to_summary_statistic(design,"hhexperienced","region",case = case,questionnaire = questionnaire)
+
+edu1<-map_to_result(assessment_data,dependent.var = "hhexperienced",independent.var = 'region',case = case,questionnaire = questionnaire)
+
+edu1$summary.statistic
+
+vis<-edu1 %>% map_to_labeled(questionnaire) %>%  map_to_visualisation
+debug(map_to_visualisation)
 ```
 
 ```{r}

@@ -3,3 +3,4 @@
 ^build_package\.R$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^todo\.md$
