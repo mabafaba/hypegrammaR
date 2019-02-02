@@ -6,7 +6,7 @@
 \usage{
 map_to_result(data, dependent.var, independent.var = NULL, case,
   cluster.variable.name = NULL, weighting = function(df) {     rep(1,
-  nrow(df)) })
+  nrow(df)) }, questionnaire = NULL)
 }
 \arguments{
 \item{dependent.var}{string with the column name in `data` of the dependent variable}

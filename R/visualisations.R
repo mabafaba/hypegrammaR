@@ -49,7 +49,7 @@ reach_style_barchart<-function(group,percent,error_min=NULL,error_max=NULL,horiz
 
   if(horizontal){
     theplot<-theplot+coord_flip()}
-  return(theplot)
+  return(list(ggplot=theplot))
 }
 
 
@@ -72,6 +72,7 @@ barchart_with_error_bars <- function(hypothesis.test.results,summary.statistics)
                     col='#000000',
                     hjust=0,
                     vjust=0.5)
+  return(list(ggplot=theplot))
   }
 
 
@@ -118,8 +119,15 @@ grouped_barchart_percent<-function(result){
   plotwidth<-5+number_of_bars*1.5
   # map_to_file(theplot,filename,height=12,width=plotwidth,unit="cm")
   detach(result)
-  return(theplot)
-}
+  hg_vis<-list(ggplot=theplot,
+               ggsave_parameters=list(height=12,
+                                      width=plotwidth,
+                                      unit="cm")
+               )
+  class(hg_vis)<-"hypegrammar_visualisation"
+  return(hg_vis)
+
+  }
 
 
 
@@ -149,7 +157,11 @@ barchart_average<-function(result){
   plotwidth<-5+(number_of_bars*1.5)
   # map_to_file(theplot,filename,height=12,width=plotwidth,unit="cm")
   detach(result)
-  return(theplot)
+  hg_vis<-list(ggplot=theplot,
+               ggsave_parameters=list(height=12,width=plotwidth,unit="cm")
+               )
+  class(hg_vis)<-"hypegrammar_visualisation"
+  return(hg_vis)
 }
 
 
@@ -176,8 +188,14 @@ barchart_percent<-function(result){
   plotwidth<-5+(number_of_bars*1.5)
   # map_to_file(theplot,filename,height=12,width=plotwidth,unit="cm")
   detach(result)
-  return(theplot)
-}
+  hg_vis<-list(ggplot=theplot,
+               ggsave_parameters=list(height=12,
+                                      width=plotwidth,
+                                      unit="cm")
+               )
+  class(hg_vis)<-"hypegrammar_visualisation"
+  return(hg_vis)
+  }
 
 
 
@@ -255,6 +273,12 @@ visualisation_barchart_percent_nogroups_FS<-function(data){
                          plot_bars(data), ncol=3,widths=smallFSplotwdith*c(0.4,0.1,0.5))
   detach(result)
   # ggsave(file=filename, plot=fullplot,width =smallFSplotwdith, height=heightperbarcm*length(unique(data$dependent.var.value)),units = "cm",device = "jpg",limitsize = F)
+
+  hg_vis<-list(ggplot=fullplot,
+               ggsave_parameters=list(width =smallFSplotwdith, height=heightperbarcm*length(unique(data$dependent.var.value)),units = "cm",device = "jpg",limitsize = F)
+               )
+  class(hg_vis)<-"hypegrammar_visualisation"
+  return(hg_vis)
   return(fullplot)
 }
 

@@ -47,12 +47,12 @@ devtools::install_github("mabafaba/hypegrammaR",build_opts = c())
 
 Load the hypegrammaR package:
 ```{r, eval=T,echo=T,message=F,warning=FALSE,error=F}
-library(hypegrammaR)
+# library(hypegrammaR)
 ```
 
 Load the data:
 ```{r load, eval=T}
-mydata<-read.csv("../tests/testthat/data.csv")
+# mydata<-read.csv("../tests/testthat/data.csv")
 ```
 
 ### Run the analysis
@@ -68,16 +68,7 @@ Identify your analysis parameters.
 
 
 Now we can use the function `analyse_indicator` with the above as parameters:
-```{r,warning=F}
-result<-analyse_indicator(
-                  data = mydata,
-                  dependent.var = "nutrition_need",
-                  independent.var = "region",
-                  hypothesis.type = "group_difference",
-                  independent.var.type = "categorical",
-                  dependent.var.type="numerical")
 
-```
 
 You can find out what exactly you can/should enter for these parameters by running `?analyse_indicator`, which will open the help page for the function (this works for any function)
 
@@ -96,21 +87,21 @@ The `analyse_indicator` function gives you a number of things:
 
 First, a message telling you how it went:
 ```{r}
-result$message
+# result$message
 ```
 That's what we want to see. If something went wrong, it should tell you here what happened.
 
 #### meta information
 
 ```{r}
-result$parameters
+# result$parameters
 ```
 As you can see, it remembers what your input parameters were. It also added a standardised name of the analysis case.
 
 #### The summary statistic
 
 ```{r}
-result$summary.statistic
+# result$summary.statistic
 ```
 
 In this case, "numbers" are averages, because the input variable was numerical. `min` and `max` is the corresponding confidence interval. `dependent.var.value` give the corresponding variable values if they are categorical (`NA` otherwise.)
@@ -120,7 +111,7 @@ The summary statistic will _always_ be organised with exactly these columns, no 
 
 Next, there's information on which (if any) hypothesis test was used and the p value:
 ```{r}
-result$hypothesis.test
+# result$hypothesis.test
 
 ```
 ou'll probably be most interested in the p-value and the type of test that was used.
@@ -130,7 +121,7 @@ ou'll probably be most interested in the p-value and the type of test that was u
 Finally, it returned a _plot function_ that is appropriate to visualise the type of analysis that was performed:
 
 ```{r, warning=F}
-myvisualisation<-map_to_visualisation(result)
+# myvisualisation<-map_to_visualisation(result)
 
 
 
@@ -138,7 +129,7 @@ myvisualisation<-map_to_visualisation(result)
 
 For advanced users (that know ggplot): The visualisation function returns a ggplot object, so you can add/overwrite ggplot stuff; for example:
 ```{r,warning=F}
-myvisualisation+coord_polar()
+# myvisualisation+coord_polar()
 
 ```
 
@@ -146,8 +137,8 @@ myvisualisation+coord_polar()
 To save/export any results, you can use the generic `map_to_file` function. For example:
 
 ```{r,eval=F}
-map_to_file(results$summary.statistics,"summary_stat.csv")
-map_to_file(myvisualisation,"barchart.jpg",width="5",height="5")
+# map_to_file(results$summary.statistics,"summary_stat.csv")
+# map_to_file(myvisualisation,"barchart.jpg",width="5",height="5")
 
 ```
 You will find the files in your current working directory (which you can find out with `getwd()`)
@@ -155,46 +146,46 @@ You will find the files in your current working directory (which you can find ou
 ## Stratified Samples
 For the weighting, we'll use IMPACT's `surveyweights` package. It was installed when you installed `hypegrammaR`. Load it:
 ```{r}
-library(surveyweights)
+# library(surveyweights)
 ```
 For stratified samples, we need to provide a _sampling frame_.
 ```{r}
-mysamplingframe<-read.csv("../tests/testthat/test_samplingframe.csv")
+# mysamplingframe<-read.csv("../tests/testthat/test_samplingframe.csv")
 
 ```
 The sampling frame must have exactly one row per stratum; one column for the strata names, one column for the population numbers. Our example data frame looks like this:
 
 ```{r}
-head(mysamplingframe)
+# head(mysamplingframe)
 
 ```
 The names must match _exactly_ the values in a column of the data; in this case it is `mydata$stratification`.
 
 ```{r}
-head(mydata$stratification)
+# head(mydata$stratification)
 ```
 Now we can create a "weighter" object:
 ```{r}
-myweighter<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
-                                             data.stratum.column = "stratification",
-                                             sampling.frame.population.column = "population",
-                                             sampling.frame.stratum.column = "strata.names")
+# myweighter<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
+#                                              data.stratum.column = "stratification",
+#                                              sampling.frame.population.column = "population",
+#                                              sampling.frame.stratum.column = "strata.names")
 ```
 
 Now we can use `analyse_indicator` just like before, but pass it the weighter we just created, so the weighting will be applied (pay attention to the last argument):
 
 ```{r}
-result<-analyse_indicator(
-                  data = mydata,
-                  dependent.var = "nutrition_need",
-                  independent.var = "region",
-                  hypothesis.type = "group_difference",
-                  independent.var.type = "categorical",
-                  dependent.var.type="numerical",
-                  weighting = myweighter)
+# result<-analyse_indicator(
+#                   data = mydata,
+#                   dependent.var = "nutrition_need",
+#                   independent.var = "region",
+#                   hypothesis.type = "group_difference",
+#                   independent.var.type = "categorical",
+#                   dependent.var.type="numerical",
+#                   weighting = myweighter)
 
 
-result$summary.statistic
+# result$summary.statistic
 
 ```
 
@@ -208,15 +199,15 @@ If the clusters don't need to be weighted (in addition to the strata), all you n
 
 ```{r}
 
-result<-analyse_indicator(
-                  data = mydata,
-                  dependent.var = "nutrition_need",
-                  independent.var = "region",
-                  hypothesis.type = "group_difference",
-                  independent.var.type = "categorical",
-                  dependent.var.type="numerical",
-                  weighting = myweighter,
-                  cluster.variable.name = "village")
+# result<-analyse_indicator(
+#                   data = mydata,
+#                   dependent.var = "nutrition_need",
+#                   independent.var = "region",
+#                   hypothesis.type = "group_difference",
+#                   independent.var.type = "categorical",
+#                   dependent.var.type="numerical",
+#                   weighting = myweighter,
+#                   cluster.variable.name = "village")
 
 
 ```
@@ -227,25 +218,25 @@ If the clustering comes with it's own weights (if records in different clusters 
 
 ```{r,eval=F}
 
-samplingframe2<-read.csv("../tests/testthat/test_samplingframe2.csv")
+# samplingframe2<-read.csv("../tests/testthat/test_samplingframe2.csv")
+# 
+# myweighting_cluster<-weighting_fun_from_samplingframe(samplingframe2,
+#                                                     data.stratum.column = "village",
+#                                                     sampling.frame.population.column = "populations",
+#                                                     sampling.frame.stratum.column = "village.name")
+# 
 
-myweighting_cluster<-weighting_fun_from_samplingframe(samplingframe2,
-                                                    data.stratum.column = "village",
-                                                    sampling.frame.population.column = "populations",
-                                                    sampling.frame.stratum.column = "village.name")
+# combined_weighting<-combine_weighting_functions(myweighing,myweighting_cluster)
 
-
-combined_weighting<-combine_weighting_functions(myweighing,myweighting_cluster)
-
-result<-analyse_indicator(
-                  data = mydata,
-                  dependent.var = "nutrition_need",
-                  independent.var = "region",
-                  hypothesis.type = "group_difference",
-                  independent.var.type = "categorical",
-                  dependent.var.type="numerical",
-                  weighting = combined_weighting,
-                  cluster.variable.name = "village")
+# result<-analyse_indicator(
+#                   data = mydata,
+#                   dependent.var = "nutrition_need",
+#                   independent.var = "region",
+#                   hypothesis.type = "group_difference",
+#                   independent.var.type = "categorical",
+#                   dependent.var.type="numerical",
+#                   weighting = combined_weighting,
+#                   cluster.variable.name = "village")
 
 
 
@@ -263,22 +254,22 @@ If we further load the questionnaire, we can do some extra cool stuff:
 ### Loading the questionnaire
 ```{r}
 require("koboquest")
-questionnaire<- load_questionnaire(mydata,
-                              questions.file = "../tests/testthat/kobo questions.csv",
-                              choices.file = "../tests/testthat/kobo choices.csv")
+# questionnaire<- load_questionnaire(mydata,
+#                               questions.file = "../tests/testthat/kobo questions.csv",
+#                               choices.file = "../tests/testthat/kobo choices.csv")
 
 
 
-result<-analyse_indicator(mydata,
-                  dependent.var = "accesstomarket",
-                  independent.var = "region",
-                  dependent.var.type = "categorical",
-                  independent.var.type = "categorical",
-                  hypothesis.type = "group_difference",
-                  weighting=myweighter)
+# result<-analyse_indicator(mydata,
+#                   dependent.var = "accesstomarket",
+#                   independent.var = "region",
+#                   dependent.var.type = "categorical",
+#                   independent.var.type = "categorical",
+#                   hypothesis.type = "group_difference",
+#                   weighting=myweighter)
 
 
-vis<-map_to_visualisation(result)
+# vis<-map_to_visualisation(result)
 
 
 ```

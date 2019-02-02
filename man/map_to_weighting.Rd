@@ -4,18 +4,20 @@
 \alias{map_to_weighting}
 \title{creates a weighting function from a sampling frame}
 \usage{
-map_to_weighting(...)
+map_to_weighting(sampling.frame, data.stratum.column,
+  sampling.frame.population.column = "population",
+  sampling.frame.stratum.column = "stratum", data = NULL)
 }
 \arguments{
-\item{sampling.frame.file}{data frame containing the sampling frame. should contain columns "stratum" and "population", otherwise column names must be specified.}
+\item{data.stratum.column}{data column name that holds the record's strata names}
 
 \item{sampling.frame.population.column}{sampling frame name of column holding population counts. defaults to "population"}
 
 \item{sampling.frame.stratum.column}{sampling frame name of column holding stratum names. defaults to "stratum". Stratum names must match exactly values in:}
 
-\item{data.stratum.column}{data column name that holds the record's strata names}
-
 \item{data}{optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.}
+
+\item{sampling.frame.file}{data frame containing the sampling frame. should contain columns "stratum" and "population", otherwise column names must be specified.}
 }
 \value{
 returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.

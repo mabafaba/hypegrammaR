@@ -32,100 +32,6 @@ map_to_design <- function(data,
 
 
 
-#' Map to case
-#'
-#' creates a string that other functions can use to know what analysis case they are dealing with
-#'
-#' @param data missing documentation
-#' @param hypothesis.type
-#' @param dependent.var.type
-#' @param independent.var.type
-#' @return a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
-#' @examples map_to_case()
-#' @export
-map_to_case<-function(hypothesis.type,
-                        dependent.var.type=NULL,
-                        independent.var.type=NULL
-                        ){
-
-    if(!(independent.var.type %in% c("numerical","categorical"))){
-      stop("dependent.var.type must be either 'categorical', 'numerical' or left empty (guessing from data)")
-    }
-
-
-    if(!(dependent.var.type %in% c("numerical","categorical"))){
-      stop(  "dependent.var.type must be either 'categorical', 'numerical' or left empty (guessing from data)")
-    }
-
-  paired=NULL
-  variable.type <- paste0(dependent.var.type, "_",
-                          independent.var.type)
-  case <- paste(c("CASE",hypothesis.type,variable.type, paired), collapse = "_")
-  class(case)<-"analysis_case"
-  return(case)
-}
-
-
-
-
-
-
-
-
-
-#' Guess the  case
-#'
-#' creates a string that other functions can use to know what analysis case they are dealing with
-#'
-#' @param data missing documentation
-#' @param hypothesis.type
-#' @param dependent.var
-#' @param independent.var
-#' @param paired
-#' @return a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
-#' @examples map_to_design(data,cluster_variable_name="cluster_id")
-#' @export
-guess_to_case<-function(data,
-                      hypothesis.type,
-                      dependent.var,
-                      independent.var = NULL,
-                      dependent.var.type=NULL,
-                      independent.var.type=NULL,
-                      paired = NULL){
-
-  if(!is.null(independent.var.type)){
-    if(!(independent.var.type %in% c("numerical","categorical"))){
-      stop("dependent.var.type must be either 'categorical', 'numerical' or left empty (guessing from data)")
-    }
-  }
-
-  if(!is.null(dependent.var.type)){
-    if(!(dependent.var.type %in% c("numerical","categorical"))){
-      stop(  "dependent.var.type must be either 'categorical', 'numerical' or left empty (guessing from data)")
-    }
-  }
-
-  guess_type<-function(x){
-    if(length(which(is.na(x)))==length(which(is.na(as.numeric(x))))){
-      return("numerical")
-    }else{
-      return("categorical")
-    }
-  }
-  if(is.null(dependent.var.type)){dependent.var.type<-guess_type(data[[dependent.var]])}
-  if(is.null(independent.var.type)){independent.var.type<-guess_type(data[[independent.var]])}
-  variable.type <- paste0(dependent.var.type, "_",
-                          independent.var.type)
-  case <- paste(c("CASE",hypothesis.type,variable.type, paired), collapse = "_")
-  class(case)<-"analysis_case"
-  return(case)
-}
-
-
-
-
-
-
 list_all_cases<-function(implemented_only=F){
 
   if(!implemented_only){
@@ -158,44 +64,6 @@ case_not_implemented_error<-function(case,situation){
 }
 
 
-#' Map to summary statistic
-#'
-#' selects an appropriate summary statistic function based on the analysis case
-#'
-#' @param case a string uniquely identifying the analysis case. output of \link{\code{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
-#' @return a _function_ that computes the relevant summary statistic
-#' @examples map_to_summary_statistic("group_difference_categorical_categorical")
-#' @examples my_case<- map_to_case( ... )
-#' my_sumstat <- map_to_summary_statistic(my_case)
-#' my_sumstat( ... )
-#' @export
-map_to_summary_statistic <- function(case) {
-  # sanitise input:
-  if(!is_valid_case_string(case)){stop("input to map_to_summary_statistic must be a valid analysis case")}
-
-  # define summary functions for all cases:
-  summary_functions<-list()
-
-  # DIRECT REPORTING
-  # dependent is numerical:
-  summary_functions$CASE_direct_reporting_numerical_ <- confidence_intervals_mean
-  summary_functions$CASE_direct_reporting_numerical_categorical<- confidence_intervals_mean_groups
-  # dependent is categorical:
-  summary_functions$CASE_direct_reporting_categorical_ <- percent_with_confints
-  summary_functions$CASE_direct_reporting_categorical_categorical <- percent_with_confints_groups
-
-  # GROUP DIFFERENCE
-  # dependent is categorical:
-  summary_functions$CASE_group_difference_categorical_categorical <- percent_with_confints_groups
-  summary_functions$CASE_group_difference_numerical_categorical <- confidence_intervals_mean_groups
-
-
-
-  # return corresponding summary function:
-
-  return(summary_functions[[case]])
-
-}
 
 
 
@@ -245,7 +113,7 @@ map_to_hypothesis_test <- function(case) {
 #' my_ggplot_obj<-my_vis_fun( ... )
 #' my_ggplot_obj # plots the object
 #' @export
-map_to_visualisation <- function(result,questionnaire=NULL) {
+map_to_visualisation <- function(result) {
 
   invalid_input_message<-"'result' parameter not a valid hypegrammaR result object."
 

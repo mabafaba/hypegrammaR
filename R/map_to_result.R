@@ -8,16 +8,30 @@
 #' @param case the analysis case, created with map_to_case().
 #' @param cluster.variable.name if cluster sampling, provide the name of the variable in the dataset that denotes the cluster
 #' @param weighting A function that generates weights from a dataframe. You can create it with surveyweights::weighting_fun_from_samplingframe()
-#' @return A list with 1. the summary.statistic and 2. the hypothesis.test result
+#' @param questionnaire output from load_questionnaire()
+#' @details
+#'
+#' - takes as parameters outputs from
+#'     - load_data()
+#'     - map_to_case()
+#'     - load_samplingframe() %>% map_to_weighting()
+#'     - load_questionnaire()
+#' - output can be processed by:
+#'     - map_to_labeled()
+#'     - map_to_visualisation()
+#'     - map_to_table()
+#'     - map_to_visualisation_heatmap()
+#'
+#' @return A list with the summary.statistic the hypothesis.test result
 #' @examples
-#' plot_crayons()
 #' @export
 map_to_result<-function(data,
-                            dependent.var,
-                            independent.var = NULL,
-                            case,
-                            cluster.variable.name=NULL,
-                            weighting=function(df){rep(1,nrow(df))}){
+                        dependent.var,
+                        independent.var = NULL,
+                        case,
+                        cluster.variable.name=NULL,
+                        weighting=function(df){rep(1,nrow(df))},
+                        questionnaire=NULL){
   options(survey.lonely.psu = "average")
 
 
@@ -65,23 +79,22 @@ map_to_result<-function(data,
   }
 
 
-  # map from case to appropriate summary statistic, hypothesis test and visualisation:
-
-
-
   design <- map_to_design(data = data,
                           weighting_function = weighting,
-                          cluster_variable_name = cluster.variable.name
-  )
+                          cluster_variable_name = cluster.variable.name)
 
-  summarise.result<- map_to_summary_statistic(case)
+
+
   test.hypothesis <- map_to_hypothesis_test(case)
+  hypothesis.test.result<- test.hypothesis(dependent.var,independent.var, design)
 
-  # apply the summary statistic, hypothesis test to the given data and survey design:
-  summary.result  <- summarise.result(dependent.var,independent.var, design)
+  summary.result  <- map_to_summary_statistic(design = design,
+                                              dependent.var = dependent.var,
+                                              independent.var = independent.var,
+                                              case = case,
+                                              questionnaire = questionnaire)
   # do hypothesis test:
 
-  hypothesis.test.result<- test.hypothesis(dependent.var,independent.var, design)
 
   # add results to the visualisation:
   # visualisation<-visualisation+ggplot()...

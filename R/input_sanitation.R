@@ -43,8 +43,8 @@ sanitise_data<-function(data,
                         case){
 
 
-  dep_var_name_in_data_headers<- grep(paste0("^",dependent.var),colnames(data),value = T)
-  indep_var_name_in_data_headers<- grep(paste0("^",dependent.var),colnames(data),value = T)
+  dep_var_name_in_data_headers<- grep(paste0("^",dependent.var,"$"),colnames(data),value = T)
+  indep_var_name_in_data_headers<- grep(paste0("^",dependent.var,"$"),colnames(data),value = T)
   if(length(dep_var_name_in_data_headers)==0){
     stop("dependent.var not found in data")
   }

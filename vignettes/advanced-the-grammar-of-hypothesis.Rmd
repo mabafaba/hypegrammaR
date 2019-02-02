@@ -25,33 +25,10 @@ mydata<-read.csv("../tests/testthat/data.csv")
 define your survey design. Since it's a simple random design, we just pass the data and that's all. Now R knows that we're doing simple random sampling, so no need to bother with cluster/stratification stuff.
 
 ```{r}
-mydesign<-map_to_design(mydata)
+# mydesign<-map_to_design(mydata)
 
 # hypegrammaR:::barchart_with_error_bars(hypothesis.test.results = result$hypothesis.test,
 #                                        summary.statistics = result$summary.statistic)
 
 ```
-
-Say my research question is whether there is a difference in nutrition need between different regions.
-this means I want to get
-
-
-The function `analyse_indicator` does the heavy lifting. It wants to know:
-  - the general case of analysis that you want to do. Currently available are
-      - `direct_reporting`: simply calculate the summary statistic (categorical or numerical)
-      - `group_difference`: looking for differences between groups (categorical or numerical)
-      
-```{r}
-
-case<-map_to_case(data,
-                  dependent.var = "nutrition_need",
-                  independent.var = "region",hypothesis.type = "group_difference")
-
-
-
-
-
-```
-### Analyse Indicator
-
 

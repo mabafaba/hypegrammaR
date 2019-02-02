@@ -49,13 +49,15 @@ How do needs differ across regions? We will look at this by sector.
 
 case<-map_to_case(hypothesis.type = "group_difference",
                   dependent.var.type = "numerical",
-                  independent.var = "categorical")
+                  independent.var.type = "categorical")
 
 
 result<-map_to_result(assessment_data,
                       dependent.var = "health_need",
                       independent.var = "region",
-                      case=case)
+                      case=case,
+                      weighting = weights,
+                      questionnaire = questionnaire)
 
 
 ```
@@ -63,8 +65,7 @@ result<-map_to_result(assessment_data,
 
 ```{r,warning=F,echo=F}
 
-result %>% map_to_labeled(questionnaire) %>% map_to_visualisation
-
+vis<-result %>% map_to_labeled(questionnaire) %>% map_to_visualisation
 
 ```
 ```{r,include=F}
@@ -75,16 +76,51 @@ label_pvalue <- function(x, digits = 3){
 
 ```
 It appears that the health need differ significantly (p `r label_pvalue(result$hypothesis.test$result$p.value)`) across regions. 
-We can see that less clearly in an angular chart:
+We can see that less clearly in a heatmap:
 
-```{r,echo=F}
-map_to_visualisation_heatmap(result)
+```{r,warning=F,echo=F,message=F}
+vis<-result %>% map_to_labeled(questionnaire) %>% map_to_visualisation_heatmap
+
 ```
 
 And of course completely unreadable would be a table, but hey:
-```{r,echo=F,asis=T}
-result %>% map_to_table
+```{r,echo=F,asis=T,warning=FALSE}
+result %>% map_to_labeled(questionnaire) %>% map_to_table
 ```
+
+## Education
+```{r,echo=F,asis=T,warning=FALSE}
+case<-map_to_case()
+boysschoollastyear
+girlsschoollastyear
+boysschoolnow
+questionnaire$question_type("boysschoolnow")
+cbind(names(assessment_data),sapply(names(assessment_data),questionnaire$question_type))
+questionnaire$question_get_question_label("")
+sapply(names(assessment_data),questionnaire$question_is_select_multiple)
+
+edu1<-map_to_result()
+
+```
+```{r}
+
+map_to_result(assessment_data,"hhexperienced",
+              case=map_to_case('direct_reporting','categorical'),
+              questionnaire = questionnaire) %>% map_to_visualisation
+
+design<-map_to_design(assessment_data,weighting_function = weights)
+hypegrammaR:::percent_with_confints_select_multiple('hhexperienced',design)
+
+grep("hhexperienced.activeconflictviolence",names(assessment_data),value = T,fixed = T)
+
+
+```
+
+
+
+
+
+
 
 
 

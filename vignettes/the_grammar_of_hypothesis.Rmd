@@ -70,6 +70,7 @@ sampling_frame<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
 Finally the questionnaire, which depends on the question and the choices sheet as a csv.
 
 ```{r}
+
 questionnaire<-load_questionnaire(data = assessment_data,
                                              questions.file = "../tests/testthat/kobo questions.csv",
                                              choices.file = "../tests/testthat/kobo choices.csv",
@@ -79,7 +80,7 @@ questionnaire<-load_questionnaire(data = assessment_data,
 ```
 
 
-### _Map_ to weighting
+#### _Map_ to weighting
 ```{r}
 
 weighting <- map_to_weighting( sampling.frame = sampling_frame,
@@ -120,6 +121,7 @@ result<-map_to_result(data = assessment_data,
               weighting = weighting)
 ```
 
+## Add labels
 
 ## _Map_ to usable outputs
 ### Chart
@@ -128,7 +130,6 @@ result<-map_to_result(data = assessment_data,
 chart<-map_to_visualisation(result)
 heatmap<-map_to_visualisation_heatmap(result)
 chart
-heatmap
 ```
 ### gimme Labels!
 ```{r,warning=FALSE}
