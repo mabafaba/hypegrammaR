@@ -36,6 +36,13 @@ Any analysis with HypegrammaR follows the same structure:
 
 ## Example
 
+### Once (ever per machine):
+```{r,eval=F}
+remotes::install_github('mabafaba/hypegrammaR',build_opts = c())
+remotes::install_github('mabafaba/surveyweights',build_opts = c())
+remotes::install_github('mabafaba/koboquest',build_opts=c())
+
+```
 ### Once per Assessment
 
 #### Load the hypegrammaR package
