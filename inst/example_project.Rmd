@@ -68,6 +68,7 @@ result<-map_to_result(assessment_data,
 vis<-result %>% map_to_labeled(questionnaire) %>% map_to_visualisation
 
 ```
+
 ```{r,include=F}
 label_pvalue <- function(x, digits = 3){
   if (x < 10^-digits) return(paste('<', 10^-digits))
@@ -80,7 +81,7 @@ We can see that less clearly in a heatmap:
 
 ```{r,warning=F,echo=F,message=F}
 vis<-result %>% map_to_labeled(questionnaire) %>% map_to_visualisation_heatmap
-
+vis
 ```
 
 And of course completely unreadable would be a table, but hey:
@@ -88,20 +89,14 @@ And of course completely unreadable would be a table, but hey:
 result %>% map_to_labeled(questionnaire) %>% map_to_table
 ```
 
-## Education
+## Experienced
 ```{r,echo=F,asis=T,warning=FALSE}
-case<-map_to_case()
-boysschoollastyear
-girlsschoollastyear
-boysschoolnow
-questionnaire$question_type("boysschoolnow")
-cbind(names(assessment_data),sapply(names(assessment_data),questionnaire$question_type))
-questionnaire$question_get_question_label("")
-sapply(names(assessment_data),questionnaire$question_is_select_multiple)
+case<-map_to_case(hypothesis.type = 'direct_reporting',dependent.var.type = 'categorical',independent.var.type = 'categorical')
 
-edu1<-map_to_result()
+edu1<-map_to_result(assessment_data,dependent.var = "hhexperienced",independent.var = 'region',case = case)
 
 ```
+
 ```{r}
 
 map_to_result(assessment_data,"hhexperienced",
