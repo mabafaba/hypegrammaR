@@ -87,7 +87,7 @@ grouped_barchart_percent<-function(result){
   if(is.null(result$summary.statistic)){return(NULL)}
   if(length(result$summary.statistic)==0){return(NULL)}
   if(nrow(result$summary.statistic)==0){return(NULL)}
-  if(length(unique(summary.statistic$dependent.var.value))>12){
+  if(length(unique(result$summary.statistic$dependent.var.value))>12){
     warning("I don't do grouped barcharts with more than 12 responses. that's madness! there isn't even 12 colours!")
     return(NULL)}
   percent_formats<-function(x,digits=0){return(paste0(round(x*100,digits),"%"))}

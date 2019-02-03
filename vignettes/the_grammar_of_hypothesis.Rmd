@@ -121,9 +121,57 @@ result<-map_to_result(data = assessment_data,
               weighting = weighting)
 ```
 
+### See the results
+
+The `map_to_result` function gives you a number of things:
+
+- A log message
+- Meta information: a log of your inputs, what analysis case was used etc.
+- The summary statistics (e.g. averages, percentages, ...)
+- The hypothesis test results
+- A visualisation
+
+#### The log message
+
+First, a message telling you how it went:
+```{r}
+# result$message
+```
+That's what we want to see. If something went wrong, it should tell you here what happened.
+
+#### meta information
+
+```{r}
+# result$parameters
+```
+As you can see, it remembers what your input parameters were. It also added a standardised name of the analysis case.
+
+#### The summary statistic
+
+```{r}
+# result$summary.statistic
+```
+
+In this case, "numbers" are averages, because the input variable was numerical. `min` and `max` is the corresponding confidence interval. `dependent.var.value` give the corresponding variable values if they are categorical (`NA` otherwise.)
+The summary statistic will _always_ be organised with exactly these columns, no matter what analysis you did. This is so that if you add a new visualisations or ouput format, it will work for any output from this function.
+
+#### The hypothesis test
+
+Next, there's information on which (if any) hypothesis test was used and the p value:
+```{r}
+# result$hypothesis.test
+
+```
+You'll probably be most interested in the p-value and the type of test that was used.
+
+
+
+
+
 ## Add labels
 
 ## _Map_ to usable outputs
+
 ### Chart
 ```{r,warning=FALSE}
 
@@ -131,6 +179,13 @@ chart<-map_to_visualisation(result)
 heatmap<-map_to_visualisation_heatmap(result)
 chart
 ```
+
+For advanced users (that know ggplot): The visualisation function returns a ggplot object, so you can add/overwrite ggplot stuff; for example:
+```{r,warning=F}
+# myvisualisation+coord_polar()
+
+```
+
 ### gimme Labels!
 ```{r,warning=FALSE}
 result %>% map_to_labeled(questionnaire) -> result_labeled
