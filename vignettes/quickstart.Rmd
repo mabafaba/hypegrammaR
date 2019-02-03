@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
 The hypegrammaR package implements the [IMPACT quantitative data analysis guidelines](http://example.com). While this guide works on its own, all of this will make a lot more sense if you read those first.
 
 ## What you need:
-So you want to analyse some data. cool.
-get all your stuff as csv files first. All your stuff means:
+get all your files in csv format first:
 
 ### 1. The simplest case (simple random sampling, no labels, no skiplogic, no special handling of select_multiple questions)
   - your data as a csv file
@@ -33,8 +32,54 @@ get all your stuff as csv files first. All your stuff means:
   - your kobo questionnaire choices sheet if you have it
 
 
-## Simplest Case
-Let's assume for now that we have nothing but the data from a simple random survey design (not weighted, no cluster sampling..) .
+
+> _**IMPORTANT NOTE:**_ your data and questionnaire must adhere to the standard xml style output from kobo otherwise this will either not work or produce wrong results.
+>
+> - column headers unchanged
+> - questionnaire names unchanged
+> - xml values (NOT labeled)
+> - select_multiple questions have one column with all responses concatenated (separated by blank space " "), and one column for each response named [question name].[choice name]
+
+## Preparation
+#### Install the hypegrammaR package
+Run this only once:
+```{r,eval=F}
+remotes::install_github("mabafaba/hypegrammaR")
+```
+
+#### Load the hypegrammaR package
+```{r,warning=FALSE,message=FALSE}
+library(hypegrammaR)
+
+```
+
+#### Load your files
+
+All input files are expected as csv files.
+
+Each input we usually expect with an assessment has it's own function to load it. They check that the format is in line with what is expected, make sure they play well with each other and prepare the functionality they are used for.
+
+First the data. A csv file with data in standard Kobo format.
+```{r}
+assessment_data<-load_data(file = "../tests/testthat/data.csv")
+```
+
+Then a sampling frame. A csv file with one column with strata names, one column with population numbers. The strata names must match exactly some values in the data. We must tell the loading function which column is what in the sampling frame.
+```{r}
+sampling_frame<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+```
+
+Finally the questionnaire, which depends on the question and the choices sheet as a csv.
+
+```{r}
+
+questionnaire<-load_questionnaire(data = assessment_data,
+                                             questions.file = "../tests/testthat/kobo questions.csv",
+                                             choices.file = "../tests/testthat/kobo choices.csv",
+                                  choices.label.column.to.use = "label::English"
+                                             )
+
+```
 
 
 ### Preparation

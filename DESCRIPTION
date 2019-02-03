@@ -18,8 +18,8 @@ Imports:
     data.table,
     surveyweights
 Remotes:
-    mabafaba/koboquest,
-    mabafaba/surveyweightscd
+    github::mabafaba/koboquest,
+    github::mabafaba/surveyweights
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
