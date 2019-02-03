@@ -8,7 +8,8 @@ Depends:
     survey,
     magrittr,
     ggplot2,
-    ggthemes
+    ggthemes,
+    tidyr
 Imports:
     dplyr,
     reshape2,

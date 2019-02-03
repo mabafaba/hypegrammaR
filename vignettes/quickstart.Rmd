@@ -52,7 +52,7 @@ Load the hypegrammaR package:
 
 Load the data:
 ```{r load, eval=T}
-# mydata<-read.csv("../tests/testthat/data.csv")
+mydata<-read.csv("../tests/testthat/data.csv")
 ```
 
 ### Run the analysis

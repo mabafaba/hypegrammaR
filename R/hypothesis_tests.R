@@ -1,4 +1,5 @@
 
+library('survey')
 hypothesis_test_chisquared <- function(dependent.var,
                                   independent.var,
                                   design){
@@ -6,13 +7,26 @@ hypothesis_test_chisquared <- function(dependent.var,
 
 
   formula_string<-paste0("~",independent.var, "+", dependent.var)
-  chisq <- svychisq (formula(formula_string), design, na.rm = TRUE)
-  results<-list()
-  results$results <- list(F=chisq$statistic, p.value=chisq$p.value %>% unname)
-  results$parameters <- chisq$parameter %>% as.list
-  results$name<-chisq$method
+message<-NULL
+results<- tryCatch(
+    expr = {
+
+      chisq <-svychisq (formula(formula_string), design, na.rm = TRUE)
+      results<-list()
+      results$results <- list(F=chisq$statistic, p.value=chisq$p.value %>% unname)
+      results$parameters <- chisq$parameter %>% as.list
+      results$name<-chisq$method
+      },
+    error = function(e) {
+      message<-e$message
+      hypothesis_test_empty(message=e$message)
+    }
+  )
+
+
   return(results)
-}
+
+  }
 
 ######## ONE SAMPLE Z tEST
 # hypothesis_test_one_sample_z_num <- function(data.dependent.var, crit, design, data = data) {
@@ -23,11 +37,12 @@ hypothesis_test_chisquared <- function(dependent.var,
 
 hypothesis_test_empty <- function(dependent.var = NULL,
                                        independent.var = NULL,
-                                       design = NULL, ...){
+                                       design = NULL, message="", ...){
   results<-list()
   results$result <- c()
   results$parameters <- c()
   results$name<-"No Hypothesis test"
+  results$message<-paste0('No hypothesis test performed: ',message)
   return(results)
 }
 

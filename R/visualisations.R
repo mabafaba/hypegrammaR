@@ -87,7 +87,6 @@ grouped_barchart_percent<-function(result){
   if(is.null(result$summary.statistic)){return(NULL)}
   if(length(result$summary.statistic)==0){return(NULL)}
   if(nrow(result$summary.statistic)==0){return(NULL)}
-  attach(result)
   if(length(unique(summary.statistic$dependent.var.value))>12){
     warning("I don't do grouped barcharts with more than 12 responses. that's madness! there isn't even 12 colours!")
     return(NULL)}
@@ -96,7 +95,7 @@ grouped_barchart_percent<-function(result){
 
 
 
-  theplot<-ggplot(summary.statistic,aes(x=independent.var.value,y=numbers,fill=dependent.var.value))+geom_bar(stat = "identity",position='dodge')+theme_tufte()+
+  theplot<-ggplot(result$summary.statistic,aes(x=independent.var.value,y=numbers,fill=dependent.var.value))+geom_bar(stat = "identity",position='dodge')+theme_tufte()+
     xlab(NULL)+ylab(NULL)+
     theme(text=element_text(family="Arial Narrow")
           # axis.title.x=element_text(summary.statistic$dependent.var.value"),
@@ -118,7 +117,7 @@ grouped_barchart_percent<-function(result){
   number_of_bars<-(length(unique(summary.statistic$dependent.var.value))*length(unique(summary.statistic$independent.var.value)))
   plotwidth<-5+number_of_bars*1.5
   # map_to_file(theplot,filename,height=12,width=plotwidth,unit="cm")
-  detach(result)
+
   hg_vis<-list(ggplot=theplot,
                ggsave_parameters=list(height=12,
                                       width=plotwidth,
@@ -133,7 +132,7 @@ grouped_barchart_percent<-function(result){
 
 
 barchart_average<-function(result){
-  attach(result)
+  summary.statistic<-result$summary.statistic
   summary.statistic$min[summary.statistic$min<0]<-0
   theplot<-ggplot(summary.statistic,aes(x=independent.var.value,y=numbers),fill=reach_style_color_darkgrey(1))+geom_bar(stat = "identity")+theme_tufte()+
     xlab("")+ylab(summary.statistic$dependent.var[1])+
@@ -156,7 +155,6 @@ barchart_average<-function(result){
   number_of_bars<-(length(unique(summary.statistic$independent.var.value)))
   plotwidth<-5+(number_of_bars*1.5)
   # map_to_file(theplot,filename,height=12,width=plotwidth,unit="cm")
-  detach(result)
   hg_vis<-list(ggplot=theplot,
                ggsave_parameters=list(height=12,width=plotwidth,unit="cm")
                )
@@ -166,7 +164,7 @@ barchart_average<-function(result){
 
 
 barchart_percent<-function(result){
-  attach(result)
+  summary.statistic<-result$summary.statistic
   theplot<-ggplot(summary.statistic,aes(x=dependent.var.value,y=numbers),fill=reach_style_color_darkgrey(1))+geom_bar(stat = "identity")+theme_tufte()+
     xlab("")+ylab(summary.statistic$dependent.var[1])+
     theme(text=element_text(family="Arial Narrow"),
@@ -187,7 +185,6 @@ barchart_percent<-function(result){
   number_of_bars<-(length(unique(summary.statistic$dependent.var.value)))
   plotwidth<-5+(number_of_bars*1.5)
   # map_to_file(theplot,filename,height=12,width=plotwidth,unit="cm")
-  detach(result)
   hg_vis<-list(ggplot=theplot,
                ggsave_parameters=list(height=12,
                                       width=plotwidth,
@@ -271,8 +268,8 @@ visualisation_barchart_percent_nogroups_FS<-function(data){
   fullplot<-grid.arrange(plot_labels(data),
                          plot_numbers(data),
                          plot_bars(data), ncol=3,widths=smallFSplotwdith*c(0.4,0.1,0.5))
-  detach(result)
-  # ggsave(file=filename, plot=fullplot,width =smallFSplotwdith, height=heightperbarcm*length(unique(data$dependent.var.value)),units = "cm",device = "jpg",limitsize = F)
+
+    # ggsave(file=filename, plot=fullplot,width =smallFSplotwdith, height=heightperbarcm*length(unique(data$dependent.var.value)),units = "cm",device = "jpg",limitsize = F)
 
   hg_vis<-list(ggplot=fullplot,
                ggsave_parameters=list(width =smallFSplotwdith, height=heightperbarcm*length(unique(data$dependent.var.value)),units = "cm",device = "jpg",limitsize = F)

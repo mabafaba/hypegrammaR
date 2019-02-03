@@ -1,7 +1,14 @@
-sanitise_group_difference<-function(data,dependent.var,independent.var){
-  independent_less_than_20 <- !var_more_than_n(data[[independent.var]], 20)
+coercible_to_numeric<-function(x){
+  if(is.null(x)){return(FALSE)}
+  if(length(x)==0){return(TRUE)}
+  length(is.na(x))==length(suppressWarnings(is.na(as.numeric(as.character(x)))))
+}
 
-  if(!independent_less_than_20 & !question_is_numeric(independent.var)){
+sanitise_group_difference<-function(data,dependent.var,independent.var){
+
+
+  independent_less_than_20 <- !var_more_than_n(data[[independent.var]], 20)
+  if(!independent_less_than_20 & !coercible_to_numeric(data[[independent.var]])){
     return(list(success=FALSE,message="can not test group difference with 20 or more unique values in the independent variable"))
   }
 
@@ -115,7 +122,8 @@ sanitise_data_independent<-function(data,
   #   if(group_difference$success==F){return(group_difference)}}
 
   if(case%in%c("CASE_group_difference_categorical_categorical","CASE_direct_reporting_categorical_categorical","CASE_direct_reporting_categorical_")){
-    if(question_is_select_one(dependent.var) & length(unique(data[[dependent.var]]))>50){
+      dependent.var_num_unique<-data[[dependent.var]] %>% strsplit(" ") %>% unlist %>% unique %>% length
+      if(!coercible_to_numeric(data[[dependent.var]]) & dependent.var_num_unique>50){
       return(list(success=F,message="can not perform chisquared test (and won't calculate summary statistics) on >50 unique values in the dependent variable."))
 
     }

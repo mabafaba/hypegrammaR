@@ -1,29 +1,63 @@
 
-
 #' results as a table
 #'
 #' @param result a hypegrammaR `result` object produced by map_to_result
 #' @value a date frame with only the summary statistics
 #' @export
 map_to_table<-function(result){
-result$summary.statistic
+  # extract core information
   is_percent<-grepl("\\_categorical\\_",result$parameters$case)
-  numbers_column_label<-ifelse(is_percent,"%","Average")
   has_confints<-!all(is.na(c(result$summary.statistic$min,result$summary.statistic$max)))
-  interval<-if(has_confints){
-    formated_nums<-paste0(round(result$summary.statistic$numbers,2),
-                " (",round(result$summary.statistic$min,2)," - ", round(result$summary.statistic$max,2),")")
+  has_dependent_var_values<-!all(is.na(result$summary.statistic$dependent.var.value))
+  has_independent_var_values<-!all(is.na(result$summary.statistic$independent.var.value))
 
+
+  # format numbers (add confints if available):
+  # four cases percent or not, confints or not
+  nums_formated<-round(result$summary.statistic$numbers,2)
+  if(is_percent){nums_formated<-paste0(round(nums_formated*100),"%")}
+  if(!is_percent){nums_formated<-as.character(round(nums_formated,2))}
+
+  if(has_confints){
+    if(is_percent){
+    min_formated<-paste0(round(result$summary.statistic$min*100),"%")
+    max_formated<-paste0(round(result$summary.statistic$max*100),"%")
+    }else{
+      min_formated<-paste0(round(result$summary.statistic$min,2),"%")
+      max_formated<-paste0(round(result$summary.statistic$max),"%")
+    }
+    interval<-paste0("(",min_formated,"-",max_formated,")")
   }else{
-    formated_nums<-round(result$summary.statistic$numbers,2)
+    interval<-""
   }
-  include_independent_var_value<-grepl("_group_difference_",result$parameters$case)
-  mytable<-data.frame(nums=formated_nums)
-  colnames(mytable)<-numbers_column_label
-  if(include_independent_var_value){
-    mytable$Group <- result$summary.statistic$independent.var.value
+
+    formated_nums<-paste(nums_formated,interval)
+    formated_nums[formated_nums=="0 (0-0)"]<-"0"
+    formated_nums[formated_nums=="0% (0%-0%)"]<-"0%"
+
+  result$summary.statistic$numbers<-formated_nums
+
+
+
+  # subset columns to display
+  cols_to_keep<-c("numbers")
+  if(has_dependent_var_values){cols_to_keep<-c(cols_to_keep,"dependent.var.value")}
+  if(has_independent_var_values){cols_to_keep<-c(cols_to_keep,"independent.var.value")
+
   }
-  return(mytable)
+
+  table_to_show<-result$summary.statistic[,cols_to_keep]
+  if(has_dependent_var_values){
+    table_to_show<-tidyr::spread(table_to_show,key = 'dependent.var.value',value = numbers)
+  }else{
+    colnames(table_to_show)[colnames(table_to_show)=='numbers']<-ifelse(is_percent,"%","Average")
+  }
+  if(has_independent_var_values){
+    colnames(table_to_show)[colnames(table_to_show)=='independent.var.value']<-"Subset"
+    }
+
+
+  return(table_to_show)
 }
 
 

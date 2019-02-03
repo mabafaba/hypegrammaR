@@ -97,13 +97,17 @@ design<-map_to_design(assessment_data,weighting_function = weights)
 
 
 sumstat<-map_to_summary_statistic(design,"hhexperienced","region",case = case,questionnaire = questionnaire)
-
+undebug(map_to_result)
+case
 edu1<-map_to_result(assessment_data,dependent.var = "hhexperienced",independent.var = 'region',case = case,questionnaire = questionnaire)
 
-edu1$summary.statistic
+
+lbld<-edu1 %>% map_to_labeled(questionnaire) 
+
+lbld %>% map_to_table
 
 vis<-edu1 %>% map_to_labeled(questionnaire) %>%  map_to_visualisation
-debug(map_to_visualisation)
+vis
 ```
 
 ```{r}
@@ -112,10 +116,6 @@ map_to_result(assessment_data,"hhexperienced",
               case=map_to_case('direct_reporting','categorical'),
               questionnaire = questionnaire) %>% map_to_visualisation
 
-design<-map_to_design(assessment_data,weighting_function = weights)
-hypegrammaR:::percent_with_confints_select_multiple('hhexperienced',design)
-
-grep("hhexperienced.activeconflictviolence",names(assessment_data),value = T,fixed = T)
 
 
 ```
