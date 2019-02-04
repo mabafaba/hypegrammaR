@@ -87,9 +87,9 @@ grouped_barchart_percent<-function(result){
   if(is.null(result$summary.statistic)){return(NULL)}
   if(length(result$summary.statistic)==0){return(NULL)}
   if(nrow(result$summary.statistic)==0){return(NULL)}
-  if(length(unique(result$summary.statistic$dependent.var.value))>12){
-    warning("I don't do grouped barcharts with more than 12 responses. that's madness! there isn't even 12 colours!")
-    return(NULL)}
+  # if(length(unique(result$summary.statistic$dependent.var.value))>12){
+  #   warning("I don't do grouped barcharts with more than 12 responses. that's madness! there isn't even 12 colours!")
+  #   return(NULL)}
   percent_formats<-function(x,digits=0){return(paste0(round(x*100,digits),"%"))}
 
 
@@ -105,16 +105,16 @@ grouped_barchart_percent<-function(result){
           # axis.text.y=element_blank(),
           # axis.ticks.y=element_blank(),
           # plot.margin = unit(x = c(0,0,0,0),'null')
-    )+scale_fill_reach_categorical(n=length(unique(summary.statistic$dependent.var.value)),name="")+
+    )+scale_fill_reach_categorical(n=length(unique(result$summary.statistic$dependent.var.value)),name="")+
     scale_y_continuous(limits = c(0,1),labels = scales::percent_format())+
-    geom_errorbar( aes(x=summary.statistic$independent.var.value,
-                       ymin=as.numeric(summary.statistic$min),
-                       ymax=as.numeric(summary.statistic$max)),
+    geom_errorbar( aes(x=result$summary.statistic$independent.var.value,
+                       ymin=as.numeric(result$summary.statistic$min),
+                       ymax=as.numeric(result$summary.statistic$max)),
                    position=position_dodge(width=0.9),
                    stat='identity',
                    width=.1)+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-  number_of_bars<-(length(unique(summary.statistic$dependent.var.value))*length(unique(summary.statistic$independent.var.value)))
+  number_of_bars<-(length(unique(result$summary.statistic$dependent.var.value))*length(unique(result$summary.statistic$independent.var.value)))
   plotwidth<-5+number_of_bars*1.5
   # map_to_file(theplot,filename,height=12,width=plotwidth,unit="cm")
 

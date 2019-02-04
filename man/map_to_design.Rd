@@ -4,8 +4,7 @@
 \alias{map_to_design}
 \title{Map to Design}
 \usage{
-map_to_design(data, cluster_variable_name = NULL,
-  weighting_function = NULL)
+map_to_design(data, cluster_variable_name = NULL, weighting_function = NULL)
 }
 \arguments{
 \item{weighting_function}{if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?}

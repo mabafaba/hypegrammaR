@@ -17,14 +17,25 @@ map_to_result(data, dependent.var, independent.var = NULL, case,
 
 \item{weighting}{A function that generates weights from a dataframe. You can create it with surveyweights::weighting_fun_from_samplingframe()}
 
+\item{questionnaire}{output from load_questionnaire()}
+
 \item{independen.var}{string with the column name in `data` of the independent variable}
 }
 \value{
-A list with 1. the summary.statistic and 2. the hypothesis.test result
+A list with the summary.statistic the hypothesis.test result
 }
 \description{
 Produce summary statistics, hypothesis tests and plot objects for a hypothesis
 }
-\examples{
-plot_crayons()
+\details{
+- takes as parameters outputs from
+    - load_data()
+    - map_to_case()
+    - load_samplingframe() %>% map_to_weighting()
+    - load_questionnaire()
+- output can be processed by:
+    - map_to_labeled()
+    - map_to_visualisation()
+    - map_to_table()
+    - map_to_visualisation_heatmap()
 }

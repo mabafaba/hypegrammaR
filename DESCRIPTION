@@ -9,14 +9,16 @@ Depends:
     magrittr,
     ggplot2,
     ggthemes,
-    tidyr
+    tidyr,
+    crayon
 Imports:
     dplyr,
     reshape2,
     questionr,
     koboquest,
     data.table,
-    surveyweights
+    surveyweights,
+    htmltools
 Remotes:
     github::mabafaba/koboquest,
     github::mabafaba/surveyweights

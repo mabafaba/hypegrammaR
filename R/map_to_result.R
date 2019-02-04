@@ -49,6 +49,7 @@ map_to_result<-function(data,
   # data <- data[!is.na(data[,dependent.var]),]
   # if(nrow(data)==0){stop('provided data has no rows where dependent.var is not NA')}
   # if(all(is.na(data[,dependent.var]))){stop(paste('variable', dependent.var, 'can\'t be all NA'))}
+
   if(!is.function(weighting)){
     stop("'weighting' must be a function. You can create one with weighting_fun_from_samplingframe(). You can also write your own function (must take a dataframe as input and return a scalar)")
   }
@@ -85,8 +86,11 @@ map_to_result<-function(data,
 
 
 
-  test.hypothesis <- map_to_hypothesis_test(case)
-  hypothesis.test.result<- test.hypothesis(dependent.var,independent.var, design)
+  hypothesis.test.result<-  map_to_hypothesis_test(design = design,
+                                            dependent.var = dependent.var,
+                                            independent.var = independent.var,
+                                            case = case,
+                                            questionnaire = questionnaire)
 
   summary.result  <- map_to_summary_statistic(design = design,
                                               dependent.var = dependent.var,

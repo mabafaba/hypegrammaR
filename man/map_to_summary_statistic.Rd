@@ -4,7 +4,7 @@
 \alias{map_to_summary_statistic}
 \title{Map to summary statistic}
 \usage{
-map_to_summary_statistic(data, dependent.var, independent.var, case,
+map_to_summary_statistic(design, dependent.var, independent.var, case,
   questionnaire = NULL)
 }
 \arguments{

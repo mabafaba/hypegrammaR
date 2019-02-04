@@ -49,4 +49,66 @@ load_questionnaire<-function(...){
 
 
 
+#' Load an analysis plan from a csv file
+#'
+#' @details
+#' @param file path to a csv file with the analysis plan
+#' @param df alternative to `file`, you can provide the analysis plan as a data frame
+#' @export
+load_analysisplan<-function(file=NULL,df=NULL){
+
+if(!is.null(file) & !is.null(df)){stop("provide `file` or `df` parameters, not both")}
+if(is.null(file) & is.null(df)) stop("provide one of `file` or `df` parameters")
+
+if(!is.null(file)) ap_raw<-read.csv.auto.sep(file)
+if(!is.null(df)) ap_raw<-df
+
+expected_column_names<-c("repeat.for.variable",
+                         "research.question",
+                         "sub.research.question",
+                         "hypothesis",
+                         "independent.variable",
+                         "dependent.variable",
+                         "hypothesis.type",
+                         "independent.variable.type",
+                         "dependent.variable.type")
+
+
+expected_colnames_not_found<-colnames(ap_raw)[!(expected_column_names %in% colnames(ap_raw))]
+if(length(expected_colnames_not_found)){
+  stop(paste("expected analysis plan columns not found:\n",
+             paste(expected_colnames_not_found,collapse="\n"),"\n"
+
+  ))
+
+
+}
+# convert missing to NA, remove empty rows..:
+ap_raw<-analysisplan_clean(ap_raw)
+
+if(nrow(ap_raw)==0){stop("all rows in analysis plan are empty")}
+
+missing_dependent_var<-ap_raw[["dependent.variable"]] %>% value_is_empty
+if(any(missing_dependent_var)){
+  stop(paste("all rows in the analysisplan must have an dependent variable. Missing rows:"))
+}
+
+
+
+return(ap_raw)
+  }
+
+
+value_is_empty<-function(x) {
+  if(is.null(x)){return(TRUE)}
+  return(x %in% c("",NA,"N/A","NA"))
+}
+remove_empty_rows<-function(df){
+
+
+
+rows_empty<-apply(df,1,function(x){all(value_is_empty(x))})
+  return(df[!rows_empty,,drop=F])
+}
+
 

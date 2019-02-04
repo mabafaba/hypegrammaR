@@ -4,7 +4,7 @@
 \alias{map_to_visualisation}
 \title{map to visualisation}
 \usage{
-map_to_visualisation(result, questionnaire = NULL)
+map_to_visualisation(result)
 }
 \arguments{
 \item{case}{a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}}

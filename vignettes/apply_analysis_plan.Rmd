@@ -1,0 +1,78 @@
+---
+title: "Running an analysis plan"
+author: "Martin Barner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Running an analysis plan}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+### Load package
+```{r,warning=FALSE,message=FALSE,error=FALSE}
+library(koboquest)
+library(hypegrammaR)
+```
+
+### Load input
+```{r}
+assessment_data<-load_data("../tests/testthat/data.csv")
+```
+
+```{r}
+samplingframe<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+```
+
+```{r}
+weights<-map_to_weighting(sampling.frame = samplingframe,
+                          data.stratum.column = "stratification",
+                          sampling.frame.population.column = "population",
+                          sampling.frame.stratum.column = "strata names",
+                          data = assessment_data)
+```
+
+```{r}
+
+questionnaire<-load_questionnaire(data = assessment_data,
+                                  questions.file = "../tests/testthat/kobo questions.csv",
+                                  choices.file = "../tests/testthat/kobo choices.csv",
+                                  choices.label.column.to.use = "label::English"
+)
+```
+
+```{r}
+
+analysisplan<-load_analysisplan("../tests/testthat/analysisplan.csv")
+
+```
+
+### Run the analysis plan & save outputs as an html file
+
+```{r,eval = F}
+list_of_results<- assessment_data %>%   from_analysisplan_map_to_output(analysisplan = analysisplan,
+                                                                        weighting = weights,
+                                                                        questionnaire = questionnaire) 
+
+  
+```
+
+### Output as html
+```{r}
+
+list_of_results %>% map_to_template(questionnaire = questionnaire,
+                                    dir = "../",
+                                    filename = "my_example_report.html")
+
+```
+
+
+
