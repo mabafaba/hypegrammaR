@@ -14,12 +14,8 @@ library(hypegrammaR)
 
 ```
 
-```{r}
 
-print(x$results[[1]] %>% map_to_visualisation)
-```
-
-```{r,include=T,warning=F,error=F,message=F,echo=TRUE}
+```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
 resultlist<-x
 analysisplan<-resultlist$analysisplan
 knitr::kable(analysisplan,format = "html")
