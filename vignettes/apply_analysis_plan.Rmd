@@ -58,7 +58,8 @@ analysisplan<-load_analysisplan("../tests/testthat/analysisplan.csv")
 ### Run the analysis plan & save outputs as an html file
 
 ```{r,eval = F}
-list_of_results<- assessment_data %>%   from_analysisplan_map_to_output(analysisplan = analysisplan,
+
+list_of_results <- assessment_data %>%   from_analysisplan_map_to_output(analysisplan = analysisplan,
                                                                         weighting = weights,
                                                                         questionnaire = questionnaire) 
 
@@ -68,9 +69,9 @@ list_of_results<- assessment_data %>%   from_analysisplan_map_to_output(analysis
 ### Output as html
 ```{r}
 
-list_of_results %>% map_to_template(questionnaire = questionnaire,
-                                    dir = "../",
-                                    filename = "my_example_report.html")
+# list_of_results %>% map_to_template(questionnaire = questionnaire,
+#                                     dir = "../",
+#                                     filename = "my_example_report.html")
 
 ```
 

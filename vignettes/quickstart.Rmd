@@ -44,7 +44,7 @@ get all your files in csv format first:
 #### Install the hypegrammaR package
 This line you only have to run _once_ when using hypegrammaR for the first time, or to update to a new version.
 ```{r,eval=F}
-remotes::install_github("mabafaba/hypegrammaR",build_opts = c())
+remotes::install_github("mabafaba/hypegrammaR",build_opts = c(), ref = "training")
 ```
 (the `build_opts = c()` makes sure the package includes all extra help pages & documentation)
 For this step only, you need a more or less stable internet connection.
@@ -171,7 +171,7 @@ Finally, we can get visualisations, tables etc.:
 debug(map_to_visualisation)
 chart<- map_to_visualisation(assistance_informal_settlements)
 table<-map_to_table(assistance_informal_settlements)
-result$summary.statistic
+
 chart
 table
 

@@ -71,6 +71,7 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
 #' @param cluster_variable_name optional: the name of the variable with the cluster IDs
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
 #' @export
+#'
 from_analysisplan_map_to_output <-
   function(data,
            analysisplan,
