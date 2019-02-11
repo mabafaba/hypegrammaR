@@ -11,6 +11,9 @@ map_to_file(object, filename, ...)
 
 \item{filename}{The name of the file that is produced. The extension needs to match the type of object you want to save (csv for tables, jpg/pdf for images)}
 }
+\value{
+the object that was given as input (unchanged).
+}
 \description{
 Save outputs to files
 }

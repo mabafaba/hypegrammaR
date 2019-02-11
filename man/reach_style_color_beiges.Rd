@@ -9,11 +9,3 @@ reach_style_color_beiges()
 \description{
 Reach brand beige triples
 }
-\examples{
-
-
-
-}
-\seealso{
-\code{\link{function_name}}
-}

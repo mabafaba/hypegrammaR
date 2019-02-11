@@ -12,12 +12,15 @@ from_analysisplan_map_to_output(data, analysisplan, weighting = NULL,
 
 \item{analysisplan}{the analysisplan (load_analysisplan())}
 
-\item{weighting}{optional: the weighting function (load_samplingframe() %>% map_to_weighting())}
+\item{weighting}{optional: the weighting function (use load_samplingframe() and then map_to_weighting())}
 
 \item{cluster_variable_name}{optional: the name of the variable with the cluster IDs}
 
 \item{questionnaire}{optional: the questionnaire (load_questionnaire())}
 }
+\value{
+returns a list of hypegrammaR "result" objects (see map_to_result())
+}
 \description{
-apply an analysis plan
+Takes all usual hypegrammaR input files plus an analysis plan and maps directly to an output document
 }

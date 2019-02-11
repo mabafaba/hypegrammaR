@@ -2,8 +2,8 @@
 #'
 #' Produce summary statistics, hypothesis tests and plot objects for a hypothesis
 #'
-#' @param data
-#' @param dependent.var string with the column name in `data` of the dependent variable
+#' @param data the data as a data.frame. Must match the sampling frame used to produce the `weighting` as well as the questionnaire if applicable.
+#' @param dependent.var string with the column name in "data" of the dependent variable
 #' @param independen.var string with the column name in `data` of the independent variable
 #' @param case the analysis case, created with map_to_case().
 #' @param cluster.variable.name if cluster sampling, provide the name of the variable in the dataset that denotes the cluster
@@ -23,7 +23,6 @@
 #'     - map_to_visualisation_heatmap()
 #'
 #' @return A list with the summary.statistic the hypothesis.test result
-#' @examples
 #' @export
 map_to_result<-function(data,
                         dependent.var,

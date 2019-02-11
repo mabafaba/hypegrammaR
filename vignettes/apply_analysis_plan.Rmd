@@ -14,25 +14,32 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(knitr)
+
 ```
 
 
 ### Load package
 ```{r,warning=FALSE,message=FALSE,error=FALSE}
-library(koboquest)
 library(hypegrammaR)
+library(dplyr)
 ```
+### Prepare Inputs
+
+
 
 ### Load input
-```{r}
+For details please see <a href="input_formats.html">Input formats & loading files</a>
+
+```{r,warning=F,message=F,error=F}
 assessment_data<-load_data("../tests/testthat/data.csv")
 ```
 
-```{r}
+```{r,warning=F,message=F,error=F}
 samplingframe<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
 ```
 
-```{r}
+```{r,warning=F,message=F,error=F}
 weights<-map_to_weighting(sampling.frame = samplingframe,
                           data.stratum.column = "stratification",
                           sampling.frame.population.column = "population",
@@ -40,7 +47,7 @@ weights<-map_to_weighting(sampling.frame = samplingframe,
                           data = assessment_data)
 ```
 
-```{r}
+```{r,warning=F,message=F,error=F}
 
 questionnaire<-load_questionnaire(data = assessment_data,
                                   questions.file = "../tests/testthat/kobo questions.csv",
@@ -49,7 +56,7 @@ questionnaire<-load_questionnaire(data = assessment_data,
 )
 ```
 
-```{r}
+```{r,warning=F,message=F,error=F}
 
 analysisplan<-load_analysisplan("../tests/testthat/analysisplan.csv")
 
@@ -66,7 +73,7 @@ list_of_results<- assessment_data %>%   from_analysisplan_map_to_output(analysis
 ```
 
 ### Output as html
-```{r}
+```{r,eval = F}
 
 list_of_results %>% map_to_template(questionnaire = questionnaire,
                                     dir = "../",

@@ -14,3 +14,8 @@ load_analysisplan(file = NULL, df = NULL)
 \description{
 Load an analysis plan from a csv file
 }
+\details{
+The analysis plan csv file must contain the following column headers:
+"repeat.for.variable","research.question", "sub.research.question", "hypothesis", "independent.variable", "dependent.variable", "hypothesis.type", "independent.variable.type", "dependent.variable.type".
+You can generate an empty template with
+}

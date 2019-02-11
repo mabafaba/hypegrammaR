@@ -9,6 +9,9 @@ map_to_table(result)
 \arguments{
 \item{result}{a hypegrammaR `result` object produced by map_to_result}
 }
+\value{
+a date frame with only the summary statistics
+}
 \description{
 results as a table
 }

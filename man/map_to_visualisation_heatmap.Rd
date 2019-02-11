@@ -9,6 +9,9 @@ map_to_visualisation_heatmap(result)
 \arguments{
 \item{result}{a hypegrammaR result object (can be made with map_to_result())}
 }
+\value{
+A hypegrammaR visualisation object, which is a list with two elements, 1) a ggplot object and 2) recommended parameters to pass to ggsave.
+}
 \description{
 Heatmaps from `result` objects
 }

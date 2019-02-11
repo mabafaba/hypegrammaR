@@ -1,17 +1,9 @@
 
 # INDIVIDUAL COLORS
 
+
+
 #' Reach brand reds
-#'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
-#'
-#'
 #'
 reach_style_color_red<-function(lightness=1){
   if      (lightness==1){rgb(238/255,88/255,89/255)}
@@ -21,14 +13,6 @@ reach_style_color_red<-function(lightness=1){
 }
 
 #' Reach brand dark greys
-#'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
 #'
 #'
 #'
@@ -41,14 +25,6 @@ reach_style_color_darkgrey<-function(lightness=1){
 
 #' reach brand light greys
 #'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
-#'
 #'
 #'
 reach_style_color_lightgrey<-function(lightness=1){
@@ -59,15 +35,6 @@ reach_style_color_lightgrey<-function(lightness=1){
 }
 
 #' reach brand beiges
-#'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
-#'
 #'
 #'
 reach_style_color_beige<-function(lightness=1){
@@ -81,13 +48,6 @@ reach_style_color_beige<-function(lightness=1){
 #' Reach brand reds triples
 #'
 #'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
 #'
 #'
 #'
@@ -99,13 +59,6 @@ reach_style_color_reds<-function(){
 #' Reach brand dark grey triples
 #'
 #'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
 #'
 #'
 #'
@@ -117,15 +70,6 @@ reach_style_color_darkgreys<-function(){
 #' Reach brand light greys triples
 #'
 #'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
-#'
-#'
 #'
 reach_style_color_lightgreys<-function(){
   vapply(1:3,FUN.VALUE = vector(mode = 'character',length = 1),reach_style_color_lightgrey)
@@ -133,15 +77,6 @@ reach_style_color_lightgreys<-function(){
 
 # COLOUR TRIPLES
 #' Reach brand beige triples
-#'
-#'
-#' @param
-#' @param
-#' @param
-#' @return
-#' @seealso \code{\link{function_name}}
-#' @export
-#' @examples
 #'
 #'
 #'

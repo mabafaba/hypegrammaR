@@ -14,6 +14,9 @@ labels_summary_statistic(summary.statistic, questionnaire,
 
 \item{result}{hypegrammaR `result` object; output from map_to_result().}
 }
+\value{
+same as input, but with all variable values labeled
+}
 \description{
 Add labels to results
 }

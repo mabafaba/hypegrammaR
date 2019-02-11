@@ -15,7 +15,7 @@ read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
 #' @param file path to a csv file with the assessment data
 #'
 #' @details the data _must_ be in standard kobo format with xml style headers.
-#' @value the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
+#' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
 #' @export
 load_data<-function(file){
   data <- read.csv.auto.sep(file, stringsAsFactors = F)
@@ -26,10 +26,17 @@ load_data<-function(file){
 
 
 
-#' Create weighting from a sampling frame
+#' Load a sampling frame from csv
+#' @param file the path and name of the sampling frame csv file to load.
+#' @details
+#' @examples
 #'
-#' @inheritParams surveyweights::weighting_fun_from_samplingframe
-#' @details Create a 'weighter' function from a sampling frame data frame. Uses surveyweights::weighting_fun_from_samplingframe()
+#' # load the sampling frame:
+#' sf <- load_samplingframe("./somefolder/samplingframe.csv")
+#'
+#' # it can be used to make weights with map_to_weighting()
+#'
+#'
 #' @export
 load_samplingframe<-function(file){
   samplingframe<-data.table::fread(file = file)
@@ -51,9 +58,11 @@ load_questionnaire<-function(...){
 
 #' Load an analysis plan from a csv file
 #'
-#' @details
 #' @param file path to a csv file with the analysis plan
 #' @param df alternative to `file`, you can provide the analysis plan as a data frame
+#' @details The analysis plan csv file must contain the following column headers:
+#' "repeat.for.variable","research.question", "sub.research.question", "hypothesis", "independent.variable", "dependent.variable", "hypothesis.type", "independent.variable.type", "dependent.variable.type".
+#' You can generate an empty template with
 #' @export
 load_analysisplan<-function(file=NULL,df=NULL){
 

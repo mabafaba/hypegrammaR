@@ -1,11 +1,12 @@
 ---
 title: "Example Analysis"
 author: "Martin Barner"
-date: "1 February 2019"
-output:
-  html_document:
-    df_print: paged
-  word_document: default
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

@@ -65,14 +65,16 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
 
 #' apply an analysis plan
 #'
+#' Takes all usual hypegrammaR input files plus an analysis plan and maps directly to an output document
+#'
 #' @param data the data set as a data frame (load_data())
 #' @param analysisplan the analysisplan (load_analysisplan())
-#' @param weighting optional: the weighting function (load_samplingframe() %>% map_to_weighting())
+#' @param weighting optional: the weighting function (use load_samplingframe() and then map_to_weighting())
 #' @param cluster_variable_name optional: the name of the variable with the cluster IDs
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
+#' @return returns a list of hypegrammaR "result" objects (see map_to_result())
 #' @export
-from_analysisplan_map_to_output <-
-  function(data,
+from_analysisplan_map_to_output <- function(data,
            analysisplan,
            weighting = NULL,
            cluster_variable_name = NULL,

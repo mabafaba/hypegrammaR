@@ -9,11 +9,3 @@ reach_style_color_red(lightness = 1)
 \description{
 Reach brand reds
 }
-\examples{
-
-
-
-}
-\seealso{
-\code{\link{function_name}}
-}

@@ -9,7 +9,9 @@ map_to_result(data, dependent.var, independent.var = NULL, case,
   nrow(df)) }, questionnaire = NULL)
 }
 \arguments{
-\item{dependent.var}{string with the column name in `data` of the dependent variable}
+\item{data}{the data as a data.frame. Must match the sampling frame used to produce the `weighting` as well as the questionnaire if applicable.}
+
+\item{dependent.var}{string with the column name in "data" of the dependent variable}
 
 \item{case}{the analysis case, created with map_to_case().}
 

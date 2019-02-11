@@ -56,8 +56,6 @@ library(hypegrammaR)
 
 #### Load your files
 
-All input files are expected as csv files.
-You must use the hypegrammar `load_*()` functions.
 
 ##### The data
 `load_data` takes only one argument `file`, the path to the csv file. 
@@ -80,8 +78,8 @@ The sampling frame should be a csv file with one column with strata names, one c
 
 ```{r}
 
-sampling_frame<-load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
-head(sampling_frame)
+sampling_frame<-hypegrammaR::load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
+
 ```
 
 Now turn your sampling frame into a weighting function with `map_to_weighting`. We see that the relevant columns in the sampling frame are called "strata names" and "population". The column in the data correspoinding to the strata names is called "stratification" in this data set. We need to supply these column names as arguments to `map_to_weighing`:
@@ -168,10 +166,8 @@ Finally, we can get visualisations, tables etc.:
 
 
 ```{r, warning=F}
-debug(map_to_visualisation)
 chart<- map_to_visualisation(assistance_informal_settlements)
 table<-map_to_table(assistance_informal_settlements)
-result$summary.statistic
 chart
 table
 
