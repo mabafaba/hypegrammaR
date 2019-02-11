@@ -4,8 +4,8 @@
 \alias{reach_style_barchart}
 \title{not used}
 \usage{
-reach_style_barchart(group, percent, error_min = NULL, error_max = NULL,
-  horizontal = T)
+reach_style_barchart(group, percent, error_min = NULL,
+  error_max = NULL, horizontal = T)
 }
 \description{
 not used

@@ -43,7 +43,7 @@ map_to_design <- function(data,
 #'
 #' selects an appropriate visualisation function based on the analysis case
 #'
-#' @param case a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
+#' @param case a string uniquely identifying the analysis case. output of [map_to_case()]. To list valid case strings use [list_all_cases()]
 #' @return a _function_ that creates the relevant ggplot object
 #' @examples map_to_visualisation("group_difference_categorical_categorical")
 #' @examples my_case<- map_to_case( ... )
