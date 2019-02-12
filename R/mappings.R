@@ -162,7 +162,7 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
   surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
                                                   data.stratum.column = data.stratum.column,
                                                   sampling.frame.population.column = sampling.frame.population.column,
-                                                  sampling.frame.stratum.column = sampling.frame.stratum.column)
+                                                  sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
 }
 
 

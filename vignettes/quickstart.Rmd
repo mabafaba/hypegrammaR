@@ -80,16 +80,16 @@ The sampling frame should be a csv file with one column with strata names, one c
 
 ```{r}
 
-sampling_frame<-load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
+sampling_frame<-load_samplingframe(file = "../tests/testthat/stratification_samplingframe.csv")
 head(sampling_frame)
 ```
 
 Now turn your sampling frame into a weighting function with `map_to_weighting`. We see that the relevant columns in the sampling frame are called "strata names" and "population". The column in the data correspoinding to the strata names is called "stratification" in this data set. We need to supply these column names as arguments to `map_to_weighing`:
 
 ```{r}
-myweighter<-map_to_weighting(sampling_frame,data.stratum.column = "stratification",
+myweighter<-map_to_weighting(sampling_frame,data.stratum.column = "strata",
                              sampling.frame.population.column = "population",
-                             sampling.frame.stratum.column = "strata names")
+                             sampling.frame.stratum.column = "strata", data = data)
 ```
 
 ##### The Questionnaire
@@ -121,7 +121,7 @@ Conditions:
 #### Identify your analysis parameters
 
 - what are the column headers of your dependent and independent variables, and what are their data types?
-    - this Example: *"assistancereceived" (categorical)* and *"informalsettlement" (categorical)*
+    - this Example: *"primary_hc_provider" (categorical)* and *"shelter_type" (categorical)*
 - what type of hypothesis do you have?
     - this Example: the *difference between groups*
 
