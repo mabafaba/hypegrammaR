@@ -43,14 +43,22 @@ load_samplingframe<-function(file){
 }
 
 
-#' Create questionnaire from csv files
-#'
-#'
-#' @details This enables new functions associated with the questionnaire. It uses load_questionnaire() from the koboquest package.
-#' @inheritParams koboquest::load_questionnaire
+#' load_questionnaire
+#' @param data data frame containing the data matching the questionnaire to be loaded.
+#' @param questions.file file name of a csv file containing the kobo form's question sheet
+#' @param choices.file file name of a csv file containing the kobo form's choices sheet
+#' @param choices.label.column.to.use column header of the column with the choice labels youw want to be used when calling \code{\link{question_get_choice_labels}}
+#' @return A list containing the original questionnaire questions and choices, the choices matched 1:1 with the data columns, and all functions created by this function relating to the specific questionnaire (they are written to the global space too, but you can use these when using multiple questionnaires in parallel.)
 #' @export
-load_questionnaire<-function(...){
-  questionnaire<-koboquest::load_questionnaire(...)
+#' @examples
+load_questionnaire<-function(data,
+                             questions.file,
+                             choices.file,
+                             choices.label.column.to.use=NULL){
+  questionnaire<-koboquest::load_questionnaire(data = data,
+                                               questions.file = questions.file,
+                                               choices.file = choices.file,
+                                               choices.label.column.to.use = choices.label.column.to.use)
 }
 
 

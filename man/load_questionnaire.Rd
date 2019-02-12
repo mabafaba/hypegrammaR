@@ -2,13 +2,23 @@
 % Please edit documentation in R/loading.R
 \name{load_questionnaire}
 \alias{load_questionnaire}
-\title{Create questionnaire from csv files}
+\title{load_questionnaire}
 \usage{
-load_questionnaire(...)
+load_questionnaire(data, questions.file, choices.file,
+  choices.label.column.to.use = NULL)
+}
+\arguments{
+\item{data}{data frame containing the data matching the questionnaire to be loaded.}
+
+\item{questions.file}{file name of a csv file containing the kobo form's question sheet}
+
+\item{choices.file}{file name of a csv file containing the kobo form's choices sheet}
+
+\item{choices.label.column.to.use}{column header of the column with the choice labels youw want to be used when calling \code{\link{question_get_choice_labels}}}
+}
+\value{
+A list containing the original questionnaire questions and choices, the choices matched 1:1 with the data columns, and all functions created by this function relating to the specific questionnaire (they are written to the global space too, but you can use these when using multiple questionnaires in parallel.)
 }
 \description{
-Create questionnaire from csv files
-}
-\details{
-This enables new functions associated with the questionnaire. It uses load_questionnaire() from the koboquest package.
+load_questionnaire
 }
