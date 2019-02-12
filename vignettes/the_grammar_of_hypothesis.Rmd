@@ -18,6 +18,18 @@ knitr::opts_chunk$set(
 
 # Logic
 
+## Analysis Flow
+
+The flow of an analysis according to the data analysis guidelines:
+
+![analysis flow guidelines](./hypegrammaR_flowchart.jpg)
+
+The implementation in hypegrammaR:
+
+![analysis flow hypegrammaR](./hypegrammaR_flowchart.jpg)
+
+
+
 ## Main steps
 
 
