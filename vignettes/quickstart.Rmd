@@ -87,9 +87,11 @@ head(sampling_frame)
 Now turn your sampling frame into a weighting function with `map_to_weighting`. We see that the relevant columns in the sampling frame are called "strata names" and "population". The column in the data correspoinding to the strata names is called "stratification" in this data set. We need to supply these column names as arguments to `map_to_weighing`:
 
 ```{r}
-myweighter<-map_to_weighting(sampling_frame,data.stratum.column = "strata",
+myweighter<-map_to_weighting(sampling.frame = sampling_frame,
+                             data.stratum.column = "strata",
                              sampling.frame.population.column = "population",
-                             sampling.frame.stratum.column = "strata", data = data)
+                             sampling.frame.stratum.column = "strata", 
+                             data = assessment_data)
 ```
 
 ##### The Questionnaire
@@ -106,9 +108,9 @@ The parameters are:
 ```{r}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                             questions.file = "../tests/testthat/kobo questions.csv",
-                                             choices.file = "../tests/testthat/kobo choices.csv",
-                                  choices.label.column.to.use = "label::English"
+                                  questions.file = "../tests/testthat/kobo questions.csv",
+                                  choices.file = "../tests/testthat/kobo choices.csv",
+                                  choices.label.column.to.use = "label"
                                              )
 
 ```
@@ -146,8 +148,8 @@ Now you use the inputs loaded above to an analysis result:
 ```{r}
 
 assistance_informal_settlements<-map_to_result(data = assessment_data,
-                      dependent.var = "assistancereceived",
-                      independent.var = 'informalsettlement',
+                      dependent.var = "primary_hc_provider",
+                      independent.var = 'primary_hc_provider',
                       case = my_case,
                       weighting = myweighter,
                       questionnaire = questionnaire)
