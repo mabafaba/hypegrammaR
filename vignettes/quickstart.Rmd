@@ -60,7 +60,7 @@ library(hypegrammaR)
 ##### The data
 `load_data` takes only one argument `file`, the path to the csv file. 
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/data.csv")
+assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
 ```
 Conditions:
 

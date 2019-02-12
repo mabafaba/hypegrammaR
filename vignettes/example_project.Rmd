@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r,include=F,echo=F}
 library(hypegrammaR)
 
-assessment_data<-load_data("../tests/testthat/data.csv")
+assessment_data<-load_data("../tests/testthat/testdata.csv")
 
 samplingframe<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
 
@@ -73,7 +73,7 @@ vis<-result %>% map_to_labeled(questionnaire) %>% map_to_visualisation
 ```{r,include=F}
 label_pvalue <- function(x, digits = 3){
   if (x < 10^-digits) return(paste('<', 10^-digits))
-  paste('=', myround(x, digits))
+  paste('=', round(x, digits))
 }
 
 ```

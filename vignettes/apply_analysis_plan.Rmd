@@ -32,7 +32,7 @@ library(dplyr)
 For details please see <a href="input_formats.html">Input formats & loading files</a>
 
 ```{r,warning=F,message=F,error=F}
-assessment_data<-load_data("../tests/testthat/data.csv")
+assessment_data<-load_data("../tests/testthat/testdata.csv")
 ```
 
 ```{r,warning=F,message=F,error=F}

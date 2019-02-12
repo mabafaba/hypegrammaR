@@ -37,7 +37,7 @@ All input files are expected as csv files.
 You should use the hypegrammar `load_*()` functions to load the inputs.
 
 ```{r,include = F,echo = F}
-data<-read.csv("../tests/testthat/data.csv")
+data<-read.csv("../tests/testthat/testdata.csv")
 sf<-read.csv("../tests/testthat/test_samplingframe.csv")
 quest_q<-read.csv("../tests/testthat/kobo questions.csv")
 quest_c<-read.csv("../tests/testthat/kobo choices.csv")
@@ -72,7 +72,7 @@ It must adhere to standard kobo xml format
 #### Example
 
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/data.csv")
+assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
 ```
 
 #### What you get
