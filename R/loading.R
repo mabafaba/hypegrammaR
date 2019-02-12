@@ -47,10 +47,17 @@ load_samplingframe<-function(file){
 #' @param data data frame containing the data matching the questionnaire to be loaded.
 #' @param questions.file file name of a csv file containing the kobo form's question sheet
 #' @param choices.file file name of a csv file containing the kobo form's choices sheet
-#' @param choices.label.column.to.use column header of the column with the choice labels youw want to be used when calling \code{\link{question_get_choice_labels}}
+#' @param choices.label.column.to.use The choices csv file has (sometimes multiple) columns with labels. They are often called "Label::English" or similar. Here you need to provide the _name of the column_ that you want to use for labels (see example!)
 #' @return A list containing the original questionnaire questions and choices, the choices matched 1:1 with the data columns, and all functions created by this function relating to the specific questionnaire (they are written to the global space too, but you can use these when using multiple questionnaires in parallel.)
 #' @export
 #' @examples
+#'
+#'load_questionnaire(mydata,
+#'                   questions.file="koboquestions.csv",
+#'                   choices.file="kobochoices.csv",
+#'                   choices.label.column.to.use="Label::English")
+#'
+#'
 load_questionnaire<-function(data,
                              questions.file,
                              choices.file,
