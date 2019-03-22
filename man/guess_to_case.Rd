@@ -4,8 +4,9 @@
 \alias{guess_to_case}
 \title{Guess the  case}
 \usage{
-guess_to_case(data, hypothesis.type, dependent.var, independent.var = NULL,
-  dependent.var.type = NULL, independent.var.type = NULL, paired = NULL)
+guess_to_case(data, hypothesis.type, dependent.var,
+  independent.var = NULL, dependent.var.type = NULL,
+  independent.var.type = NULL, paired = NULL)
 }
 \arguments{
 \item{data}{missing documentation}
