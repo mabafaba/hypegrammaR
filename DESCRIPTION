@@ -21,7 +21,7 @@ Imports:
     htmltools
 Remotes:
     github::mabafaba/koboquest,
-    github::mabafaba/surveyweights
+    github::ellieallien/surveyweights
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
