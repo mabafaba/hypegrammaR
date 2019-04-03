@@ -117,6 +117,16 @@ map_to_summary_statistic <-
       }
     }
 
+    if (case == "CASE_direct_reporting_numerical_categorical") {
+      summary_stat <-
+        mean_with_confints_groups(
+          dependent.var = dependent.var,
+          independent.var = independent.var,
+          design = design
+        )
+
+    }
+
 
     if (case == "") {
       preferred_summary_statistic_fun <-
