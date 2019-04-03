@@ -109,12 +109,22 @@ map_to_summary_statistic <-
 
       if (!dependent_is_select_multiple) {
         summary_stat <-
-          percent_with_confints_select_multiple_groups(
+          percent_with_confints_select_one_groups(
             dependent.var = dependent.var,
             independent.var = independent.var,
             design = design
           )
       }
+    }
+
+    if (case == "CASE_direct_reporting_numerical_categorical") {
+      summary_stat <-
+        mean_with_confints_groups(
+          dependent.var = dependent.var,
+          independent.var = independent.var,
+          design = design
+        )
+
     }
 
 
