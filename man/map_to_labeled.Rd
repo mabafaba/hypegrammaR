@@ -11,6 +11,9 @@ map_to_labeled(result, questionnaire)
 
 \item{questionnaire}{koboquest `questionnaire` object; output from load_questionnaire()}
 }
+\value{
+same as `result` input, but with all variable values labeled
+}
 \description{
 Add labels to results
 }

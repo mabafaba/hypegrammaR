@@ -9,11 +9,3 @@ reach_style_color_reds()
 \description{
 Reach brand reds triples
 }
-\examples{
-
-
-
-}
-\seealso{
-\code{\link{function_name}}
-}

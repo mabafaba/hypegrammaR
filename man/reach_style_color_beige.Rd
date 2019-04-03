@@ -9,11 +9,3 @@ reach_style_color_beige(lightness = 1)
 \description{
 reach brand beiges
 }
-\examples{
-
-
-
-}
-\seealso{
-\code{\link{function_name}}
-}

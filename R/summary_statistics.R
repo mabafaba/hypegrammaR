@@ -1,13 +1,9 @@
-# percent_with_confints <- function(dependent.var,
-#                                   design,
-#                                   na.rm = TRUE){
-#
-#   if(question_is_select_multiple(dependent.var)){
-#     return(percent_with_confints_select_multiple(dependent.var = dependent.var, design = design))
-#   }
-#   return(percent_with_confints_select_one(dependent.var = dependent.var,  design = design))
-# }
-
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'
+#'@param independen.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@export
 percent_with_confints_select_one <-
   function(dependent.var,
            independent.var = NULL,
@@ -81,6 +77,12 @@ percent_with_confints_select_one <-
     )
   }
 
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
+#'@param independen.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@export
 percent_with_confints_select_multiple <- function(dependent.var,
                                                   dependent.var.sm.cols,
                                                   design,

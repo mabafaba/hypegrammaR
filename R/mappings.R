@@ -2,7 +2,7 @@
 #'
 #' creates a `survey` design object from the data
 #'
-#' @param data
+#' @param data the dataset as a sampling frame. Must match the sampling frame provided to create the `weighting_function` produced with `map_to_weighting()`
 #' @param weighting_function if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?
 #' @details create a `survey` package design object from the data and information on the sampling strategy
 #' @return a `survey` package design object
@@ -43,7 +43,7 @@ map_to_design <- function(data,
 #'
 #' selects an appropriate visualisation function based on the analysis case
 #'
-#' @param case a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}
+#' @param case a string uniquely identifying the analysis case. output of map_to_case(). To list valid case strings use hypegrammar::list_all_cases()
 #' @return a _function_ that creates the relevant ggplot object
 #' @examples map_to_visualisation("group_difference_categorical_categorical")
 #' @examples my_case<- map_to_case( ... )
@@ -81,7 +81,7 @@ map_to_visualisation <- function(result) {
 #'
 #' @param object The object you want to save as a file
 #' @param filename The name of the file that is produced. The extension needs to match the type of object you want to save (csv for tables, jpg/pdf for images)
-#' @value the object that was given as input (unchanged).
+#' @return the object that was given as input (unchanged).
 #' @examples
 #' # some table:
 #' mytable<-data.frame(a=1:10,b=1:10)
@@ -162,7 +162,7 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
   surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
                                                   data.stratum.column = data.stratum.column,
                                                   sampling.frame.population.column = sampling.frame.population.column,
-                                                  sampling.frame.stratum.column = sampling.frame.stratum.column)
+                                                  sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
 }
 
 

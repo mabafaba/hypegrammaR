@@ -10,7 +10,7 @@
 #' #' @param weighting A function that generates weights from a dataframe. You can create it with surveyweights::weighting_fun_from_samplingframe()
 #' #' @param do.for.each.unique.value.in.var if you want to repeat the analysis for multiple subsets of the data, specify the column name in `data` by which to split the dataset
 #' #' @details this function takes the data, information about your variables of interest, hypothesis type and sampling strategy. It selects the appropriate summary statistics, hypothesis test and visualisation and applies them.
-#' #' it uses \code{\link{map_to_case}},\code{\link{map_to_indicator}},\code{\link{map_to_hypothesis}},\code{\link{map_to_visualisation}}
+#' #' it usesmap_to_case(),map_to_indicator(),map_to_hypothesis(),map_to_visualisation()
 #' #' @return A list with 1. the summary.statistic, 2. the hypothesis.test.result, and 3. the visualisation as a ggplot object
 #' #' @examples
 #' #' plot_crayons()

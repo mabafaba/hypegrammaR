@@ -11,12 +11,24 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,`
-  comment = "#>"
-)
+  collapse = TRUE
+  #,comment = "#>"
+  )
 ```
 
 # Logic
+
+## Analysis Flow
+
+The flow of an analysis according to the data analysis guidelines:
+
+![analysis flow guidelines](./hypegrammaR_flowchart.jpg)
+
+The implementation in hypegrammaR:
+
+![analysis flow hypegrammaR](./hypegrammaR_flowchart.jpg)
+
+
 
 ## Main steps
 
@@ -59,7 +71,7 @@ Each input we usually expect with an assessment has it's own function to load it
 
 First the data. A csv file with data in standard Kobo format.
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/data.csv")
+assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
 ```
 
 Then a sampling frame. A csv file with one column with strata names, one column with population numbers. The strata names must match exactly some values in the data. We must tell the loading function which column is what in the sampling frame.

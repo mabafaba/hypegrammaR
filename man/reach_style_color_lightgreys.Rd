@@ -9,11 +9,3 @@ reach_style_color_lightgreys()
 \description{
 Reach brand light greys triples
 }
-\examples{
-
-
-
-}
-\seealso{
-\code{\link{function_name}}
-}

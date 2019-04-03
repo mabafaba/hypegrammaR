@@ -9,6 +9,9 @@ load_data(file)
 \arguments{
 \item{file}{path to a csv file with the assessment data}
 }
+\value{
+the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
+}
 \description{
 load asessment data
 }

@@ -7,7 +7,7 @@
 map_to_visualisation(result)
 }
 \arguments{
-\item{case}{a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}}
+\item{case}{a string uniquely identifying the analysis case. output of map_to_case(). To list valid case strings use hypegrammar::list_all_cases()}
 }
 \value{
 a _function_ that creates the relevant ggplot object
