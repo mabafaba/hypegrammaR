@@ -122,7 +122,7 @@ sanitise_data_independent<-function(data,
   #   if(group_difference$success==F){return(group_difference)}}
 
   if(case%in%c("CASE_group_difference_categorical_categorical","CASE_direct_reporting_categorical_categorical","CASE_direct_reporting_categorical_")){
-      dependent.var_num_unique<-data[[dependent.var]] %>% strsplit(" ") %>% unlist %>% unique %>% length
+      dependent.var_num_unique<-data[[dependent.var]] %>% as.character %>% strsplit(" ") %>% unlist %>% unique %>% length
       if(!coercible_to_numeric(data[[dependent.var]]) & dependent.var_num_unique>50){
       return(list(success=F,message="can not perform chisquared test (and won't calculate summary statistics) on >50 unique values in the dependent variable."))
 
