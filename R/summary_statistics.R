@@ -80,7 +80,7 @@ percent_with_confints_select_one <-
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
 #'@param independen.var should be null ! For other functions: string with the column name in `data` of the independent variable
 #'@param design the svy design object created using map_to_design or directly with svydesign
-#'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
+#'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
 #'@export
 percent_with_confints_select_multiple <- function(dependent.var,
@@ -165,6 +165,12 @@ percent_with_confints_select_multiple <- function(dependent.var,
 # }
 
 ### TESTED without weighting CHECK
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one.
+#'@param independen.var string with the column name in `data` of the independent variable
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@details this function takes the design object and the name of your dependent variable when this one is a select one, and the independent variable that determines the groups. It calculates the weighted percentage for each category.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@export
 percent_with_confints_select_one_groups <- function(dependent.var,
                                                     independent.var,
                                                     design,
@@ -259,8 +265,12 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
 
 
-#should only be called if the question is select multiple
-# later:  comment above is confusing; maybe relating to independent shouldnt be select_multiple
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple'.
+#'@param independen.var string with the column name in `data` of the independent variable
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@details this function takes the design object and the name of your dependent variable when this one is a select multiple, and the independent variable that determines the groups. It calculates the weighted percentage for each category.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@export
 percent_with_confints_select_multiple_groups <-
   function(dependent.var,
            dependent.var.sm.cols,
@@ -341,38 +351,11 @@ percent_with_confints_select_multiple_groups <-
     return(result_hg_format)
   }
 
-
-
-# check if we actually got  a frequency table back; problems can arise here if independent.var has only 1 unique value
-# if(!(nrow(as.data.frame(p.table)>1))){stop("DEV: unexpected edge case in percent_with_confints - freq table has 1 or less rows. contact development team about this error.")}
-#
-#   p.table %>% melt -> ftable_flipped
-#
-#   colnames(ftable_flipped)<-c("dependent.var.value","independent.var.value","numbers")
-#   results<-data.frame( dependent.var = dependent.var,
-#                        independent.var = independent.var,
-#                        ftable_flipped,
-#                        se=NA,
-#                        min=confints[,1],
-#                        max=confints[,2])
-
-# results<-list(
-#   independent.var.value=ftable
-# )
-# results<-list()
-# results$independent.var.value <- stat[,independent.var]
-# results$dependent.var.value <- stat[,"variable"]
-# results$numbers <-stat[,"value"]
-# results$se <- standard_error[,"value"]
-# results$min <- results$numbers - results$se
-# results$max <- results$numbers + results$se
-# results<-f.table
-#   return(results)
-# }
-
-
-
-
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a numeric variable.
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@details this function takes the design object and the name of your dependent variable when this one is a select one, and the independent variable that determines the groups. It calculates the weighted percentage for each category.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@export
 mean_with_confints <- function(dependent.var,
                                independent.var = NULL,
                                design) {
