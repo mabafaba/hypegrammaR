@@ -74,7 +74,7 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
 #' @return returns a list of hypegrammaR "result" objects (see map_to_result())
 #' @export
-<<<<<<< HEAD
+
 from_analysisplan_map_to_output <- function(data,
            analysisplan,
            weighting = NULL,
