@@ -44,7 +44,7 @@ get all your files in csv format first:
 #### Install the hypegrammaR package
 This line you only have to run _once_ when using hypegrammaR for the first time, or to update to a new version.
 ```{r,eval=F}
-remotes::install_github("mabafaba/hypegrammaR",build_opts = c())
+remotes::install_github("mabafaba/hypegrammaR",build_opts = c(), ref = "training")
 ```
 (the `build_opts = c()` makes sure the package includes all extra help pages & documentation)
 For this step only, you need a more or less stable internet connection.
@@ -56,13 +56,11 @@ library(hypegrammaR)
 
 #### Load your files
 
-All input files are expected as csv files.
-You must use the hypegrammar `load_*()` functions.
 
 ##### The data
 `load_data` takes only one argument `file`, the path to the csv file. 
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/data.csv")
+assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
 ```
 Conditions:
 
@@ -80,16 +78,17 @@ The sampling frame should be a csv file with one column with strata names, one c
 
 ```{r}
 
-sampling_frame<-load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
-head(sampling_frame)
+sampling_frame<-hypegrammaR::load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
 ```
 
 Now turn your sampling frame into a weighting function with `map_to_weighting`. We see that the relevant columns in the sampling frame are called "strata names" and "population". The column in the data correspoinding to the strata names is called "stratification" in this data set. We need to supply these column names as arguments to `map_to_weighing`:
 
 ```{r}
-myweighter<-map_to_weighting(sampling_frame,data.stratum.column = "stratification",
+myweighter<-map_to_weighting(sampling.frame = sampling_frame,
+                             data.stratum.column = "strata",
                              sampling.frame.population.column = "population",
-                             sampling.frame.stratum.column = "strata names")
+                             sampling.frame.stratum.column = "strata", 
+                             data = assessment_data)
 ```
 
 ##### The Questionnaire
@@ -106,9 +105,9 @@ The parameters are:
 ```{r}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                             questions.file = "../tests/testthat/kobo questions.csv",
-                                             choices.file = "../tests/testthat/kobo choices.csv",
-                                  choices.label.column.to.use = "label::English"
+                                  questions.file = "../tests/testthat/kobo questions.csv",
+                                  choices.file = "../tests/testthat/kobo choices.csv",
+                                  choices.label.column.to.use = "label"
                                              )
 
 ```
@@ -121,7 +120,7 @@ Conditions:
 #### Identify your analysis parameters
 
 - what are the column headers of your dependent and independent variables, and what are their data types?
-    - this Example: *"assistancereceived" (categorical)* and *"informalsettlement" (categorical)*
+    - this Example: *"primary_hc_provider" (categorical)* and *"shelter_type" (categorical)*
 - what type of hypothesis do you have?
     - this Example: the *difference between groups*
 
@@ -146,8 +145,8 @@ Now you use the inputs loaded above to an analysis result:
 ```{r}
 
 assistance_informal_settlements<-map_to_result(data = assessment_data,
-                      dependent.var = "assistancereceived",
-                      independent.var = 'informalsettlement',
+                      dependent.var = "primary_hc_provider",
+                      independent.var = 'primary_hc_provider',
                       case = my_case,
                       weighting = myweighter,
                       questionnaire = questionnaire)
@@ -168,10 +167,8 @@ Finally, we can get visualisations, tables etc.:
 
 
 ```{r, warning=F}
-debug(map_to_visualisation)
 chart<- map_to_visualisation(assistance_informal_settlements)
 table<-map_to_table(assistance_informal_settlements)
-result$summary.statistic
 chart
 table
 

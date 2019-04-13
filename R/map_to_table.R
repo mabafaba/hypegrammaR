@@ -2,7 +2,7 @@
 #' results as a table
 #'
 #' @param result a hypegrammaR `result` object produced by map_to_result
-#' @value a date frame with only the summary statistics
+#' @return a date frame with only the summary statistics
 #' @export
 map_to_table<-function(result){
   # extract core information

@@ -8,7 +8,7 @@ map_to_hypothesis_test(design, dependent.var, independent.var, case,
   questionnaire = NULL)
 }
 \arguments{
-\item{case}{a string uniquely identifying the analysis case. output of \code{\link{map_to_case}}. To list valid case strings use \link{\code{list_all_cases}}}
+\item{case}{a string uniquely identifying the analysis case. output of map_to_case().}
 }
 \value{
 a _function_ that computes the relevant hypothesis test

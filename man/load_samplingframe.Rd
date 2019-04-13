@@ -2,13 +2,22 @@
 % Please edit documentation in R/loading.R
 \name{load_samplingframe}
 \alias{load_samplingframe}
-\title{Create weighting from a sampling frame}
+\title{Load a sampling frame from csv}
 \usage{
 load_samplingframe(file)
 }
-\description{
-Create weighting from a sampling frame
+\arguments{
+\item{file}{the path and name of the sampling frame csv file to load.}
 }
-\details{
-Create a 'weighter' function from a sampling frame data frame. Uses surveyweights::weighting_fun_from_samplingframe()
+\description{
+Load a sampling frame from csv
+}
+\examples{
+
+# load the sampling frame:
+sf <- load_samplingframe("./somefolder/samplingframe.csv")
+
+# it can be used to make weights with map_to_weighting()
+
+
 }

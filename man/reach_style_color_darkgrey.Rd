@@ -9,11 +9,3 @@ reach_style_color_darkgrey(lightness = 1)
 \description{
 Reach brand dark greys
 }
-\examples{
-
-
-
-}
-\seealso{
-\code{\link{function_name}}
-}

@@ -2,7 +2,7 @@
 #'
 #' @param x hypegrammaR result or list of results (created with map_to_result() or from_analysisplan_map_to_output())
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
-#' @parm dir the directory in which to save the output file (absolute path or relative to current working directory)
+#' @param dir the directory in which to save the output file (absolute path or relative to current working directory)
 #' @param filename the name of the file. must end in '.html'
 #' @export
 map_to_template <- function(x, questionnaire = NULL, dir, filename) {

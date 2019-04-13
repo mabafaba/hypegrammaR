@@ -4,7 +4,7 @@
 #'
 #' selects an appropriate hypothesis test function based on the analysis case
 #'
-#' @param case a string uniquely identifying the analysis case. output of map_to_case. To list valid case strings use \link{\code{list_all_cases}}
+#' @param case a string uniquely identifying the analysis case. output of map_to_case().
 #' @return a _function_ that computes the relevant hypothesis test
 #' @examples map_to_summary_statistic("group_difference_categorical_categorical")
 #' @examples my_case<- map_to_case( ... )

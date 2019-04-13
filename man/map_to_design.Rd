@@ -8,6 +8,8 @@ map_to_design(data, cluster_variable_name = NULL,
   weighting_function = NULL)
 }
 \arguments{
+\item{data}{the dataset as a sampling frame. Must match the sampling frame provided to create the `weighting_function` produced with `map_to_weighting()`}
+
 \item{weighting_function}{if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?}
 }
 \value{

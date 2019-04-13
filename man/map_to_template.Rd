@@ -8,9 +8,8 @@ map_to_template(x, questionnaire = NULL, dir, filename)
 }
 \arguments{
 \item{x}{hypegrammaR result or list of results (created with map_to_result() or from_analysisplan_map_to_output())}
-
 \item{questionnaire}{optional: the questionnaire (load_questionnaire())}
-
+\item{dir}{the directory in which to save the output file (absolute path or relative to current working directory)}
 \item{filename}{the name of the file. must end in '.html'}
 }
 \description{
