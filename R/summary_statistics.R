@@ -15,6 +15,13 @@ percent_with_confints_select_one <-
       )
     }
 
+    # Check that the inputs make sense
+    if(var_more_than_n(design$variables[[dependent.var]], 15)){warning("Calculating percentages for more than 15 categories rarely makes sense")}
+    if (is.null(questionnaire)) {
+      dependent_is_select_multiple <- FALSE
+    }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
+    if(dependent_is_select_multiple){stop("Question is a select multiple. Please use percent_with_confints_select_multiple instead")}
+
     # if dependent var have only one value, just return that:
     dependent_more_than_1 <-
       var_more_than_n(design$variables[[dependent.var]], 1)
@@ -153,16 +160,6 @@ percent_with_confints_select_multiple <- function(dependent.var,
 }
 
 
-# DEPRECIATED: select_one or select_multiple is now decided by map_to_summary_statistic
-# percent_with_confints_groups <- function(dependent.var,
-#                                          independent.var,
-#                                          design,
-#                                          na.rm = TRUE){
-#   if(question_is_select_multiple(dependent.var)){
-#     return(percent_with_confints_select_multiple_groups(dependent.var = dependent.var, independent.var = independent.var, design = design))
-#   }
-#   return(percent_with_confints_select_one_groups(dependent.var = dependent.var, independent.var = independent.var, design = design))
-# }
 
 ### TESTED without weighting CHECK
 percent_with_confints_select_one_groups <- function(dependent.var,

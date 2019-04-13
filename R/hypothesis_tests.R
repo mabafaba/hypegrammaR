@@ -1,16 +1,3 @@
-
-#' DEPRECIATED
-#' select_one or select_multiple choice now made by map_to_summary_statistic
-hypothesis_test_chisquared<-function(dependent.var,independent.var,design){
-  # check if data ok; if not return empty hypothesis test
-
-  if(tryCatch({question_is_select_multiple(dependent.var)},error={FALSE})){
-    return(hypothesis_test_chisquared_select_multiple(dependent.var,independent.var,design))
-  }
-  hypothesis_test_chisquared_select_one(dependent.var,independent.var,design)
-
-}
-
 hypothesis_test_chisquared_select_one <- function(dependent.var,
                                                   independent.var,
                                                   design){
@@ -97,19 +84,76 @@ hypothesis_test_t_two_sample <- function(dependent.var,
 }
 
 
+hypothesis_test_t_one_sample <- function(dependent.var,
+                                         limit,
+                                         design){
+
+  as.numeric_factors_from_names<-function(x){
+    if(is.factor((x))){x<-as.character(x)}
+    as.numeric(x)
+  }
+
+  limit <- as.numeric(limit)
+
+### this fails if the input is not
+### how to make this function one sided
+
+  design$variables[[dependent.var]]  <- as.numeric_factors_from_names(design$variables[[dependent.var]])
+  design$variables[[dependent.var]] <- design$variables[[dependent.var]] - limit
+
+      formula_string<-paste0(dependent.var, "~", 0)
+      ttest <- svyttest(formula(formula_string), design, na.rm = TRUE)
+      results<-list()
+      results$result <- list(t=unname(ttest$statistic), p.value = ttest$p.value %>% unname)
+      results$parameters <- as.list(ttest$parameter)
+      results$name<- paste0(c("one sample ttest on difference from", limit, "limit value (one sided)"))
+  return(results)
+
+  ttest$statistic
+
+}
+
 hypothesis_test_logistic_regression <- function(dependent.var,
                                                 independent.var,
                                                 design){
+
   dependent_more_than_1 <- length(unique(design$variables[[dependent.var]])) > 1
-  if(!dependent_more_than_1){
+  dependent_binary <- length(!is.na(as.logical(design$variables[[dependent.var]]))) == length(!is.na(design$variables[[dependent.var]]))
+
+  if(!(dependent_more_than_1 & dependent_binary)){
     sanitised <-sanitise_data(design$variables,dependent.var,independent.var,case = case)
     results <- list()}else{
       formula_string <- paste0(dependent.var,"~", independent.var, sep = "")
       test <- svyglm(as.formula(formula_string), design, family=quasibinomial)
       summary <- summary(test)
       results <- list()
-      results$result <- list(coefficients = unname(summary$coefficients), decision = summary$effects)
+      ## this needs to macth the format for the other ones
+      ## coefficient to be interpreted suuuper carefully
+      results$result <- data.frame(summary$coefficients)
     }
+  return$results
+}
+
+
+hypothesis_test_linear_regression <- function(dependent.var,
+                                                independent.var,
+                                                design){
+
+  dependent_more_than_10 <- length(unique(design$variables[[dependent.var]])) > 10
+  independent_more_than_1 <- length(unique(design$variables[[independent.var]])) > 1
+
+  if(!(dependent_more_than_10 & independent_more_than_1)){
+    sanitised <-sanitise_data(design$variables,dependent.var,independent.var,case = case)
+    results <- list()}else{
+      formula_string <- paste0(dependent.var,"~", independent.var, sep = "")
+      test <- svyglm(as.formula(formula_string), design, family=stats::gaussian())
+      summary <- summary(test)
+      results <- list()
+      ## this needs to macth the format for the other ones
+      ## where can I get an R squared to add to this ??
+      results$result <- data.frame(summary$coefficients)
+    }
+  return$results
 }
 
 hypothesis_test_z <- function(dependent.var,

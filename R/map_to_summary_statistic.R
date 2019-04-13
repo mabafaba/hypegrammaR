@@ -128,6 +128,34 @@ map_to_summary_statistic <-
     }
 
 
+
+    if (case == "CASE_limit_categorical_") {
+      if (dependent_is_select_multiple) {
+        summary_stat <-
+          percent_with_confints_select_multiple(
+            dependent.var = dependent.var,
+            dependent.var.sm.cols = dependent.var.sm.cols,
+            design = design
+          )
+      }
+
+
+      if (!dependent_is_select_multiple) {
+        summary_stat <-
+          percent_with_confints_select_one(
+            dependent.var = dependent.var,
+            design = design
+          )
+      }
+    }
+
+    if (case == "CASE_limit_numerical_") {
+      summary_stat <- mean_with_confints(
+        dependent.var = dependent.var,
+        design = design
+      )
+    }
+
     if (case == "") {
       preferred_summary_statistic_fun <-
         summary_stat(
