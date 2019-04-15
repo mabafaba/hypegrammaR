@@ -42,6 +42,17 @@ datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
   )
 }
 
+datasanitation_logistic_regression <- function(data, dependent.var, independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_dependent_numeric,
+                         datasanitation_independent_numeric
+  )
+}
+
 
 # GENERIC SANITATION GROUPS:
 datasanitation_always_applicable_before<-function(data,dependent.var,independent.var,...){
@@ -184,8 +195,6 @@ datasanitation_morethan_1_record_per_independent_value<-  function(data,dependen
 datasanitation_morethan_2_records_total<-function(data,dependent.var,independent.var,...){
   datasanitation_generic_check(data,dependent.var,independent.var,valid=nrow(data)>2,"less than 2 records two samples with valid data available for this combination of dependent and independent variable")
 }
-
-
 
 
 datasanitation_dependent_numeric<-function(data,dependent.var,independent.var,...){

@@ -35,7 +35,7 @@ test_that("percent_with_confints_select_one outputs correct",{
   expect_match(names(percent_with_confints_select_one(tf$select_one[1], design = design)), "max",all = FALSE)
 })
 
-test_that("percent_with_confints_select_multiple inputs correct",{
+test_that("percent_with_confints_select_multiple outputs correct",{
   expect_is(percent_with_confints_select_multiple(tf$select_multiple[1], design = design), "data.frame")
   expect_error(percent_with_confints_select_multiple(tf$numeric[1], design = design)) #numerical var
   expect_error(percent_with_confints_select_multiple(tf$fake[1], design = design)) #nonexistent.var
@@ -47,7 +47,6 @@ test_that("percent_with_confints_select_multiple inputs correct",{
 
 
 test_that("percent_with_confints_select_mult_groups all inputs correct",{
-  expect_is(percent_with_confints_select_mult_groups(tf$select_multiple[1], tf$select_one[2], design), "data.frame")
   expect_error(percent_with_confints_select_one_groups(tf$select_one[1], tf$select_one[2], design)) ##wrong dependent
   expect_error(percent_with_confints_select_one_groups(tf$numeric[1], tf$select_one[2], design)) ## wrong dependent
   expect_error(percent_with_confints_select_one_groups(tf$fake[1], tf$select_one[2], design)) ## wrong dependent
@@ -63,6 +62,7 @@ test_that("percent_with_confints_select_mult_groups all outputs correct",{
                                                                                                             "dependent.var.value","independent.var.value",
                                                                                                             "numbers","se","min","max"))
   expect_true(is.numeric(percent_with_confints_select_mult_groups(tf$select_multiple[1], tf$select_one[2], design)$numbers))
+  expect_false(is.null(percent_with_confints_select_mult_groups(tf$select_multiple[1], tf$select_one[2], design)$numbers))
 })
 
 
@@ -82,5 +82,16 @@ test_that("percent_with_confints_select_one_groups all outputs correct",{
                                                                                                       "numbers","se","min","max"))
   expect_true(is.numeric(percent_with_confints_select_one_groups(tf$select_one[1], tf$select_one[2], design)$numbers))
 })
+
+test_that("mean_with_confints outputs correct",{
+  ###This needs to be tested with a dependent var thats select one, one that's select multiple, one that's numeric etc
+  expect_is(percent_with_confints_select_one(tf$select_one[1], design = design), "data.frame")
+  #expect_error(percent_with_confints_select_one(tf$numeric[1], design = design)) #numerical var, shouldnt throw error
+  expect_error(percent_with_confints_select_one(tf$fake[1], design = design)) #nonexistent.var
+  expect_error(percent_with_confints_select_one(tf$select_multiple[1], design = design)) # select multiple
+  expect_match(names(percent_with_confints_select_one(tf$select_one[1], design = design)), "min",all = FALSE)
+  expect_match(names(percent_with_confints_select_one(tf$select_one[1], design = design)), "max",all = FALSE)
+})
+
 
 
