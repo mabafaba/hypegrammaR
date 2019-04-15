@@ -50,8 +50,8 @@ weights<-map_to_weighting(sampling.frame = samplingframe,
 ```{r,warning=F,message=F,error=F}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                  questions.file = "../tests/testthat/kobo questions.csv",
-                                  choices.file = "../tests/testthat/kobo choices.csv",
+                                  questions = "../tests/testthat/kobo questions.csv",
+                                  choices = "../tests/testthat/kobo choices.csv",
                                   choices.label.column.to.use = "label::English"
 )
 ```
