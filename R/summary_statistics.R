@@ -368,8 +368,6 @@ percent_with_confints_select_multiple_groups <-
 # }
 
 
-
-
 mean_with_confints <- function(dependent.var,
                                independent.var = NULL,
                                design) {
