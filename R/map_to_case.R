@@ -16,7 +16,11 @@ list_all_cases<-function(implemented_only=F){
     "CASE_direct_reporting_numerical_",
     "CASE_direct_reporting_categorical_",
     "CASE_direct_reporting_categorical_categorical",
-    "CASE_direct_reporting_numerical_categorical"
+    "CASE_direct_reporting_numerical_categorical",
+    "CASE_limit_categorical",
+    "CASE_limit_numerical",
+    "CASE_correlation_numerical_numerical",
+    "CASE_correlation_categorical_numerical"
   ))
 }
 
@@ -30,8 +34,6 @@ is_valid_case_string<-function(x,implemented_only=T){
 case_not_implemented_error<-function(case,situation){
   stop(paste(situation,":  case", case, "not implemented"))
 }
-
-
 
 
 

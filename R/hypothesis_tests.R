@@ -113,7 +113,7 @@ hypothesis_test_t_one_sample <- function(dependent.var,
 
 }
 
-hypothesis_test_logistic_regression <- function(dependent.var,
+model_logistic_regression <- function(dependent.var,
                                                 independent.var,
                                                 design){
 
@@ -135,7 +135,7 @@ hypothesis_test_logistic_regression <- function(dependent.var,
 }
 
 
-hypothesis_test_linear_regression <- function(dependent.var,
+model_linear_regression <- function(dependent.var,
                                                 independent.var,
                                                 design){
 
@@ -166,23 +166,6 @@ hypothesis_test_z <- function(dependent.var,
   results$result <- c()
   results$parameters <- c()
   results$name<-"Z test (not implemented)"
-  return(results)
-}
-
-
-hypothesis_test_linear_regression <- function(independent.var = independent.var,
-                                              dependent.var = data.dependent.var,
-                                              design){
-
-
-  # .....
-
-
-  results<-list()
-  results$result <- c()
-  results$parameters <- c()
-  results$name<-"linear regression (not implemented)"
-  return(results)
   return(results)
 }
 

@@ -22,26 +22,6 @@ percent_with_confints_select_one <-
     }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
     if(dependent_is_select_multiple){stop("Question is a select multiple. Please use percent_with_confints_select_multiple instead")}
 
-    # if dependent var have only one value, just return that:
-    dependent_more_than_1 <-
-      var_more_than_n(design$variables[[dependent.var]], 1)
-
-    if (!dependent_more_than_1) {
-      dependent.var.value = unique(design$variables[[dependent.var]])
-      return(
-        data.frame(
-          dependent.var,
-          independent.var = NA,
-          dependent.var.value,
-          independent.var.value = NA,
-          numbers = 1,
-          se = NA,
-          min = NA,
-          max = NA
-        )
-      )
-    }
-
     # if(question_in_questionnaire(dependent.var) & !question_is_select_one(dependent.var)){stop("This question was not a select one")}
 
 
@@ -168,28 +148,6 @@ percent_with_confints_select_one_groups <- function(dependent.var,
                                                     na.rm = TRUE) {
   # if dependent and independent variables have only one value, just return that:
 
-  if (length(unique(as.character(design$variables[[dependent.var]]))) ==
-      1) {
-    dependent.var.value = unique(design$variables[[dependent.var]])
-    if (length(unique(as.character(design$variables[[independent.var]]))) ==
-        1) {
-      independent.var.value = unique(design$variables[[independent.var]])
-      return(
-        data.frame(
-          dependent.var,
-          independent.var,
-          dependent.var.value,
-          independent.var.value,
-          numbers = 1,
-          se = NA,
-          min = NA,
-          max = NA
-        )
-      )
-
-    }
-  }
-
   # if(question_in_questionnaire(dependent.var) & !question_is_select_one(dependent.var)){stop("This question was not a select one")}
   # if(question_in_questionnaire(independent.var) & !question_is_select_one(independent.var)){stop("You are not disaggregating by groups (independent variable is not a select one question)")}
 
@@ -197,8 +155,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
   by <- paste0("~", independent.var , sep = "")
 
 
-  result_hg_format <- # tryCatch(
-  {
+  result_hg_format <- {
     design$variables[[dependent.var]] <-
       as.factor(design$variables[[dependent.var]])
 
@@ -255,7 +212,6 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
 
 
-
 #should only be called if the question is select multiple
 # later:  comment above is confusing; maybe relating to independent shouldnt be select_multiple
 percent_with_confints_select_multiple_groups <-
@@ -270,8 +226,6 @@ percent_with_confints_select_multiple_groups <-
     result_hg_format <- lapply(names(choices), function(x) {
       if (length(unique(design$variables[[x]])) == 1) {
         dependent.var.value = x
-        if (length(unique(design$variables[[independent.var]])) == 1) {
-          independent.var.value = unique(design$variables[[independent.var]])
           return(
             data.frame(
               dependent.var,
@@ -284,7 +238,6 @@ percent_with_confints_select_multiple_groups <-
               max = NA
             )
           )
-        }
       }
       formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
       formula_string <- paste0("~as.numeric(", x , ")", sep = "")
@@ -337,35 +290,6 @@ percent_with_confints_select_multiple_groups <-
 
     return(result_hg_format)
   }
-
-
-
-# check if we actually got  a frequency table back; problems can arise here if independent.var has only 1 unique value
-# if(!(nrow(as.data.frame(p.table)>1))){stop("DEV: unexpected edge case in percent_with_confints - freq table has 1 or less rows. contact development team about this error.")}
-#
-#   p.table %>% melt -> ftable_flipped
-#
-#   colnames(ftable_flipped)<-c("dependent.var.value","independent.var.value","numbers")
-#   results<-data.frame( dependent.var = dependent.var,
-#                        independent.var = independent.var,
-#                        ftable_flipped,
-#                        se=NA,
-#                        min=confints[,1],
-#                        max=confints[,2])
-
-# results<-list(
-#   independent.var.value=ftable
-# )
-# results<-list()
-# results$independent.var.value <- stat[,independent.var]
-# results$dependent.var.value <- stat[,"variable"]
-# results$numbers <-stat[,"value"]
-# results$se <- standard_error[,"value"]
-# results$min <- results$numbers - results$se
-# results$max <- results$numbers + results$se
-# results<-f.table
-#   return(results)
-# }
 
 
 mean_with_confints <- function(dependent.var,
