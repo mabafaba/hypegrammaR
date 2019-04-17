@@ -32,8 +32,6 @@ datasanitation_summary_statistics_group_difference <- function(data,dependent.va
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_morethan_1_unique_dependent_table,
-                         datasanitation_morethan_1_unique_dependent_table,
                          datasanitation_dependent_max_unique,
                          datasanitation_independent_max_unique)
 }
@@ -54,6 +52,25 @@ datasanitation_hypothesistest_chisq<-function(data,dependent.var,independent.var
                          datasanitation_morethan_1_record_per_independent_value
 
   )
+
+  }
+
+
+datasanitation_hypothesistest_chisq_sm<-function(data,dependent.var,independent.var){
+  # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
+
+
+  apply_data_sanitations(data,           # all functions take these parameters
+                         dependent.var,  # all functions take these parameters
+                         independent.var,# all functions take these parameters
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_independent_max_unique,
+                         datasanitation_dependent_max_unique,
+                         datasanitation_morethan_1_record_per_independent_value
+
+  )
+
 }
 
 datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
@@ -69,6 +86,19 @@ datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
                          datasanitation_independent_max_unique,
                          datasanitation_morethan_1_record_per_independent_value
 
+  )
+}
+
+
+datasanitation_hypothesistest_limit<-function(data,dependent.var,independent.var){
+  # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
+
+
+  apply_data_sanitations(data,           # all functions take these parameters
+                         dependent.var,  # all functions take these parameters
+                         independent.var,# all functions take these parameters
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_dependent_numeric
   )
 }
 
@@ -90,7 +120,6 @@ datasanitation_always_applicable_before<-function(data,dependent.var,independent
                          datasanitation_is_good_dataframe,
                          datasanitation_variables_in_data_colnames,
                          datasanitation_remove_missing,
-                         if(exists("samplingframe"))
                          BEFORE=NULL, # apply_data_sanitations() applies this function; overwritting it to prevent INFINITE RECURSION (scary innit)
                          AFTER=NULL   # apply_data_sanitations() applies this function; overwritting it to prevent INFINITE RECURSION
   )

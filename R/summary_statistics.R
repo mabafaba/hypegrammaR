@@ -146,8 +146,10 @@ percent_with_confints_select_one_groups <- function(dependent.var,
                                                     independent.var,
                                                     design,
                                                     na.rm = TRUE) {
+  data <- design$variables
   # if dependent and independent variables have only one value, just return that:
-
+  datasanitation_morethan_1_unique_dependent_table(data, dependent.var, independent.var)
+  datasanitation_morethan_1_unique_independent_table(data, dependent.var, independent.var)
   # if(question_in_questionnaire(dependent.var) & !question_is_select_one(dependent.var)){stop("This question was not a select one")}
   # if(question_in_questionnaire(independent.var) & !question_is_select_one(independent.var)){stop("You are not disaggregating by groups (independent variable is not a select one question)")}
 
@@ -224,21 +226,8 @@ percent_with_confints_select_multiple_groups <-
     choices <- design$variables[, dependent.var.sm.cols]
 
     result_hg_format <- lapply(names(choices), function(x) {
-      if (length(unique(design$variables[[x]])) == 1) {
-        dependent.var.value = x
-          return(
-            data.frame(
-              dependent.var,
-              independent.var,
-              dependent.var.value,
-              independent.var.value,
-              numbers = as.numeric(unique(design$variables[[x]])),
-              se = NA,
-              min = NA,
-              max = NA
-            )
-          )
-      }
+      datasanitation_morethan_1_unique_dependent_table(data, x, independent.var)
+
       formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
       formula_string <- paste0("~as.numeric(", x , ")", sep = "")
       by <- paste0("~", independent.var , sep = "")

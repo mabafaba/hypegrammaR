@@ -61,6 +61,7 @@ hypothesis_test_t_two_sample <- function(dependent.var,
     if(is.factor((x))){x<-as.character(x)}
     as.numeric(x)
   }
+
   design$variables[[dependent.var]] <- as.numeric_factors_from_names(design$variables[[dependent.var]])
   if(is.factor(design$variables[[independent.var]])){
     design$variables[[independent.var]]<-droplevels(design$variables[[independent.var]])
@@ -85,6 +86,7 @@ hypothesis_test_t_two_sample <- function(dependent.var,
 
 
 hypothesis_test_t_one_sample <- function(dependent.var,
+                                         independent.var = NULL,
                                          limit,
                                          design){
 
@@ -94,15 +96,16 @@ hypothesis_test_t_one_sample <- function(dependent.var,
   }
 
   limit <- as.numeric(limit)
-
-### this fails if the input is not
 ### how to make this function one sided
 
   design$variables[[dependent.var]]  <- as.numeric_factors_from_names(design$variables[[dependent.var]])
   design$variables[[dependent.var]] <- design$variables[[dependent.var]] - limit
 
+  sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                   datasanitation_hypothesistest_limit)
+
       formula_string<-paste0(dependent.var, "~", 0)
-      ttest <- svyttest(formula(formula_string), design, na.rm = TRUE)
+      ttest <- svyttest(formula(formula_string), design, na.rm = TRUE, alternative = "two.sided")
       results<-list()
       results$result <- list(t=unname(ttest$statistic), p.value = ttest$p.value %>% unname)
       results$parameters <- as.list(ttest$parameter)
@@ -178,12 +181,13 @@ hypothesis_test_chisquared_select_multiple <- function(dependent.var,
                                                        design){
 
   # sanitise design
+  for(x in dependent.var.sm.cols){
+  dependent.var <- names(design$variables)[x]
   sanitised<-datasanitation_design(design,dependent.var,independent.var,
                                    datasanitation_hypothesistest_chisq)
   if(!sanitised$success){return(hypothesis_test_empty(dependent.var,independent.var,message=sanitised$message))}
 
-  # update design object from sanitation
-  design<-sanitised$design
+  design<-sanitised$design}
 
 
   multiple_dependents<-names(design$variables)[dependent.var.sm.cols]

@@ -51,22 +51,34 @@ data_sanitation_remove_not_in_samplingframe<-function(data,samplingframe_object,
   return(data[!records_not_found_in_sf,])
 }
 
+
+### HOW TO RECODE BLANKS
+# datasanitation_NA_heavy<-function(data,dependent.var,independent.var){
+#   dependent_NA_heavy <- sum(is.null(data[[dependent.var]])) / length(data[[dependent.var]]) > 0.95
+#   independent_NA_heavy <- length(is.na(data[[dependent.var]])) / length(data[[independent.var]]) > 0.95
+#   if(!dependent_more_than_1){return(failed_sanitation("less than two unique values in the dependent variable"))}
+#   return(successfull_sanitation(data))
+# }
+
 datasanitation_morethan_1_unique_dependent<-function(data,dependent.var,independent.var){
   dependent_more_than_1 <- length(unique(data[[dependent.var]])) > 1
   if(!dependent_more_than_1){return(failed_sanitation("less than two unique values in the dependent variable"))}
+  return(successfull_sanitation(data))
+}
+datasanitation_morethan_1_unique_independent<-function(data,dependent.var,independent.var){
+  independent_more_than_1 <- length(unique(data[[independent.var]])) > 1
+  if(!independent_more_than_1){return(failed_sanitation("less than two unique values in the independent variable"))}
   return(successfull_sanitation(data))
 }
 
 datasanitation_morethan_1_unique_dependent_table<-function(data,dependent.var,independent.var){
   dependent_more_than_1 <- length(unique(data[[dependent.var]])) > 1
   if(!dependent_more_than_1){return(datasanitation_return_empty_table(data,dependent.var,independent.var))}
-  return(successfull_sanitation(data))
 }
 
 datasanitation_morethan_1_unique_independent_table<-function(data,dependent.var,independent.var){
   independent_more_than_1 <- length(unique(data[[independent.var]])) > 1
   if(!independent_more_than_1){return(datasanitation_return_empty_table(data,dependent.var,independent.var))}
-  return(successfull_sanitation(data))
 }
 
 datasanitation_remove_missing<-function(data,dependent.var,independent.var,...){
