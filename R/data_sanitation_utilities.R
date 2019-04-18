@@ -11,12 +11,32 @@ datasanitation_design<-function(design,dependent.var,independent.var,sanitation_
 
 # BLOCK SPECIFIC SANITATIONS:
 
-datasanitation_summary_statistics_group_difference <- function(data,dependent.var,independent.var){
+datasanitation_summary_statistics_percent_with_confints_select_one <- function(data,dependent.var,independent.var){
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_morethan_1_unique_dependent_table,
-                         datasanitation_morethan_1_unique_independent_table,
+                         datasanitation_question_not_sm,
+                         datasanitation_morethan_1_unique_dependent)
+}
+
+datasanitation_summary_statistics_percent_with_confints <- function(data,dependent.var,independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_dependent_max_unique,
+                         datasanitation_independent_max_unique)
+}
+
+
+datasanitation_summary_statistics_percent_groups <- function(data,dependent.var,independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_question_not_sm,
                          datasanitation_dependent_max_unique,
                          datasanitation_independent_max_unique)
 }
@@ -28,13 +48,6 @@ datasanitation_summary_statistics_mean <- function(data, dependent.var, independ
                          datasanitation_dependent_numeric)
 }
 
-datasanitation_summary_statistics_group_difference <- function(data,dependent.var,independent.var){
-  apply_data_sanitations(data,
-                         dependent.var,
-                         independent.var,
-                         datasanitation_dependent_max_unique,
-                         datasanitation_independent_max_unique)
-}
 
 
 

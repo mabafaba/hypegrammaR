@@ -1,6 +1,9 @@
 # GENERIC LOW LEVEL SANITATIONS:
 
 datasanitation_return_empty_table <- function(data, dependent.var, independent.var = NULL){
+  if(datasanitation_variables_in_data_colnames(data, dependent.var, independent.var)$success == F){
+    return(datasanitation_return_empty_table_NA(data, dependent.var, independent.var))
+  }
   dependent.var.value <- unique(data[[dependent.var]])
   if(!is.null(independent.var)){
     independent.var.value <- unique(data[[independent.var]])
@@ -22,6 +25,20 @@ datasanitation_return_empty_table <- function(data, dependent.var, independent.v
   )
 }
 
+datasanitation_return_empty_table_NA <- function(data, dependent.var, independent.var = NULL){
+
+return(data.frame(
+  dependent.var,
+  independent.var = NA,
+  dependent.var.value = NA,
+  independent.var.value = NA,
+  numbers = NA,
+  se = NA,
+  min = NA,
+  max = NA
+)
+)
+}
 
 datasanitation_is_good_dataframe<-function(data,...){
   if(!is.data.frame(data)){return(failed_sanitation("data is not a data frame"))}
@@ -71,15 +88,6 @@ datasanitation_morethan_1_unique_independent<-function(data,dependent.var,indepe
   return(successfull_sanitation(data))
 }
 
-datasanitation_morethan_1_unique_dependent_table<-function(data,dependent.var,independent.var){
-  dependent_more_than_1 <- length(unique(data[[dependent.var]])) > 1
-  if(!dependent_more_than_1){return(datasanitation_return_empty_table(data,dependent.var,independent.var))}
-}
-
-datasanitation_morethan_1_unique_independent_table<-function(data,dependent.var,independent.var){
-  independent_more_than_1 <- length(unique(data[[independent.var]])) > 1
-  if(!independent_more_than_1){return(datasanitation_return_empty_table(data,dependent.var,independent.var))}
-}
 
 datasanitation_remove_missing<-function(data,dependent.var,independent.var,...){
   data<-data[!is.na(data[[dependent.var]]),]
@@ -89,12 +97,13 @@ datasanitation_remove_missing<-function(data,dependent.var,independent.var,...){
 }
 
 datasanitation_variables_in_data_colnames<-function(data,dependent.var,independent.var,...){
-  dep_var_name_in_data_headers<- grep(paste0("^",dependent.var),colnames(data),value = T)
-  indep_var_name_in_data_headers<- grep(paste0("^",independent.var),colnames(data),value = T)
+  dep_var_name_in_data_headers<- grep(paste("^", dependent.var,"$", sep=""),colnames(data),value = T)
+  if(!is.null(independent.var)){
+  indep_var_name_in_data_headers<- grep(paste0("^", independent.var,"$"),colnames(data),value = T)}else{indep_var_name_in_data_headers <- T}
   if(length(dep_var_name_in_data_headers)==0){return(failed_sanitation(paste0("dependent variable \"",dependent.var,"\" not found in data.")))}
-  if(length(indep_var_name_in_data_headers)==0 & !is.null(independent.var)){
+  if(length(indep_var_name_in_data_headers)==0){
     return(failed_sanitation(paste0("independent variable \"",independent.var,"\" not found in data.")))}
-  successfull_sanitation(data)
+  return(successfull_sanitation(data))
 }
 
 datasanitation_independent_max_unique<-function(data,dependent.var,independent.var, n_max = 20){
@@ -136,6 +145,19 @@ datasanitation_independent_numeric<-function(data,dependent.var,independent.var,
   data<-data[!is.na(data[[dependent.var]]),]
   return(successfull_sanitation(data))
 }
+
+as.numeric_factors_from_names<-function(x){
+  if(is.factor((x))){x<-as.character(x)}
+  as.numeric(x)
+}
+
+datasanitation_question_not_sm <- function(data,dependent.var,independent.var,...){
+  if(is.null(questionnaire)) {
+  dependent_is_select_multiple <- FALSE}else{
+    dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
+if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))}
+  return(successfull_sanitation(data))}
+
 
 
 

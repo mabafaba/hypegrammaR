@@ -15,16 +15,14 @@ percent_with_confints_select_one <-
       )
     }
 
-    # Check that the inputs make sense
-    if(var_more_than_n(design$variables[[dependent.var]], 15)){warning("Calculating percentages for more than 15 categories rarely makes sense")}
-    if (is.null(questionnaire)) {
-      dependent_is_select_multiple <- FALSE
-    }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
-    if(dependent_is_select_multiple){stop("Question is a select multiple. Please use percent_with_confints_select_multiple instead")}
+    sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                     datasanitation_summary_statistics_percent_with_confints_select_one)
 
-    # if(question_in_questionnaire(dependent.var) & !question_is_select_one(dependent.var)){stop("This question was not a select one")}
+    if(!sanitised$success){
+      warning(sanitised$message)
+      return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var))}
 
-
+    design<-sanitised$design
     tryCatch(
       expr = {
         result_hg_format <-
@@ -74,6 +72,15 @@ percent_with_confints_select_multiple <- function(dependent.var,
                                                   dependent.var.sm.cols,
                                                   design,
                                                   na.rm = TRUE) {
+
+  for(x in dependent.var.sm.cols){
+    dependent.var <- names(design$variables)[x]
+    sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                     datasanitation_summary_statistics_percent_with_confints)
+    if(!sanitised$success){return(hypothesis_test_empty(dependent.var,independent.var,message=sanitised$message))}
+
+    design<-sanitised$design}
+
   # if dependent and independent variables have only one value, just return that:
   choices <- design$variables[, dependent.var.sm.cols]
 
@@ -146,12 +153,15 @@ percent_with_confints_select_one_groups <- function(dependent.var,
                                                     independent.var,
                                                     design,
                                                     na.rm = TRUE) {
-  data <- design$variables
-  # if dependent and independent variables have only one value, just return that:
-  datasanitation_morethan_1_unique_dependent_table(data, dependent.var, independent.var)
-  datasanitation_morethan_1_unique_independent_table(data, dependent.var, independent.var)
-  # if(question_in_questionnaire(dependent.var) & !question_is_select_one(dependent.var)){stop("This question was not a select one")}
-  # if(question_in_questionnaire(independent.var) & !question_is_select_one(independent.var)){stop("You are not disaggregating by groups (independent variable is not a select one question)")}
+
+
+  sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                   datasanitation_summary_statistics_percent_groups)
+  if(!sanitised$success){
+    warning(sanitised$message)
+    return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var))}
+
+  design<-sanitised$design
 
   formula_string <- paste0("~", dependent.var , sep = "")
   by <- paste0("~", independent.var , sep = "")

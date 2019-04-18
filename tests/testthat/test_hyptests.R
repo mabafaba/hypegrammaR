@@ -33,3 +33,10 @@ test_that("Hypothesis test limit works",{
   expect_equal(hypothesis_test_t_one_sample(tf$select_one[2], tf$select_one[1],design = design)$name, "Pearson's X^2: Rao & Scott adjustment")
 })
 
+## hypothesis test limit (t test one sample)
+test_that("Hypothesis test two sample works",{
+  expect_gt(hypothesis_test_t_two_sample(tf$numeric[2], tf$select_one[2],design = design)$result$t, 6.77) ## too many categories for ChiSquared
+  expect_equal(hypothesis_test_t_two_sample(tf$numeric[2], independent = tf$select_one_many_cat[1],design = design)$name, "too many (>=20) unique values in independent variable")
+  expect_equal(hypothesis_test_t_two_sample(tf$numeric[1], tf$select_one_NA_heavy[1],design = design)$name, "two sample ttest on difference in means (two sided)")
+})
+

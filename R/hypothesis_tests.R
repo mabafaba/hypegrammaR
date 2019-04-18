@@ -57,27 +57,22 @@ hypothesis_test_t_two_sample <- function(dependent.var,
                                          design){
 
 
-  as.numeric_factors_from_names<-function(x){
-    if(is.factor((x))){x<-as.character(x)}
-    as.numeric(x)
-  }
-
   design$variables[[dependent.var]] <- as.numeric_factors_from_names(design$variables[[dependent.var]])
   if(is.factor(design$variables[[independent.var]])){
     design$variables[[independent.var]]<-droplevels(design$variables[[independent.var]])
   }
 
+  sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                   datasanitation_hypothesistest_t)
+  if(!sanitised$success){return(hypothesis_test_empty(dependent.var,independent.var,message=sanitised$message))}
+  design<-sanitised$design
 
-
-  independent_more_than_1 <- length(unique(design$variables[[independent.var]])) > 1
-  if(!independent_more_than_1){
-    results <- list()}else{
       formula_string<-paste0(dependent.var, "~", independent.var)
       ttest <- svyttest(formula(formula_string), design, na.rm = TRUE)
       results<-list()
       results$result <- list(t=unname(ttest$statistic), p.value = ttest$p.value %>% unname)
       results$parameters <- as.list(ttest$parameter)
-      results$name<-"two sample ttest on difference in means (two sided)"}
+      results$name<-"two sample ttest on difference in means (two sided)"
   return(results)
 
   ttest$statistic
@@ -90,10 +85,6 @@ hypothesis_test_t_one_sample <- function(dependent.var,
                                          limit,
                                          design){
 
-  as.numeric_factors_from_names<-function(x){
-    if(is.factor((x))){x<-as.character(x)}
-    as.numeric(x)
-  }
 
   limit <- as.numeric(limit)
 ### how to make this function one sided

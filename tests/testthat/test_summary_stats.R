@@ -30,7 +30,7 @@ test_that("percent_with_confints_select_one outputs correct",{
   expect_is(percent_with_confints_select_one(tf$select_one[1], design = design), "data.frame")
   #expect_error(percent_with_confints_select_one(tf$numeric[1], design = design)) #numerical var, shouldnt throw error
   expect_error(percent_with_confints_select_one(tf$fake[1], design = design)) #nonexistent.var
-  expect_error(percent_with_confints_select_one(tf$select_multiple[1], design = design)) # select multiple
+  expect_warning(percent_with_confints_select_one(tf$select_multiple[1], design = design)) # select multiple
   expect_match(names(percent_with_confints_select_one(tf$select_one[1], design = design)), "min",all = FALSE)
   expect_match(names(percent_with_confints_select_one(tf$select_one[1], design = design)), "max",all = FALSE)
 })
