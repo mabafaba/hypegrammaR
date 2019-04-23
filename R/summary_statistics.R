@@ -1,8 +1,9 @@
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'
-#'@param independen.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#'@param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
 #'@param design the svy design object created using map_to_design or directly with svydesign
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@example percent_with_confints_select_one("population_group", "resp_gender", design)
 #'@export
 percent_with_confints_select_one <-
   function(dependent.var,
@@ -63,7 +64,7 @@ percent_with_confints_select_one <-
   }
 
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
-#'@param independen.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#'@param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
 #'@param design the svy design object created using map_to_design or directly with svydesign
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.

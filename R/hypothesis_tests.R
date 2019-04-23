@@ -1,3 +1,11 @@
+#' Perform a chi squared test on a select one question against another.
+#'
+#' @param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'.
+#' @param independen.var string with the column name in `data` of the independent variable. Should be a 'select one' with few (<15) categories.
+#' @param design the svy design object created using map_to_design or directly with svydesign
+#' @return A list with the results of the test (Chi Squared statistics, p value) or the error message.
+#' @example hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)
+#' @export
 hypothesis_test_chisquared_select_one <- function(dependent.var,
                                                   independent.var,
                                                   design){
@@ -33,11 +41,6 @@ hypothesis_test_chisquared_select_one <- function(dependent.var,
     return(results)}
 }
 
-######## ONE SAMPLE Z tEST
-# hypothesis_test_one_sample_z_num <- function(data.dependent.var, crit, design, data = data) {
-# doesn't seem right.. parameter 'crit' not used.
-#   svyttest(data[[dependentvar]]~data[[independent.var]], design = design, family = quasibinomial())
-# }
 
 
 hypothesis_test_empty <- function(dependent.var = NULL,
@@ -51,7 +54,14 @@ hypothesis_test_empty <- function(dependent.var = NULL,
   return(results)
 }
 
-
+#' Perform a two sample t test of one numerical variable across mutliple groups
+#'
+#' @param dependent.var string with the column name in `data` of the dependent variable. Should be numerical.
+#' @param independen.var string with the column name in `data` of the independent variable. Should be a 'select one' with few (<15) categories.
+#' @param design the svy design object created using map_to_design or directly with svydesign
+#' @return A list with the results of the test (T-value, p value, etc.) or the error message.
+#' @example hypothesis_test_t_two_sample("males_13_15", "resp_gender", design)
+#' @export
 hypothesis_test_t_two_sample <- function(dependent.var,
                                          independent.var,
                                          design){
@@ -79,7 +89,15 @@ hypothesis_test_t_two_sample <- function(dependent.var,
 
 }
 
-
+#' Perform a one sample t test of one numerical variable against  hypothesised value (limit)
+#'
+#' @param dependent.var string with the column name in `data` of the dependent variable. Should be numerical.
+#' @param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#' @param limit the value to test the dependent.var against
+#' @param design the svy design object created using map_to_design or directly with svydesign
+#' @return A list with the results of the test (T-value, p value, etc.) or the error message.
+#' @example hypothesis_test_t_two_sample("males_13_15", 4, design)
+#' @export
 hypothesis_test_t_one_sample <- function(dependent.var,
                                          independent.var = NULL,
                                          limit,
@@ -96,7 +114,7 @@ hypothesis_test_t_one_sample <- function(dependent.var,
                                    datasanitation_hypothesistest_limit)
 
       formula_string<-paste0(dependent.var, "~", 0)
-      ttest <- svyttest(formula(formula_string), design, na.rm = TRUE, alternative = "two.sided")
+      ttest <- svyttest(formula(formula_string), design, na.rm = TRUE, alternative = "greater")
       results<-list()
       results$result <- list(t=unname(ttest$statistic), p.value = ttest$p.value %>% unname)
       results$parameters <- as.list(ttest$parameter)
