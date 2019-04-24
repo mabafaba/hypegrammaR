@@ -18,7 +18,8 @@ Imports:
     koboquest,
     data.table,
     surveyweights,
-    htmltools
+    htmltools,
+    assertthat
 Remotes:
     github::mabafaba/koboquest,
     github::mabafaba/surveyweights
