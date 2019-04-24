@@ -183,7 +183,14 @@ hypothesis_test_z <- function(dependent.var,
 
 
 
-
+#' Perform a chi squared test on a select multiple question against a select one question.
+#'
+#' @param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple'.
+#' @param independen.var string with the column name in `data` of the independent variable. Should be a 'select one' with few (<15) categories.
+#' @param design the svy design object created using map_to_design or directly with svydesign
+#' @return A list with the results of the test (Chi Squared statistics, p value) or the error message.
+#' @example hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)
+#' @export
 hypothesis_test_chisquared_select_multiple <- function(dependent.var,
                                                        dependent.var.sm.cols,
                                                        independent.var,
