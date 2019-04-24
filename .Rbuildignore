@@ -1,6 +1,9 @@
+^Meta$
+^doc$
 ^data-raw$
 ^\.*\\.R$
 ^build_package\.R$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^todo\.md$
+^\.httr-oauth$

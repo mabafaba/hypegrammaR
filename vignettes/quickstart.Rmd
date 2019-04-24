@@ -44,7 +44,7 @@ get all your files in csv format first:
 #### Install the hypegrammaR package
 This line you only have to run _once_ when using hypegrammaR for the first time, or to update to a new version.
 ```{r,eval=F}
-remotes::install_github("mabafaba/hypegrammaR",build_opts = c())
+remotes::install_github("mabafaba/hypegrammaR",build_opts = c(), ref = "training")
 ```
 (the `build_opts = c()` makes sure the package includes all extra help pages & documentation)
 For this step only, you need a more or less stable internet connection.
@@ -60,7 +60,7 @@ library(hypegrammaR)
 ##### The data
 `load_data` takes only one argument `file`, the path to the csv file. 
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
+assessment_data<-load_data(file = "../tests/testthat/data.csv")
 ```
 Conditions:
 
@@ -79,15 +79,16 @@ The sampling frame should be a csv file with one column with strata names, one c
 ```{r}
 
 sampling_frame<-hypegrammaR::load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
-
 ```
 
 Now turn your sampling frame into a weighting function with `map_to_weighting`. We see that the relevant columns in the sampling frame are called "strata names" and "population". The column in the data correspoinding to the strata names is called "stratification" in this data set. We need to supply these column names as arguments to `map_to_weighing`:
 
 ```{r}
-myweighter<-map_to_weighting(sampling_frame,data.stratum.column = "stratification",
+myweighter<-map_to_weighting(sampling.frame = sampling_frame,
+                             data.stratum.column = "stratification",
                              sampling.frame.population.column = "population",
-                             sampling.frame.stratum.column = "strata names")
+                             sampling.frame.stratum.column = "strata names", 
+                             data = assessment_data)
 ```
 
 ##### The Questionnaire
@@ -104,8 +105,8 @@ The parameters are:
 ```{r}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                             questions.file = "../tests/testthat/kobo questions.csv",
-                                             choices.file = "../tests/testthat/kobo choices.csv",
+                                  questions = "../tests/testthat/kobo questions.csv",
+                                  choices = "../tests/testthat/kobo choices.csv",
                                   choices.label.column.to.use = "label::English"
                                              )
 
@@ -119,12 +120,12 @@ Conditions:
 #### Identify your analysis parameters
 
 - what are the column headers of your dependent and independent variables, and what are their data types?
-    - this Example: *"assistancereceived" (categorical)* and *"informalsettlement" (categorical)*
+    - this Example: *"sourceexpenses" (categorical)* and *"informalsettlement" (categorical)*
 - what type of hypothesis do you have?
     - this Example: the *difference between groups*
 
 #### map to the analysis case
-For this example, our hypothesis is that households in informal settlements received different assistance compared to non-informal settlements.
+For this example, our hypothesis is that idp or refugee households received different assistance compared host community hh.
 
 
 ```{r}
@@ -143,8 +144,8 @@ You can find out what exactly you can/should enter for these parameters by runni
 Now you use the inputs loaded above to an analysis result:
 ```{r}
 
-assistance_informal_settlements<-map_to_result(data = assessment_data,
-                      dependent.var = "assistancereceived",
+source_expenses_informal_settlements<-map_to_result(data = assessment_data,
+                      dependent.var = "sourceexpenses",
                       independent.var = 'informalsettlement',
                       case = my_case,
                       weighting = myweighter,
@@ -158,7 +159,7 @@ assistance_informal_settlements<-map_to_result(data = assessment_data,
 First, we add labels to the result (assuming that you've loaded a questionnaire):
 
 ```{r, warning=F}
-assistance_informal_settlements<-map_to_labeled(result = assistance_informal_settlements,
+source_expenses_informal_settlements<-map_to_labeled(result = source_expenses_informal_settlements,
                                                 questionnaire = questionnaire)
 ```
 
@@ -166,8 +167,8 @@ Finally, we can get visualisations, tables etc.:
 
 
 ```{r, warning=F}
-chart<- map_to_visualisation(assistance_informal_settlements)
-table<-map_to_table(assistance_informal_settlements)
+chart<- map_to_visualisation(source_expenses_informal_settlements)
+table<-map_to_table(source_expenses_informal_settlements)
 chart
 table
 

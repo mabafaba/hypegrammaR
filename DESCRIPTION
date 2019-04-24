@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: quantitative analysis according to the IMPACT minimum standards.
 Depends: 
-    R (>= 3.4.2),
+    R (>= 3.5.2),
     survey,
     magrittr,
     ggplot2,
@@ -21,7 +21,7 @@ Imports:
     htmltools
 Remotes:
     github::mabafaba/koboquest,
-    github::mabafaba/surveyweights
+    github::ellieallien/surveyweights
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

@@ -144,8 +144,8 @@ head(quest_c)%>% kable(format="html")
 ```{r,warning=FALSE}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                  questions.file = "../tests/testthat/kobo questions.csv",
-                                  choices.file = "../tests/testthat/kobo choices.csv",
+                                  questions = "../tests/testthat/kobo questions.csv",
+                                  choices = "../tests/testthat/kobo choices.csv",
                                   choices.label.column.to.use = "label::English"
                                   )
 
