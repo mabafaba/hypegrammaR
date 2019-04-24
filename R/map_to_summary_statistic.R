@@ -139,7 +139,7 @@ map_to_summary_statistic <-
 
 
 
-    if (case == "CASE_limit_categorical_") {
+    if (case == "CASE_limit_categorical") {
       if (dependent_is_select_multiple) {
         summary_stat <-
           percent_with_confints_select_multiple(
@@ -159,7 +159,7 @@ map_to_summary_statistic <-
       }
     }
 
-    if (case == "CASE_limit_numerical_") {
+    if (case == "CASE_limit_numerical") {
       summary_stat <- mean_with_confints(
         dependent.var = dependent.var,
         design = design

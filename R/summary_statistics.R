@@ -1,8 +1,9 @@
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'
-#'@param independen.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#'@param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
 #'@param design the svy design object created using map_to_design or directly with svydesign
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@example percent_with_confints_select_one("population_group", design)
 #'@export
 percent_with_confints_select_one <-
   function(dependent.var,
@@ -15,36 +16,14 @@ percent_with_confints_select_one <-
       )
     }
 
-    # Check that the inputs make sense
-    if(var_more_than_n(design$variables[[dependent.var]], 15)){warning("Calculating percentages for more than 15 categories rarely makes sense")}
-    if (is.null(questionnaire)) {
-      dependent_is_select_multiple <- FALSE
-    }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
-    if(dependent_is_select_multiple){stop("Question is a select multiple. Please use percent_with_confints_select_multiple instead")}
+    sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                     datasanitation_summary_statistics_percent_with_confints_select_one)
 
-    # if dependent var have only one value, just return that:
-    dependent_more_than_1 <-
-      var_more_than_n(design$variables[[dependent.var]], 1)
+    if(!sanitised$success){
+      warning(sanitised$message)
+      return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var))}
 
-    if (!dependent_more_than_1) {
-      dependent.var.value = unique(design$variables[[dependent.var]])
-      return(
-        data.frame(
-          dependent.var,
-          independent.var = NA,
-          dependent.var.value,
-          independent.var.value = NA,
-          numbers = 1,
-          se = NA,
-          min = NA,
-          max = NA
-        )
-      )
-    }
-
-    # if(question_in_questionnaire(dependent.var) & !question_is_select_one(dependent.var)){stop("This question was not a select one")}
-
-
+    design<-sanitised$design
     tryCatch(
       expr = {
         result_hg_format <-
@@ -85,15 +64,24 @@ percent_with_confints_select_one <-
   }
 
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
-#'@param independen.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#'@param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
 #'@param design the svy design object created using map_to_design or directly with svydesign
-#'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
-#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.
 #'@export
 percent_with_confints_select_multiple <- function(dependent.var,
                                                   dependent.var.sm.cols,
                                                   design,
                                                   na.rm = TRUE) {
+
+  for(x in dependent.var.sm.cols){
+    dependent.var <- names(design$variables)[x]
+    sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                     datasanitation_summary_statistics_percent_with_confints)
+    if(!sanitised$success){return(hypothesis_test_empty(dependent.var,independent.var,message=sanitised$message))}
+
+    design<-sanitised$design}
+
   # if dependent and independent variables have only one value, just return that:
   choices <- design$variables[, dependent.var.sm.cols]
 
@@ -161,44 +149,32 @@ percent_with_confints_select_multiple <- function(dependent.var,
 
 
 
-### TESTED without weighting CHECK
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'
+#'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category in each group of the independent variable.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
+#'@example percent_with_confints_select_one_groups("population_group", "resp_gender", design)
+#'@export
 percent_with_confints_select_one_groups <- function(dependent.var,
                                                     independent.var,
                                                     design,
                                                     na.rm = TRUE) {
-  # if dependent and independent variables have only one value, just return that:
 
-  if (length(unique(as.character(design$variables[[dependent.var]]))) ==
-      1) {
-    dependent.var.value = unique(design$variables[[dependent.var]])
-    if (length(unique(as.character(design$variables[[independent.var]]))) ==
-        1) {
-      independent.var.value = unique(design$variables[[independent.var]])
-      return(
-        data.frame(
-          dependent.var,
-          independent.var,
-          dependent.var.value,
-          independent.var.value,
-          numbers = 1,
-          se = NA,
-          min = NA,
-          max = NA
-        )
-      )
 
-    }
-  }
+  sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                   datasanitation_summary_statistics_percent_groups)
+  if(!sanitised$success){
+    warning(sanitised$message)
+    return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var))}
 
-  # if(question_in_questionnaire(dependent.var) & !question_is_select_one(dependent.var)){stop("This question was not a select one")}
-  # if(question_in_questionnaire(independent.var) & !question_is_select_one(independent.var)){stop("You are not disaggregating by groups (independent variable is not a select one question)")}
+  design<-sanitised$design
 
   formula_string <- paste0("~", dependent.var , sep = "")
   by <- paste0("~", independent.var , sep = "")
 
 
-  result_hg_format <- # tryCatch(
-  {
+  result_hg_format <- {
     design$variables[[dependent.var]] <-
       as.factor(design$variables[[dependent.var]])
 
@@ -255,7 +231,6 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
 
 
-
 #should only be called if the question is select multiple
 # later:  comment above is confusing; maybe relating to independent shouldnt be select_multiple
 percent_with_confints_select_multiple_groups <-
@@ -268,24 +243,8 @@ percent_with_confints_select_multiple_groups <-
     choices <- design$variables[, dependent.var.sm.cols]
 
     result_hg_format <- lapply(names(choices), function(x) {
-      if (length(unique(design$variables[[x]])) == 1) {
-        dependent.var.value = x
-        if (length(unique(design$variables[[independent.var]])) == 1) {
-          independent.var.value = unique(design$variables[[independent.var]])
-          return(
-            data.frame(
-              dependent.var,
-              independent.var,
-              dependent.var.value,
-              independent.var.value,
-              numbers = as.numeric(unique(design$variables[[x]])),
-              se = NA,
-              min = NA,
-              max = NA
-            )
-          )
-        }
-      }
+      datasanitation_morethan_1_unique_dependent_table(data, x, independent.var)
+
       formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
       formula_string <- paste0("~as.numeric(", x , ")", sep = "")
       by <- paste0("~", independent.var , sep = "")
@@ -337,35 +296,6 @@ percent_with_confints_select_multiple_groups <-
 
     return(result_hg_format)
   }
-
-
-
-# check if we actually got  a frequency table back; problems can arise here if independent.var has only 1 unique value
-# if(!(nrow(as.data.frame(p.table)>1))){stop("DEV: unexpected edge case in percent_with_confints - freq table has 1 or less rows. contact development team about this error.")}
-#
-#   p.table %>% melt -> ftable_flipped
-#
-#   colnames(ftable_flipped)<-c("dependent.var.value","independent.var.value","numbers")
-#   results<-data.frame( dependent.var = dependent.var,
-#                        independent.var = independent.var,
-#                        ftable_flipped,
-#                        se=NA,
-#                        min=confints[,1],
-#                        max=confints[,2])
-
-# results<-list(
-#   independent.var.value=ftable
-# )
-# results<-list()
-# results$independent.var.value <- stat[,independent.var]
-# results$dependent.var.value <- stat[,"variable"]
-# results$numbers <-stat[,"value"]
-# results$se <- standard_error[,"value"]
-# results$min <- results$numbers - results$se
-# results$max <- results$numbers + results$se
-# results<-f.table
-#   return(results)
-# }
 
 
 mean_with_confints <- function(dependent.var,
