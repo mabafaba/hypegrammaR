@@ -19,7 +19,7 @@ read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
 #' @export
 load_data<-function(file){
   assertthat::assert_that(assertthat::is.readable(file))
-  assertthat::assert_that(grepl(file,".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
+  assertthat::assert_that(grepl(x = file, pattern = ".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
   data <- read.csv.auto.sep(file, stringsAsFactors = F)
   names(data) <- to_alphanumeric_lowercase(names(data))
   return(data)
@@ -43,10 +43,8 @@ load_data<-function(file){
 load_samplingframe<-function(file){
 
   assertthat::assert_that(assertthat::is.readable(file))
-  assertthat::assert_that(grepl(file,".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
+  assertthat::assert_that(grepl(x= file, pattern = ".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
   samplingframe<-read.csv.auto.sep(file, stringsAsFactors = F)
-  names(data) <- to_alphanumeric_lowercase(names(data))
-
 }
 
 

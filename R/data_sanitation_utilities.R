@@ -195,6 +195,7 @@ apply_data_sanitations<-function(data,dependent.var,independent.var,...){
     # if sanitation failed, quit sanitation (return), and return an empty sanitation with the message:
     if(data_sanitised$success==F){return(data_sanitised)}
     # otherwise, go ahead with the next sanitation
+    data <- data_sanitised$data # after updating the data!!!
   }
   return(data_sanitised)
 }
