@@ -95,6 +95,7 @@ if(is.null(file) & is.null(df)){stop("provide one of `file` or `df` parameters")
 
 if(!is.null(file)){df <- read.csv.auto.sep(file)}
 if(!is.null(df)){df <- df}
+
 assert_valid_analysisplan(df)
 
 
