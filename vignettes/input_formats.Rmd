@@ -37,11 +37,16 @@ All input files are expected as csv files.
 You should use the hypegrammar `load_*()` functions to load the inputs.
 
 ```{r,include = F,echo = F}
-data<-read.csv("../tests/testthat/testdata.csv")
-sf<-read.csv("../tests/testthat/test_samplingframe.csv")
-quest_q<-read.csv("../tests/testthat/kobo questions.csv")
-quest_c<-read.csv("../tests/testthat/kobo choices.csv")
-ap<-read.csv("../tests/testthat/analysisplan.csv")
+
+assessment_data<-load_data
+
+samplingframe<-load_samplingframe
+
+data<-read.csv("../data/testdata.csv")
+sf<-read.csv("../data/test_samplingframe.csv")
+quest_q<-read.csv("../data/test_questionnaire_questions.csv")
+quest_c<-read.csv("../data/test_questionnaire_choices.csv")
+ap<-read.csv("../data/test_analysisplan.csv")
 ```
 
 # Components of an Assessment
@@ -72,7 +77,8 @@ It must adhere to standard kobo xml format
 #### Example
 
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
+
+assessment_data<-load_data(file = "../data/testdata.csv")
 ```
 
 #### What you get
@@ -106,7 +112,7 @@ head(sf)%>% kable(format="html")
 #### Example
 
 ```{r}
-sampling_frame<-load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
+sampling_frame<-load_samplingframe(file ="../data/test_samplingframe.csv")
 ```
 
 #### What you get
@@ -144,10 +150,9 @@ head(quest_c)%>% kable(format="html")
 ```{r,warning=FALSE}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                  questions.file = "../tests/testthat/kobo questions.csv",
-                                  choices.file = "../tests/testthat/kobo choices.csv",
-                                  choices.label.column.to.use = "label::English"
-                                  )
+                                  questions = "../data/test_questionnaire_questions.csv",
+                                  choices = "../data/test_questionnaire_choices.csv",
+                                  choices.label.column.to.use = "label::English")
 
 ```
 
@@ -174,7 +179,7 @@ kable(head(ap),format = "html")
 
 #### Example
 ```{r}
-analysisplan<-load_analysisplan(file="../tests/testthat/analysisplan.csv")
+analysisplan<-load_analysisplan(file="../data/test_analysisplan.csv")
 ```
 
 #### What you get

@@ -50,7 +50,7 @@ Any analysis with HypegrammaR follows the same structure:
 
 ### Once (ever per machine):
 ```{r,eval=F}
-remotes::install_github('mabafaba/hypegrammaR',build_opts = c())
+remotes::install_github('ellieallien/hypegrammaR',build_opts = c())
 remotes::install_github('mabafaba/surveyweights',build_opts = c())
 remotes::install_github('mabafaba/koboquest',build_opts=c())
 
@@ -71,12 +71,12 @@ Each input we usually expect with an assessment has it's own function to load it
 
 First the data. A csv file with data in standard Kobo format.
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
+assessment_data<-load_data(file = "../data/testdata.csv")
 ```
 
 Then a sampling frame. A csv file with one column with strata names, one column with population numbers. The strata names must match exactly some values in the data. We must tell the loading function which column is what in the sampling frame.
 ```{r}
-sampling_frame<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+sampling_frame<-load_samplingframe("../data/test_samplingframe.csv")
 ```
 
 Finally the questionnaire, which depends on the question and the choices sheet as a csv.
@@ -84,8 +84,8 @@ Finally the questionnaire, which depends on the question and the choices sheet a
 ```{r}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                             questions.file = "../tests/testthat/kobo questions.csv",
-                                             choices.file = "../tests/testthat/kobo choices.csv",
+                                             questions = "../data/test_questionnaire_questions.csv",
+                                             choices = "../data/test_questionnaire_choices.csv",
                                   choices.label.column.to.use = "label::English"
                                              )
 
@@ -98,7 +98,7 @@ questionnaire<-load_questionnaire(data = assessment_data,
 weighting <- map_to_weighting( sampling.frame = sampling_frame,
                                data.stratum.column = "stratification",
                                sampling.frame.population.column = "population",
-                               sampling.frame.stratum.column = "strata names",
+                               sampling.frame.stratum.column = "strata.names",
                                data = assessment_data)
 
 ```

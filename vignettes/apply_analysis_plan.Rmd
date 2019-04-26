@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(knitr)
-
 ```
 
 
@@ -26,39 +25,37 @@ library(dplyr)
 ```
 ### Prepare Inputs
 
-
-
 ### Load input
 For details please see <a href="input_formats.html">Input formats & loading files</a>
 
 ```{r,warning=F,message=F,error=F}
-assessment_data<-load_data("../tests/testthat/testdata.csv")
+assessment_data<-load_data("../data/testdata.csv")
 ```
 
 ```{r,warning=F,message=F,error=F}
-samplingframe<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+samplingframe<-load_samplingframe("../data/test_samplingframe.csv")
 ```
 
 ```{r,warning=F,message=F,error=F}
 weights<-map_to_weighting(sampling.frame = samplingframe,
                           data.stratum.column = "stratification",
                           sampling.frame.population.column = "population",
-                          sampling.frame.stratum.column = "strata names",
+                          sampling.frame.stratum.column = "strata.names",
                           data = assessment_data)
 ```
 
 ```{r,warning=F,message=F,error=F}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                  questions.file = "../tests/testthat/kobo questions.csv",
-                                  choices.file = "../tests/testthat/kobo choices.csv",
+                                  questions = "../data/test_questionnaire_questions.csv",
+                                  choices = "../data/test_questionnaire_choices.csv",
                                   choices.label.column.to.use = "label::English"
 )
 ```
 
 ```{r,warning=F,message=F,error=F}
 
-analysisplan<-load_analysisplan("../tests/testthat/analysisplan.csv")
+analysisplan<-load_analysisplan(df = hypegrammaR::test_analysisplan)
 
 ```
 
@@ -76,9 +73,9 @@ list_of_results <- assessment_data %>%   from_analysisplan_map_to_output(analysi
 ### Output as html
 ```{r,eval = F}
 
-# list_of_results %>% map_to_template(questionnaire = questionnaire,
-#                                     dir = "../",
-#                                     filename = "my_example_report.html")
+list_of_results %>% map_to_template(questionnaire = questionnaire,
+                                    dir = "../",
+                                    filename = "my_example_report.html")
 
 ```
 
