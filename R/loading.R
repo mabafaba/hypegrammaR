@@ -91,17 +91,16 @@ load_questionnaire<-function(data,
 load_analysisplan<-function(file=NULL,df=NULL){
 
 if(!is.null(file) & !is.null(df)){stop("provide `file` or `df` parameters, not both")}
-if(is.null(file) & is.null(df)) stop("provide one of `file` or `df` parameters")
+if(is.null(file) & is.null(df)){stop("provide one of `file` or `df` parameters")}
 
-if(!is.null(file)) ap_raw<-read.csv.auto.sep(file)
-if(!is.null(df)) ap_raw<-df
+if(!is.null(file)){df <- read.csv.auto.sep(file)}
+if(!is.null(df)){df <- df}
 assert_valid_analysisplan(df)
 
 
 
-
 # convert missing to NA, remove empty rows..:
-ap_raw<-analysisplan_clean(ap_raw)
+ap_raw <- analysisplan_clean(df)
 
 if(nrow(ap_raw)==0){stop("all rows in analysis plan are empty")}
 
@@ -138,7 +137,7 @@ assert_valid_analysisplan<-function(df){
                            "dependent.variable.type")
 
   assertthat::assert_that(is.data.frame(df))
-  expected_colnames_not_found<-expected_colnames_not_found[!(expected_column_names %in% colnames(ap_raw))]
+  expected_colnames_not_found <- expected_column_names[!(expected_column_names %in% colnames(df))]
   if(length(expected_colnames_not_found)){
     stop(paste("expected analysis plan columns not found:\n",
                paste(expected_colnames_not_found,collapse="\n"),"\n"
