@@ -18,13 +18,12 @@ read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
 #' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
 #' @export
 load_data<-function(file){
-  assertthat::assert_that(assertthat::is.readable(file))
+
   assertthat::assert_that(grepl(x = file, pattern = ".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
   data <- read.csv.auto.sep(file, stringsAsFactors = F)
   names(data) <- to_alphanumeric_lowercase(names(data))
   return(data)
 }
-
 
 
 
@@ -139,6 +138,7 @@ assert_valid_analysisplan<-function(df){
 
   assertthat::assert_that(is.data.frame(df))
   expected_colnames_not_found <- expected_column_names[!(expected_column_names %in% colnames(df))]
+
   if(length(expected_colnames_not_found)){
     stop(paste("expected analysis plan columns not found:\n",
                paste(expected_colnames_not_found,collapse="\n"),"\n"

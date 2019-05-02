@@ -23,12 +23,13 @@ data<-random_df(1000)
 return(
   list(
 
-    sanitise_group_difference(data,"uniform","groupsN5")$data %>% is.data.frame,
-    sanitise_group_difference(data,"uniform","groupsN50")$success== FALSE,
-  sanitise_group_difference(NULL,"a","b")$success==FALSE,
-  sanitise_group_difference(NA,"a","b")$success==FALSE,
-  sanitise_group_difference(runif(100),"a","b")$success==FALSE)) %>% unlist
-
+  #   sanitise_group_difference(data,"uniform","groupsN5")$data %>% is.data.frame,
+  #   sanitise_group_difference(data,"uniform","groupsN50")$success== FALSE,
+  # sanitise_group_difference(NULL,"a","b")$success==FALSE,
+  # sanitise_group_difference(NA,"a","b")$success==FALSE,
+  # sanitise_group_difference(runif(100),"a","b")$success==FALSE)
+    ) %>% unlist
+)
 
 }
 

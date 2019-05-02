@@ -12,7 +12,8 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = F
 )
 library(knitr)
 ```
@@ -45,6 +46,8 @@ weights<-map_to_weighting(sampling.frame = samplingframe,
 ```
 
 ```{r,warning=F,message=F,error=F}
+questions<-read.csv("../tests/testthat/test_questionnaire_questions.csv")
+choices<-read.csv("../tests/testthat/test_questionnaire_choices.csv")
 
 questionnaire<-load_questionnaire(data = assessment_data,
                                   questions = "../data/test_questionnaire_questions.csv",
@@ -54,9 +57,7 @@ questionnaire<-load_questionnaire(data = assessment_data,
 ```
 
 ```{r,warning=F,message=F,error=F}
-
 analysisplan<-load_analysisplan(df = hypegrammaR::test_analysisplan)
-
 ```
 
 ### Run the analysis plan & save outputs as an html file

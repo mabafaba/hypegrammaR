@@ -47,9 +47,12 @@ load.example<-function(name,global_space=F){
   }
 
   ex$data<-exfile("data.csv")
+  questions<-read.csv(exfilepath("kobo questions.csv"),stringsAsFactors = F)
+  choices<-read.csv(exfilepath("kobo choices.csv"),stringsAsFactors = F)
+
   ex$questionnaire<-load_questionnaire(ex$data,
-                                        questions = exfilepath("kobo questions.csv"),
-                                        choices = exfilepath("kobo choices.csv"),
+                                        questions = questions,
+                                        choices = choices,
                                         choices.label.column.to.use = ex$choice.label.column.to.use)
 
   ex$tf <- data.frame("dependent.var" = c("settlement", "population_group", "when_continue", "males_13_15","uasc_boys", "household_expenditure", "sep_accidental", "bla", NA, NA),

@@ -109,14 +109,14 @@ datasanitation_variables_in_data_colnames<-function(data,dependent.var,independe
   return(successfull_sanitation(data))
 }
 
-datasanitation_independent_max_unique<-function(data,dependent.var,independent.var, n_max = 20){
+datasanitation_independent_max_unique<-function(data,dependent.var,independent.var, n_max = 30){
   valid<-length(unique(data[[independent.var]])) <= n_max
   datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in independent variable"))
 }
 
-datasanitation_dependent_max_unique<-function(data,dependent.var,independent.var, n_max = 20){
+datasanitation_dependent_max_unique<-function(data,dependent.var,independent.var, n_max = 30){
   valid<-length(unique(data[[dependent.var]])) <= n_max
-  datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in independent variable"))
+  datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in dependent variable"))
 }
 
 datasanitation_morethan_1_record_per_independent_value<-  function(data,dependent.var,independent.var){
