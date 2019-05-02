@@ -53,13 +53,13 @@ sanitise_data_independent<-function(data,
                                     independent.var,
                                     case){
 
-
+#
   if((grep("group_difference",case) %>% length)>0){
-    group_difference<-sanitise_group_difference(data,
-                                                dependent.var = dependent.var,
-                                                independent.var = independent.var)
-    if(group_difference$success==F){return(group_difference)}
-
+#     group_difference<-sanitise_group_difference(data,
+#                                                 dependent.var = dependent.var,
+#                                                 independent.var = independent.var)
+#     if(group_difference$success==F){return(group_difference)}
+    return(list(success=T,data=data))
   }
 
   if(case%in%c("CASE_group_difference_categorical_categorical","CASE_direct_reporting_categorical_categorical","CASE_direct_reporting_categorical_")){

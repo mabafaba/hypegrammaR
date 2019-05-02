@@ -37,11 +37,12 @@ All input files are expected as csv files.
 You should use the hypegrammar `load_*()` functions to load the inputs.
 
 ```{r,include = F,echo = F}
+
 data<-read.csv("../tests/testthat/testdata.csv")
 sf<-read.csv("../tests/testthat/test_samplingframe.csv")
-quest_q<-read.csv("../tests/testthat/kobo questions.csv")
-quest_c<-read.csv("../tests/testthat/kobo choices.csv")
-ap<-read.csv("../tests/testthat/analysisplan.csv")
+quest_q<-read.csv("../tests/testthat/test_questionnaire_questions.csv")
+quest_c<-read.csv("../tests/testthat/test_questionnaire_choices.csv")
+ap<-read.csv("../tests/testthat/test_analysisplan.csv")
 ```
 
 # Components of an Assessment
@@ -106,7 +107,7 @@ head(sf)%>% kable(format="html")
 #### Example
 
 ```{r}
-sampling_frame<-load_samplingframe(file = "../tests/testthat/test_samplingframe.csv")
+sampling_frame<-read.csv(file = "../tests/testthat/test_samplingframe.csv",stringsAsFactors = F)
 ```
 
 #### What you get
@@ -135,8 +136,8 @@ head(quest_c)%>% kable(format="html")
 ### Loading
 #### Parameters
 - `data`: the object that stores the data loaded above
-- `questions.file`: the path to the questions sheet as a csv file
-- `choices.file` the path to the choices sheet as a csv file
+- `questions`: the path to the questions sheet as a csv file
+- `choices` the path to the choices sheet as a csv file
 - `choices.label.column.to.use`: the exact name of the column containing the labels that should be used. You can add an extra column with custom labels to your choices sheet if you don't want to use the choice labels from the original questionnaire
 
 #### Example
@@ -144,8 +145,8 @@ head(quest_c)%>% kable(format="html")
 ```{r,warning=FALSE}
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                  questions = "../tests/testthat/kobo questions.csv",
-                                  choices = "../tests/testthat/kobo choices.csv",
+                                  questions = quest_q,
+                                  choices = quest_c,
                                   choices.label.column.to.use = "label::English"
                                   )
 
@@ -174,7 +175,7 @@ kable(head(ap),format = "html")
 
 #### Example
 ```{r}
-analysisplan<-load_analysisplan(file="../tests/testthat/analysisplan.csv")
+analysisplan<-load_analysisplan(file="../tests/testthat/test_analysisplan.csv")
 ```
 
 #### What you get

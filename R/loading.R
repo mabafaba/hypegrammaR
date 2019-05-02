@@ -19,12 +19,11 @@ read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
 #' @export
 load_data<-function(file){
   assertthat::assert_that(assertthat::is.readable(file))
-  assertthat::assert_that(grepl(file,".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
+  assertthat::assert_that(grepl(".csv$",file),msg = paste0("file must end with '.csv' (..and actually be a .csv file)\n instead: ",file))
   data <- read.csv.auto.sep(file, stringsAsFactors = F)
   names(data) <- to_alphanumeric_lowercase(names(data))
   return(data)
 }
-
 
 
 
@@ -43,7 +42,7 @@ load_data<-function(file){
 load_samplingframe<-function(file){
 
   assertthat::assert_that(assertthat::is.readable(file))
-  assertthat::assert_that(grepl(file,".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
+  assertthat::assert_that(grepl(".csv$",file),msg = "file must end with '.csv' (..and actually be a .csv file)")
   samplingframe<-read.csv.auto.sep(file, stringsAsFactors = F)
   names(data) <- to_alphanumeric_lowercase(names(data))
 
@@ -95,9 +94,10 @@ load_analysisplan<-function(file=NULL,df=NULL){
 if(!is.null(file) & !is.null(df)){stop("provide `file` or `df` parameters, not both")}
 if(is.null(file) & is.null(df)) stop("provide one of `file` or `df` parameters")
 
-if(!is.null(file)) ap_raw<-read.csv.auto.sep(file)
-if(!is.null(df)) ap_raw<-df
-assert_valid_analysisplan(df)
+if(is.null(file)) {ap_raw <- df}
+if(is.null(df  )) {ap_raw <- read.csv.auto.sep(file)}
+
+assert_valid_analysisplan(ap_raw)
 
 
 
@@ -140,7 +140,7 @@ assert_valid_analysisplan<-function(df){
                            "dependent.variable.type")
 
   assertthat::assert_that(is.data.frame(df))
-  expected_colnames_not_found<-expected_colnames_not_found[!(expected_column_names %in% colnames(ap_raw))]
+  expected_colnames_not_found<-expected_column_names[!(expected_column_names %in% colnames(df))]
   if(length(expected_colnames_not_found)){
     stop(paste("expected analysis plan columns not found:\n",
                paste(expected_colnames_not_found,collapse="\n"),"\n"

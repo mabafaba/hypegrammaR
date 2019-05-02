@@ -11,8 +11,9 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE
-  #,comment = "#>"
+  collapse = TRUE,
+  #,comment = "#>",
+  eval=F
   )
 ```
 
@@ -70,18 +71,18 @@ All input files are expected as csv files.
 Each input we usually expect with an assessment has it's own function to load it. They check that the format is in line with what is expected, make sure they play well with each other and prepare the functionality they are used for.
 
 First the data. A csv file with data in standard Kobo format.
-```{r}
+```{r,eval=F}
 assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
 ```
 
 Then a sampling frame. A csv file with one column with strata names, one column with population numbers. The strata names must match exactly some values in the data. We must tell the loading function which column is what in the sampling frame.
-```{r}
-sampling_frame<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+```{r,eval=F}
+sampling_frame<-read.csv("../tests/testthat/test_samplingframe.csv",,stringsAsFactors = F)
 ```
 
 Finally the questionnaire, which depends on the question and the choices sheet as a csv.
 
-```{r}
+```{r,eval=F}
 
 questionnaire<-load_questionnaire(data = assessment_data,
                                              questions = "../tests/testthat/kobo questions.csv",
@@ -93,7 +94,7 @@ questionnaire<-load_questionnaire(data = assessment_data,
 
 
 #### _Map_ to weighting
-```{r}
+```{r,eval=F}
 
 weighting <- map_to_weighting( sampling.frame = sampling_frame,
                                data.stratum.column = "stratification",
@@ -113,7 +114,7 @@ You need to know:
   - `group_difference`
 - the names of the columns that are your dependent and independent variables
 
-```{r}
+```{r,eval=F}
 
 case <- map_to_case(hypothesis.type = "group_difference",
                     dependent.var.type = "numerical",
@@ -124,7 +125,7 @@ case <- map_to_case(hypothesis.type = "group_difference",
 
 ## Now put it all together and _Map_ to the result:
 
-```{r}
+```{r, eval = F}
 
 result<-map_to_result(data = assessment_data,
               dependent.var = "number_simultaneous_unmet_need",
@@ -146,21 +147,21 @@ The `map_to_result` function gives you a number of things:
 #### The log message
 
 First, a message telling you how it went:
-```{r}
+```{r,eval=F}
 # result$message
 ```
 That's what we want to see. If something went wrong, it should tell you here what happened.
 
 #### meta information
 
-```{r}
+```{r,eval=F}
 # result$parameters
 ```
 As you can see, it remembers what your input parameters were. It also added a standardised name of the analysis case.
 
 #### The summary statistic
 
-```{r}
+```{r,eval=F}
 # result$summary.statistic
 ```
 
@@ -170,8 +171,8 @@ The summary statistic will _always_ be organised with exactly these columns, no 
 #### The hypothesis test
 
 Next, there's information on which (if any) hypothesis test was used and the p value:
-```{r}
-# result$hypothesis.test
+```{r,eval=F}
+result$hypothesis.test
 
 ```
 You'll probably be most interested in the p-value and the type of test that was used.
@@ -185,7 +186,7 @@ You'll probably be most interested in the p-value and the type of test that was 
 ## _Map_ to usable outputs
 
 ### Chart
-```{r,warning=FALSE}
+```{r,warning=FALSE,eval=F}
 
 chart<-map_to_visualisation(result)
 heatmap<-map_to_visualisation_heatmap(result)
@@ -193,8 +194,8 @@ chart
 ```
 
 For advanced users (that know ggplot): The visualisation function returns a ggplot object, so you can add/overwrite ggplot stuff; for example:
-```{r,warning=F}
-# myvisualisation+coord_polar()
+```{r,warning=F,eval=F}
+myvisualisation+coord_polar()
 
 ```
 
