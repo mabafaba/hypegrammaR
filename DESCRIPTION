@@ -1,8 +1,8 @@
 Package: hypegrammaR
-Title: What the Package Does (one line, title case)
+Title: A grammar of hypothesis test driven analysis
 Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: quantitative analysis according to the IMPACT minimum standards.
+Description: quantitative analysis according to the IMPACT minimum standards. Accepts weights and input from kobo questionnaires.
 Depends: 
     R (>= 3.5.2),
     survey,

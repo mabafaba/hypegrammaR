@@ -194,8 +194,14 @@ hypothesis_test_z <- function(dependent.var,
 hypothesis_test_chisquared_select_multiple <- function(dependent.var,
                                                        dependent.var.sm.cols,
                                                        independent.var,
-                                                       design){
+                                                       design,
+                                                       questionnaire = questionnaire){
 
+
+  if(exists("questionnaire")){
+  if(questionnaire$choices_for_select_multiple(dependent.var, design$variables) != dependent.var.sm.cols){
+    warning("The dependent variable and the choice columns don't match. Calculating results based on the choice columns")}
+  }
   # sanitise design
   for(x in dependent.var.sm.cols){
   dependent.var <- names(design$variables)[x]
