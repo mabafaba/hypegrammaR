@@ -195,10 +195,10 @@ hypothesis_test_chisquared_select_multiple <- function(dependent.var,
                                                        dependent.var.sm.cols,
                                                        independent.var,
                                                        design,
-                                                       questionnaire = questionnaire){
+                                                       questionnaire = NULL){
 
 
-  if(exists("questionnaire")){
+  if(!is.null(questionnaire)){
   if(questionnaire$choices_for_select_multiple(dependent.var, design$variables) != dependent.var.sm.cols){
     warning("The dependent variable and the choice columns don't match. Calculating results based on the choice columns")}
   }

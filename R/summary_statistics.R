@@ -16,12 +16,12 @@ percent_with_confints_select_one <-
       )
     }
 
-    sanitised<-datasanitation_design(design,dependent.var,independent.var,
+    sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
                                      datasanitation_summary_statistics_percent_with_confints_select_one)
 
     if(!sanitised$success){
       warning(sanitised$message)
-      return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var))}
+      return(datasanitation_return_empty_table(data = design$variables, dependent.var, independent.var))}
 
     design<-sanitised$design
     tryCatch(
@@ -64,7 +64,7 @@ percent_with_confints_select_one <-
   }
 
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
-#'@param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
+#'@param dependent.var.sm.cols a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_Select_multiple(question.name, data)
 #'@param design the svy design object created using map_to_design or directly with svydesign
 #'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.
@@ -76,11 +76,15 @@ percent_with_confints_select_multiple <- function(dependent.var,
 
   for(x in dependent.var.sm.cols){
     dependent.var <- names(design$variables)[x]
-    sanitised<-datasanitation_design(design,dependent.var,independent.var,
-                                     datasanitation_summary_statistics_percent_with_confints)
-    if(!sanitised$success){return(hypothesis_test_empty(dependent.var,independent.var,message=sanitised$message))}
+    sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
+                                     datasanitation_summary_statistics_percent_sm_choice)
+    if(!sanitised$success){
+      warning(sanitised$message)
+      return(datasanitation_return_empty_table(data = design$variables, dependent.var))
+      }
 
-    design<-sanitised$design}
+    design<-sanitised$design
+    }
 
   # if dependent and independent variables have only one value, just return that:
   choices <- design$variables[, dependent.var.sm.cols]
@@ -231,8 +235,13 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
 
 
-#should only be called if the question is select multiple
-# later:  comment above is confusing; maybe relating to independent shouldnt be select_multiple
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
+#'@param dependent.var.sm.cols a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_Select_multiple(question.name, data)
+#'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.
+#'@export
 percent_with_confints_select_multiple_groups <-
   function(dependent.var,
            dependent.var.sm.cols,
@@ -240,10 +249,17 @@ percent_with_confints_select_multiple_groups <-
            design,
            na.rm = TRUE) {
     # if dependent and independent variables have only one value, just return that:
-    choices <- design$variables[, dependent.var.sm.cols]
+    for(x in dependent.var.sm.cols){
+      dependent.var <- names(design$variables)[x]
+      sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                       datasanitation_summary_statistics_percent_sm_choice_groups)
+      if(!sanitised$success){
+        warning(sanitised$message)
+        return(datasanitation_return_empty_table(design$variables, dependent.var,independent.var))}
+      design<-sanitised$design}
 
     result_hg_format <- lapply(names(choices), function(x) {
-      datasanitation_morethan_1_unique_dependent_table(data, x, independent.var)
+      datasanitation_morethan_1_unique_dependent(data, x, independent.var)
 
       formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
       formula_string <- paste0("~as.numeric(", x , ")", sep = "")
@@ -306,6 +322,14 @@ mean_with_confints <- function(dependent.var,
       "confidence intervals calculated without disaggregation, but received data for an independent variable."
     )
   }
+
+  sanitised<-datasanitation_design(design,dependent.var,
+                                   datasanitation_summary_statistics_mean)
+  if(!sanitised$success){
+    warning(sanitised$message)
+    return(datasanitation_return_empty_table(design$variables, dependent.var))}
+
+  datasanitation_summary_statistics_mean
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
   summary <- svymean(formula(formula_string), design, na.rm = T)
   confints <- confint(summary, level = 0.95)
@@ -326,6 +350,13 @@ mean_with_confints <- function(dependent.var,
 mean_with_confints_groups <- function(dependent.var,
                                       independent.var,
                                       design) {
+
+  sanitised<-datasanitation_design(design,dependent.var,independent.var,
+                                   datasanitation_summary_statistics_mean_groups)
+  if(!sanitised$success){
+    warning(sanitised$message)
+    return(datasanitation_return_empty_table(design$variables, dependent.var, independent.var))}
+
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
   by <- paste0("~", independent.var, sep = "")
 

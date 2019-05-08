@@ -28,8 +28,8 @@ test_that("hypothesis test chisquared select multiple sanitation works",{
 
 ## hypothesis test limit (t test one sample)
 test_that("Hypothesis test limit works",{
-  expect_error(hypothesis_test_t_one_sample(tf$numeric[2], 3,design = design)$results) ## too many categories for ChiSquared
-  expect_equal(hypothesis_test_t_one_sample(tf$select_one[2], tf$select_one_many_cat[1],design = design)$name, "too many (>=30) unique values in independent variable")
+  expect_error(hypothesis_test_t_one_sample(tf$numeric[2], limit = 3,design = design)$results) ## too many categories for ChiSquared
+  expect_equal(hypothesis_test_t_one_sample(tf$select_one_many_cat[1], limit = 3,design = design)$name, "too many (>=30) unique values in independent variable")
   expect_equal(hypothesis_test_t_one_sample(tf$select_one[2], tf$select_one[1],design = design)$name, "Pearson's X^2: Rao & Scott adjustment")
 })
 

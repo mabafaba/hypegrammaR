@@ -5,6 +5,7 @@ example<-load.example("example1",F)
 data <- example$data
 tf <- example$tf
 design <- svydesign(~0, data = data)
+questionnaire <- example$questionnaire
 
 test_that("var_more_than_n returns FALSE unless the dependent variable has two categories",{
   expect_equal(var_more_than_n(c(NULL,7,7,7), 1),FALSE)
@@ -29,18 +30,19 @@ test_that("percent_with_confints_select_one outputs correct",{
   ###This needs to be tested with a dependent var thats select one, one that's select multiple, one that's numeric etc
   expect_is(percent_with_confints_select_one(tf$select_one[1], design = design), "data.frame")
   #expect_error(percent_with_confints_select_one(tf$numeric[1], design = design)) #numerical var, shouldnt throw error
-  expect_error(percent_with_confints_select_one(tf$fake[1], design = design)) #nonexistent.var
+  expect_equal(percent_with_confints_select_one(tf$fake[1], design = design)$dependent.var.value, NA)
   expect_warning(percent_with_confints_select_one(tf$select_multiple[1], design = design)) # select multiple
   expect_match(names(percent_with_confints_select_one(tf$select_one[1], design = design)), "min",all = FALSE)
   expect_match(names(percent_with_confints_select_one(tf$select_one[1], design = design)), "max",all = FALSE)
 })
 
 test_that("percent_with_confints_select_multiple outputs correct",{
-  expect_is(percent_with_confints_select_multiple(tf$select_multiple[1], design = design), "data.frame")
-  expect_error(percent_with_confints_select_multiple(tf$numeric[1], design = design)) #numerical var
-  expect_error(percent_with_confints_select_multiple(tf$fake[1], design = design)) #nonexistent.var
-  expect_error(percent_with_confints_select_multiple(tf$select_one[1], design = design)) # select one
-  expect_error(percent_with_confints_select_multiple(tf$select_multiple_NA_heavy[1], design = design)) #numerical var
+  sm.columns <- questionnaire$choices_for_select_multiple(tf$select_multiple[1], data = data)
+  expect_is(percent_with_confints_select_multiple(tf$select_multiple[1], sm.columns, design = design), "data.frame")
+  expect_warning(percent_with_confints_select_multiple(tf$numeric[1], sm.columns, design = design)) #numerical var
+  expect_warning(percent_with_confints_select_multiple(tf$fake[1], sm.columns, design = design)) #nonexistent.var
+  expect_warning(percent_with_confints_select_multiple(tf$select_multiple[1], design = design)) # sm columns missing
+  expect_(percent_with_confints_select_multiple(tf$select_multiple_NA_heavy[1], design = design)) #numerical var
   expect_match(names(percent_with_confints_select_multiple(tf$select_multiple[1], design = design)), "min",all = FALSE)
   expect_match(names(percent_with_confints_select_multiple(tf$select_multiple[1], design = design)), "max",all = FALSE)
 })
