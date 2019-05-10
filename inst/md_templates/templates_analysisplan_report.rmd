@@ -31,7 +31,7 @@ for(rq in unique(analysisplan$research.question)){
     htmltools::h2(srq) %>% as.character %>% cat
     
     for(i in which(in_rq & in_srq)){
-    print(x$results[[1]] %>% map_to_visualisation %>% .$ggplot)
+    print(x$results[[i]] %>% map_to_visualisation %>% .$ggplot)
     print(results[[i]] %>% map_to_visualisation_heatmap %>% .$ggplot)
     kable(resultlist$results[[i]]$hypothesis.test %>% as.data.frame,format="html")    }
     
