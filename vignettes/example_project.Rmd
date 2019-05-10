@@ -1,6 +1,5 @@
 ---
 title: "Example Analysis"
-author: "Martin Barner"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >

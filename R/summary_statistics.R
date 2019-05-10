@@ -244,8 +244,10 @@ percent_with_confints_select_multiple_groups <-
         return(datasanitation_return_empty_table(design$variables, dependent.var,independent.var))}
       design<-sanitised$design}
 
+    choices <- design$variables[, dependent.var.sm.cols]
+
     result_hg_format <- lapply(names(choices), function(x) {
-      datasanitation_morethan_1_unique_dependent(data, x, independent.var)
+      datasanitation_morethan_1_unique_dependent(design$variables, x, independent.var)
 
       formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
       formula_string <- paste0("~as.numeric(", x , ")", sep = "")
@@ -317,7 +319,7 @@ mean_with_confints <- function(dependent.var,
     )
   }
 
-  sanitised<-datasanitation_design(design,dependent.var,
+  sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
                                    datasanitation_summary_statistics_mean)
   if(!sanitised$success){
     warning(sanitised$message)

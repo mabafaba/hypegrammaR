@@ -84,10 +84,7 @@ hypothesis_test_t_two_sample <- function(dependent.var,
       results$parameters <- as.list(ttest$parameter)
       results$name<-"two sample ttest on difference in means (two sided)"
   return(results)
-
-  ttest$statistic
-
-}
+      }
 
 #' Perform a one sample t test of one numerical variable against  hypothesised value (limit)
 #'
@@ -120,8 +117,6 @@ hypothesis_test_t_one_sample <- function(dependent.var,
       results$parameters <- as.list(ttest$parameter)
       results$name<- paste0(c("one sample ttest on difference from", limit, "limit value (one sided)"))
   return(results)
-
-  ttest$statistic
 
 }
 

@@ -33,7 +33,6 @@ map_to_result<-function(data,
                         questionnaire=NULL){
   options(survey.lonely.psu = "average")
 
-
   # put the relevant input parameters in a list so we can attach them to the output:
   parameters<-list(
     dependent.var = dependent.var,
