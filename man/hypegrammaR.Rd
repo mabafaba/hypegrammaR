@@ -4,9 +4,9 @@
 \name{hypegrammaR}
 \alias{hypegrammaR}
 \alias{hypegrammaR-package}
-\title{hypegrammaR: Implementing  \href{https://docs.google.com/document/d/1979hEu6N9d_nIHwkq3AhvLDww1-_eXys808q81WewZ0/edit#heading=h.gjdgxs}{IMPACT Data Analysis Guidelines} questionnaires}
+\title{hypegrammaR: Implementing  \href{https://docs.google.com/document/d/1979hEu6N9d_nIHwkq3AhvLDww1-_eXys808q81WewZ0/edit#heading=h.gjdgxs}{IMPACT Data Analysis Guidelines}}
 \description{
-A grammar of hypothesis driven analysis, following the idea that \href{http://allendowney.blogspot.com/2016/06/there-is-still-only-one-test.html}{There is only one test}
+A grammar of hypothesis driven analysis, following the idea that \href{http://allendowney.blogspot.com/2016/06/there-is-still-only-one-test.html}{there is only one test}
 }
 \details{
 Supports integration of weighted data (using the survey package) and data collected with \href{https://www.kobotoolbox.org/}{kobotoolbox}, \href{https://opendatakit.org/}{ODK} or similar.
@@ -21,7 +21,7 @@ Executes the three main steps of data analysis
 The user begins by loading the data, and if needed the questionnaire, analysisplan and sampling frame (as .csv files). To verify the correct format of these inputs, \code{\link[kobostandards::check_inputs]{name}} can be used.
 All other functions then refer to these objects.
 
-The two possible work-flows are: using the individual functions (in the blocks), and mapping to the result (using all the blocks)
+The two possible work-flows are: using the individual functions (in the blocks), and mapping to the resuls: using all the blocks automatically.
 }
 \section{Mappig to the result}{
 

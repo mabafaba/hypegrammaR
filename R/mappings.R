@@ -74,6 +74,7 @@ map_to_visualisation <- function(result) {
   visualisation_functions[["CASE_direct_reporting_numerical_"]] <- barchart_average
 
 
+  vis_input <- result$summary.statistic
 ### SHARON MAGIC
   # visualisation_functions[["CASE_group_difference_categorical_categorical"]] <- visualisationIMPACT::grouped_barchart_impact
   # visualisation_functions[["CASE_group_difference_numerical_categorical"]] <- visualisationIMPACT::grouped_boxplot_impact
