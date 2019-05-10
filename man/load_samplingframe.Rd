@@ -12,12 +12,10 @@ load_samplingframe(file)
 \description{
 Load a sampling frame from csv
 }
+\details{
+function loads the sampling frame and can be used to make weights ith map_to_weighting()
+}
 \examples{
-
-# load the sampling frame:
 sf <- load_samplingframe("./somefolder/samplingframe.csv")
-
-# it can be used to make weights with map_to_weighting()
-
 
 }

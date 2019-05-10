@@ -1,8 +1,18 @@
+
+
 to_alphanumeric_lowercase <- function(x){tolower(gsub("[^a-zA-Z0-9_]", "\\.", x))}
 to_alphanumeric_lowercase_colnames_df <- function(df){
   names(df) <- to_alphanumeric_lowercase(names(df))
   return(df)
 }
+
+#' loading function with automatic default
+#'
+#' @param file path to a csv file with the assessment data
+#'
+#' @details the file is loaded with stringsAsFactors = F and with column names in alphanumeric lowercase
+#' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
+#' @export
 read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
   df <- data.table::fread(file, stringsAsFactors = stringsAsFactors, ...) %>%
     as.data.frame
@@ -29,14 +39,8 @@ load_data<-function(file){
 
 #' Load a sampling frame from csv
 #' @param file the path and name of the sampling frame csv file to load.
-#' @details
-#' @examples
-#'
-#' # load the sampling frame:
-#' sf <- load_samplingframe("./somefolder/samplingframe.csv")
-#'
-#' # it can be used to make weights with map_to_weighting()
-#'
+#' @details function loads the sampling frame and can be used to make weights ith map_to_weighting()
+#' @examples sf <- load_samplingframe("./somefolder/samplingframe.csv")
 #'
 #' @export
 load_samplingframe<-function(file){

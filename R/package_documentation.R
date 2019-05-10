@@ -1,0 +1,62 @@
+#' hypegrammaR: Implementing  \href{https://docs.google.com/document/d/1979hEu6N9d_nIHwkq3AhvLDww1-_eXys808q81WewZ0/edit#heading=h.gjdgxs}{IMPACT Data Analysis Guidelines}
+#'
+#'
+#'A grammar of hypothesis driven analysis, following the idea that \href{http://allendowney.blogspot.com/2016/06/there-is-still-only-one-test.html}{there is only one test}
+#'
+#' Supports integration of weighted data (using the survey package) and data collected with \href{https://www.kobotoolbox.org/}{kobotoolbox}, \href{https://opendatakit.org/}{ODK} or similar.
+#' Executes the three main steps of data analysis
+#'
+#' \itemize{
+#'   \item summary statistics
+#'   \item hypothesis tests
+#'   \item preparation for visualisation
+#' }
+#'
+#' The user begins by loading the data, and if needed the questionnaire, analysisplan and sampling frame (as .csv files). To verify the correct format of these inputs, \code{\link[kobostandards::check_inputs]{name}} can be used.
+#' All other functions then refer to these objects.
+#'
+#' The two possible work-flows are: using the individual functions (in the blocks), and mapping to the resuls: using all the blocks automatically.
+#'
+#'
+#' @section Mappig to the result:
+#' \itemize{
+#' \item \code{\link{map_to_result}} is the overall function that executes the three steps of data analysis
+#' \item \code{\link{map_to_file}} maps from the result to a csv or jpg file
+#' \item \code{\link{from_analysisplan_map_to_output}} applies map_to_result and map_to_file for all rows in the data analysis plan
+#'}
+
+#' @section Individual blocks:
+#'
+#' Preparing your data
+#'  \itemize{
+#' \item \code{\link{map_to_case}},
+#' \item \code{\link{map_to_design}},
+#' \item \code{\link{map_to_weighting}}
+#'}
+#' Summary statistics (examples)
+#'  \itemize{
+#' \item \code{\link{percent_with_confints_select_one}},
+#' \item \code{\link{mean_with_confints_select_one_groups}}
+#'}
+#'
+#' Hypothesis tests (examples)
+#'\itemize{
+#' \item \code{\link{hypothesis_test_t_one_sample}},
+#' \item \code{\link{hypothesis_test_chisquared_select_one}}
+#'}
+#'
+#' Visualise (examples)
+#'\itemize{
+#' \item \code{\link{barchart_percent}},
+#' \item \code{\link{gg_heatmap_generic}}
+#'}
+#'
+#'
+#'
+#' @docType package
+#' @name hypegrammaR
+#' @md
+NULL
+
+#'@import koboquest kobostandards surveyweights
+NULL
