@@ -66,16 +66,17 @@ hypothesis_test_t_two_sample <- function(dependent.var,
                                          independent.var,
                                          design){
 
-
-  design$variables[[dependent.var]] <- as.numeric_factors_from_names(design$variables[[dependent.var]])
   if(is.factor(design$variables[[independent.var]])){
     design$variables[[independent.var]]<-droplevels(design$variables[[independent.var]])
   }
 
   sanitised<-datasanitation_design(design,dependent.var,independent.var,
                                    datasanitation_hypothesistest_t)
+
   if(!sanitised$success){return(hypothesis_test_empty(dependent.var,independent.var,message=sanitised$message))}
   design<-sanitised$design
+
+  design$variables[[dependent.var]] <- as.numeric_factors_from_names(design$variables[[dependent.var]])
 
       formula_string<-paste0(dependent.var, "~", independent.var)
       ttest <- svyttest(formula(formula_string), design, na.rm = TRUE)
@@ -104,11 +105,14 @@ hypothesis_test_t_one_sample <- function(dependent.var,
   limit <- as.numeric(limit)
 ### how to make this function one sided
 
-  design$variables[[dependent.var]]  <- as.numeric_factors_from_names(design$variables[[dependent.var]])
-  design$variables[[dependent.var]] <- design$variables[[dependent.var]] - limit
-
   sanitised<-datasanitation_design(design,dependent.var,independent.var,
                                    datasanitation_hypothesistest_limit)
+
+  if(!sanitised$success){return(hypothesis_test_empty(dependent.var,independent.var,message=sanitised$message))}
+  design<-sanitised$design
+
+  design$variables[[dependent.var]]  <- as.numeric_factors_from_names(design$variables[[dependent.var]])
+  design$variables[[dependent.var]] <- design$variables[[dependent.var]] - limit
 
       formula_string<-paste0(dependent.var, "~", 0)
       ttest <- svyttest(formula(formula_string), design, na.rm = TRUE, alternative = "greater")

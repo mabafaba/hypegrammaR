@@ -19,6 +19,7 @@ datasanitation_summary_statistics_percent_with_confints_select_one <- function(d
                          datasanitation_morethan_1_unique_dependent)
 }
 
+
 datasanitation_summary_statistics_percent_sm_choice <- function(data,dependent.var,independent.var){
   apply_data_sanitations(data,
                          dependent.var,
@@ -128,7 +129,7 @@ datasanitation_hypothesistest_limit<-function(data,dependent.var,independent.var
                          independent.var,# all functions take these parameters
                          datasanitation_morethan_1_unique_dependent,
                          datasanitation_dependent_numeric
-  )
+                         )
 }
 
 datasanitation_logistic_regression <- function(data, dependent.var, independent.var){

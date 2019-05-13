@@ -66,7 +66,7 @@ percent_with_confints_select_one <-
 
 #'Weighted percentages with confidence intervals for select multiple questions
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
-#'@param dependent.var.sm.cols a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_Select_multiple(question.name, data)
+#'@param dependent.var.sm.cols a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_select_multiple(question.name, data)
 #'@param design the svy design object created using map_to_design or directly with svydesign
 #'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.
@@ -76,8 +76,11 @@ percent_with_confints_select_multiple <- function(dependent.var,
                                                   design,
                                                   na.rm = TRUE) {
 
+
+  question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
   # Sanitation checks
-  for(x in dependent.var.sm.cols){
+  sapply(dependent.var.sm.cols, function(x){
+
     dependent.var <- names(design$variables)[x]
     sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
                                      datasanitation_summary_statistics_percent_sm_choice)
@@ -85,9 +88,9 @@ percent_with_confints_select_multiple <- function(dependent.var,
       warning(sanitised$message)
       return(datasanitation_return_empty_table(data = design$variables, dependent.var))
       }
-
     design<-sanitised$design
     }
+    )
 
   # Get the columns with the choices data into an object
   choices <- design$variables[, dependent.var.sm.cols]
@@ -221,6 +224,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 }
 
 #'Weighted percentages with confidence intervals for groups (select multiple questions)
+#'
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
 #'@param dependent.var.sm.cols a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_Select_multiple(question.name, data)
 #'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
@@ -228,6 +232,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 #'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.
 #'@export
+#'
 percent_with_confints_select_multiple_groups <-
   function(dependent.var,
            dependent.var.sm.cols,

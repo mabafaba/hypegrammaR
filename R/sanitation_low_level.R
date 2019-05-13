@@ -151,16 +151,25 @@ datasanitation_independent_numeric<-function(data,dependent.var,independent.var,
 
 as.numeric_factors_from_names<-function(x){
   if(is.factor((x))){x<-as.character(x)}
-  as.numeric(x)
+  return(as.numeric(x))
 }
 
 datasanitation_question_not_sm <- function(data,dependent.var,independent.var,...){
-  if(exists("questionnaire")) {
-  dependent_is_select_multiple <- FALSE}else{
-    dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
-if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))}
-  return(successfull_sanitation(data))}
+  if(!exists("questionnaire")) {
+  dependent_is_select_multiple <- FALSE}
+  else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
+if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))
+  }
+  return(successfull_sanitation(data))
+  }
 
 
+question_matches_choices <- function(data, dependent.var, independent.var, sm.columns){
+  if(!exists("questionnaire")) {
+    question_matches_choices <- FALSE}
+else{question_matches_choices <- all(questionnaire$choices_for_select_multiple(dependent.var, data) == sm.columns)}
+  if(!question_matches_choices){return(warning("The choices don't match the question. Using only the choices to calculate summary statistics."))
+    }
+  }
 
 

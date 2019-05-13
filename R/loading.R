@@ -120,15 +120,6 @@ return(ap_raw)
 
 
 
-
-
-
-
-
-
-
-
-
 assert_valid_analysisplan<-function(df){
   expected_column_names<-c("repeat.for.variable",
                            "research.question",
