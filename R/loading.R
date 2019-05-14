@@ -1,6 +1,8 @@
 
 
 to_alphanumeric_lowercase <- function(x){tolower(gsub("[^a-zA-Z0-9_]", "\\.", x))}
+
+
 to_alphanumeric_lowercase_colnames_df <- function(df){
   names(df) <- to_alphanumeric_lowercase(names(df))
   return(df)
@@ -14,8 +16,7 @@ to_alphanumeric_lowercase_colnames_df <- function(df){
 #' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
 #' @export
 read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
-  df <- data.table::fread(file, stringsAsFactors = stringsAsFactors, ...) %>%
-    as.data.frame
+  df <- data.table::fread(file, stringsAsFactors = stringsAsFactors, ...) %>% as.data.frame
   colnames(df) <- to_alphanumeric_lowercase(colnames(df))
   return(df)
 }

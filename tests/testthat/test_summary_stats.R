@@ -48,22 +48,22 @@ test_that("percent_with_confints_select_multiple outputs correct",{
 })
 
 
-test_that("percent_with_confints_select_mult_groups all inputs correct",{
-  expect_error(percent_with_confints_select_one_groups(tf$select_one[1], tf$select_one[2], design)) ##wrong dependent
-  expect_error(percent_with_confints_select_one_groups(tf$numeric[1], tf$select_one[2], design)) ## wrong dependent
-  expect_error(percent_with_confints_select_one_groups(tf$fake[1], tf$select_one[2], design)) ## wrong dependent
-  expect_error(percent_with_confints_select_one_groups(tf$select_multiple[1], tf$fake[2], design)) ##wrong independent
-  expect_error(percent_with_confints_select_one_groups(tf$select_multiple[1], tf$numeric[2], design)) ##wrong independent
-  expect_error(percent_with_confints_select_one_groups(tf$select_multiple[1], tf$numeric[2], design)) ## wrong independent
-  expect_error(percent_with_confints_select_one_groups(tf$select_multiple[1], tf$select_multiple[2], design)) ## wrong independent
+test_that("percent_with_confints_select_one_groups all inputs correct",{
+  expect_warning(percent_with_confints_select_one_groups(tf$select_one_many_cat[1], tf$select_one[2], design)) ##wrong dependent
+  expect_warning(percent_with_confints_select_one_groups(tf$numeric[1], tf$select_one[2], design)) ## wrong dependent
+  expect_warning(percent_with_confints_select_one_groups(tf$fake[1], tf$select_one[2], design)) ## wrong dependent
+  expect_warning(percent_with_confints_select_one_groups(tf$select_multiple[1], tf$fake[2], design)) ##wrong independent
+  expect_warning(percent_with_confints_select_one_groups(tf$select_multiple[1], tf$numeric[2], design)) ## wrong independent
+  expect_warning(percent_with_confints_select_one_groups(tf$select_multiple[1], tf$select_multiple[2], design)) ## wrong independent
 })
 
 test_that("percent_with_confints_select_mult_groups all outputs correct",{
-  expect_is(percent_with_confints_select_multiple_groups(tf$select_multiple[1], tf$select_one[2], design), "data.frame")
-  expect_named(percent_with_confints_select_multiple_groups(tf$select_multiple[1], tf$select_one[2], design), c("dependent.var","independent.var",
+  sm.columns <- questionnaire$choices_for_select_multiple(tf$select_multiple[1], data = data)
+  expect_is(percent_with_confints_select_multiple_groups(tf$select_multiple[1], sm.columns, tf$select_one[2], design), "data.frame")
+  expect_named(percent_with_confints_select_multiple_groups(tf$select_multiple[1],sm.columns, tf$select_one[2], design), c("dependent.var","independent.var",
                                                                                                             "dependent.var.value","independent.var.value",
                                                                                                             "numbers","se","min","max"))
-  expect_true(is.numeric(percent_with_confints_select_mult_groups(tf$select_multiple[1], tf$select_one[2], design)$numbers))
+  expect_true(is.numeric(percent_with_confints_select_mult_groups(tf$select_multiple[1], sm.columns, tf$select_one[2], design)$numbers))
   expect_false(is.null(percent_with_confints_select_mult_groups(tf$select_multiple[1], tf$select_one[2], design)$numbers))
 })
 

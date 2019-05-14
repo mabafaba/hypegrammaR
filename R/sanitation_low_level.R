@@ -156,20 +156,34 @@ as.numeric_factors_from_names<-function(x){
 
 datasanitation_question_not_sm <- function(data,dependent.var,independent.var,...){
   if(!exists("questionnaire")) {
-  dependent_is_select_multiple <- FALSE}
-  else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
-if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))
+    dependent_is_select_multiple <- FALSE
+  }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)
+    }
+  if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))
   }
   return(successfull_sanitation(data))
-  }
+}
 
 
-question_matches_choices <- function(data, dependent.var, independent.var, sm.columns){
+datasanitation_question_sm <- function(data,dependent.var,independent.var,...){
   if(!exists("questionnaire")) {
-    question_matches_choices <- FALSE}
-else{question_matches_choices <- all(questionnaire$choices_for_select_multiple(dependent.var, data) == sm.columns)}
-  if(!question_matches_choices){return(warning("The choices don't match the question. Using only the choices to calculate summary statistics."))
+    dependent_is_select_multiple <- TRUE
+  }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)
     }
+  if(!dependent_is_select_multiple){return(failed_sanitation("Question is not select multiple, but the function expects one"))
   }
+  return(successfull_sanitation(data))
+}
+
+question_matches_choices <- function(data, dependent.var, sm.columns){
+  if(!exists("questionnaire")) {return(NULL)
+    }
+  if(!questionnaire$question_is_select_multiple(dependent.var)){return(warning("Variable provided is not select multiple, Using only the choices to calculate summary statistics."))
+    }
+q_m_c <- all(questionnaire$choices_for_select_multiple(dependent.var, data) == sm.columns)
+  if(!q_m_c){return(warning("The choices don't match the question provided. Using only the choices to calculate summary statistics."))
+    }
+}
+
 
 

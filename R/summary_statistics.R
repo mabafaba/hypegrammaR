@@ -78,7 +78,18 @@ percent_with_confints_select_multiple <- function(dependent.var,
 
 
   question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
-  # Sanitation checks
+
+  sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
+                                   datasanitation_summary_statistics_percent_sm_choice)
+  if(!sanitised$success){
+    warning(sanitised$message)
+    return(datasanitation_return_empty_table(data = design$variables, dependent.var))
+  }
+  design<-sanitised$design
+
+
+
+  ### Sanitation checks
   sapply(dependent.var.sm.cols, function(x){
 
     dependent.var <- names(design$variables)[x]
@@ -91,6 +102,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
     design<-sanitised$design
     }
     )
+  ###
 
   # Get the columns with the choices data into an object
   choices <- design$variables[, dependent.var.sm.cols]
@@ -240,20 +252,23 @@ percent_with_confints_select_multiple_groups <-
            design,
            na.rm = TRUE) {
     # if dependent and independent variables have only one value, just return that:
-    for(x in dependent.var.sm.cols){
+
+    question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
+
+    ### Sanitation checks
+    sapply(dependent.var.sm.cols, function(x){
+
       dependent.var <- names(design$variables)[x]
       sanitised<-datasanitation_design(design,dependent.var,independent.var,
                                        datasanitation_summary_statistics_percent_sm_choice_groups)
       if(!sanitised$success){
         warning(sanitised$message)
-        return(datasanitation_return_empty_table(design$variables, dependent.var,independent.var))}
-      design<-sanitised$design}
-
-    choices <- design$variables[, dependent.var.sm.cols]
-
-    result_hg_format <- lapply(names(choices), function(x) {
-      datasanitation_morethan_1_unique_dependent(design$variables, x, independent.var)
-
+        return(datasanitation_return_empty_table_NA(data = design$variables, dependent.var, independent.var)) ### hack because in the etch case of a numeric dependent the whole thing goes
+      }
+      design<-sanitised$design
+    }
+    )
+    ###
       formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
       formula_string <- paste0("~as.numeric(", x , ")", sep = "")
       by <- paste0("~", independent.var , sep = "")
