@@ -10,7 +10,7 @@ percent_with_confints_select_multiple(dependent.var, dependent.var.sm.cols,
 \arguments{
 \item{dependent.var}{string with the column name in `data` of the dependent variable. Should be a 'select multiple.}
 
-\item{dependent.var.sm.cols}{a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_Select_multiple(question.name, data)}
+\item{dependent.var.sm.cols}{a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_select_multiple(question.name, data)}
 
 \item{design}{the svy design object created using map_to_design or directly with svydesign}
 }

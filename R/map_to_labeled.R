@@ -12,7 +12,7 @@ map_to_labeled<-function(result,questionnaire){
                                                      questionnaire = questionnaire,
                                                      label.dependent.var.value = T,
                                                      label.independent.var.value = T)
-  result
+  return(result)
 }
 
 
@@ -22,7 +22,7 @@ map_to_labeled<-function(result,questionnaire){
 #' @param questionnaire koboquest `questionnaire` object; output from load_questionnaire()
 #' @return same as input, but with all variable values labeled
 #' @details if the variable wasn't found in the questionnaire, or the choice wasn't found in the corresponding list of choices, the affected values will remain unchanged.
-labels_summary_statistic<-function(summary.statistic,questionnaire,label.dependent.var.value=T,label.independent.var.value=T,label.dependent.var=F,label.independent.var=F,independent.linebreak=T,dependent.linebreak=F){
+labels_summary_statistic<-function(summary.statistic,questionnaire,label.dependent.var.value=T,label.independent.var.value=T,label.dependent.var=T,label.independent.var=T,independent.linebreak=T,dependent.linebreak=F){
   if(is.null(summary.statistic)){return(summary.statistic)}
 
   if(length(unique(summary.statistic[,"dependent.var"]))>1){stop("labels_summary_statistic only works for a single combination of dependent and independent variable.")}

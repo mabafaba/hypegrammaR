@@ -1,7 +1,7 @@
 ---
-title: "analysisplan_report"
-author: ""
-date: "4 February 2019"
+title: "Analysisplan report"
+author: "Eliora H"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -11,12 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(htmltools)
 library(hypegrammaR)
 
-
 ```
 
 
 ```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
-resultlist<-x
+resultlist <- x
 analysisplan<-resultlist$analysisplan
 knitr::kable(analysisplan,format = "html")
 results<-resultlist$results
@@ -31,7 +30,7 @@ for(rq in unique(analysisplan$research.question)){
     htmltools::h2(srq) %>% as.character %>% cat
     
     for(i in which(in_rq & in_srq)){
-    print(x$results[[i]] %>% map_to_visualisation %>% .$ggplot)
+    print(results[[i]] %>% map_to_visualisation %>% .$ggplot)
     print(results[[i]] %>% map_to_visualisation_heatmap %>% .$ggplot)
     kable(resultlist$results[[i]]$hypothesis.test %>% as.data.frame,format="html")    }
     

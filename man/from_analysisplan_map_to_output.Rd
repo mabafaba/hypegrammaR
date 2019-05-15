@@ -5,7 +5,8 @@
 \title{apply an analysis plan}
 \usage{
 from_analysisplan_map_to_output(data, analysisplan, weighting = NULL,
-  cluster_variable_name = NULL, questionnaire = NULL)
+  cluster_variable_name = NULL, questionnaire = NULL,
+  labeled = FALSE)
 }
 \arguments{
 \item{data}{the data set as a data frame (load_data())}
@@ -17,6 +18,8 @@ from_analysisplan_map_to_output(data, analysisplan, weighting = NULL,
 \item{cluster_variable_name}{optional: the name of the variable with the cluster IDs}
 
 \item{questionnaire}{optional: the questionnaire (load_questionnaire())}
+
+\item{labeled}{do you want the resuts to display labels rather than xml names ? defaults to false, requires the questionnaire}
 }
 \value{
 returns a list of hypegrammaR "result" objects (see map_to_result())

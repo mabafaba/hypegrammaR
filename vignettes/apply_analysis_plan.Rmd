@@ -58,9 +58,13 @@ questionnaire<-load_questionnaire(data = assessment_data,
 analysisplan<-load_analysisplan(df = hypegrammaR::test_analysisplan)
 ```
 
+```{r 7,warning=F,message=F,error=F}
+analysisplan<-load_analysisplan(df = hypegrammaR::test_analysisplan)
+```
+
 # Run the analysis plan & save outputs as an html file
 
-```{r 7,eval = T, warnings = F, echo = F}
+```{r 8,eval = T, warnings = F, echo = F}
 list_of_results <- assessment_data %>%  from_analysisplan_map_to_output(analysisplan = analysisplan,
                                                                         weighting = weights,
                                                                         questionnaire = questionnaire) 
@@ -69,7 +73,7 @@ list_of_results <- assessment_data %>%  from_analysisplan_map_to_output(analysis
 ```
 
 ### Output as html
-```{r 8,eval = T, warning = F, echo = F}
+```{r 9,eval = T, warning = F, echo = F}
 
 list_of_results %>% map_to_template(questionnaire = questionnaire,
                                     dir = "../",

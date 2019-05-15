@@ -23,6 +23,7 @@ Imports:
     assertthat
 Remotes:
     github::mabafaba/koboquest,
+    github::mabafaba/kobostandards,
     github::ellieallien/surveyweights
 License: What license is it under?
 Encoding: UTF-8

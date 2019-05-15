@@ -75,14 +75,17 @@ map_to_visualisation <- function(result) {
 
 
   vis_input <- result$summary.statistic
+
 ### SHARON MAGIC
   # visualisation_functions[["CASE_group_difference_categorical_categorical"]] <- visualisationIMPACT::grouped_barchart_impact
   # visualisation_functions[["CASE_group_difference_numerical_categorical"]] <- visualisationIMPACT::grouped_boxplot_impact
   # visualisation_functions[["CASE_direct_reporting_categorical_"]] <- visualisationIMPACT::barchart_impact
   # visualisation_functions[["CASE_direct_reporting_numerical_"]] <- visualisationIMPACT::boxplot_impact
   #
+ # return(visualisation_functions[[result$parameters$case]](.data = vis_input, x = vis_input$independent.var, y = vis_input$dependent.var))
+
   return(visualisation_functions[[result$parameters$case]](result))
-}
+  }
 
 
 #' Save outputs to files
