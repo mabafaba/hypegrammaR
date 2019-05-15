@@ -72,6 +72,7 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
 #' @param weighting optional: the weighting function (use load_samplingframe() and then map_to_weighting())
 #' @param cluster_variable_name optional: the name of the variable with the cluster IDs
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
+#' @param labeled do you want the resuts to display labels rather than xml names ? defaults to false, requires the questionnaire
 #' @return returns a list of hypegrammaR "result" objects (see map_to_result())
 #' @export
 
@@ -79,8 +80,12 @@ from_analysisplan_map_to_output <- function(data,
            analysisplan,
            weighting = NULL,
            cluster_variable_name = NULL,
-           questionnaire = NULL) {
+           questionnaire = NULL,
+           labeled = FALSE) {
 
+
+  #overwrite 'labeled' paramater if questionnaire is missing
+  if(is.null(questionnaire)){labeled <- FALSE}
 
   # shorten analysisplan column names
         analysisplan <-
@@ -122,6 +127,9 @@ from_analysisplan_map_to_output <- function(data,
         this_valid_data <- this_valid_data[which(!(is.na(this_valid_data[, as.character(x["independent.var"])]))), ]
       }
       # print what we're doing to console
+
+
+
       printparamlist(x, "1/2: calculating summary statistics and hypothesis tests")
 
 
@@ -165,6 +173,10 @@ from_analysisplan_map_to_output <- function(data,
         result$parameters$repeat.var <- NA
         result$parameters$repeat.var.value <- NA
 
+      }
+
+      if(labeled){
+        result <- map_to_labeled(result, questionnaire)
       }
 
 

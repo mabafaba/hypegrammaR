@@ -266,9 +266,14 @@ percent_with_confints_select_multiple_groups <-
         return(datasanitation_return_empty_table_NA(data = design$variables, dependent.var, independent.var)) ### hack because in the etch case of a numeric dependent the whole thing goes
       }
       design<-sanitised$design
-    }
-    )
+    })
+
     ###
+    # Get the columns with the choices data into an object
+    choices <- design$variables[, dependent.var.sm.cols]
+
+
+    result_hg_format <- lapply(names(choices), function(x){
       formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
       formula_string <- paste0("~as.numeric(", x , ")", sep = "")
       by <- paste0("~", independent.var , sep = "")
@@ -373,7 +378,7 @@ mean_with_confints_groups <- function(dependent.var,
                                       independent.var,
                                       design) {
 
-  sanitised<-datasanitation_design(design,dependent.var,independent.var,
+  sanitised <-datasanitation_design(design,dependent.var,independent.var,
                                    datasanitation_summary_statistics_mean_groups)
   if(!sanitised$success){
     warning(sanitised$message)
