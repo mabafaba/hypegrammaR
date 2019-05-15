@@ -1,79 +1,30 @@
-,repeat for,research.question,sub.research.question,hypothesis,independent.variable,dependent.variable,hypothesis.type,independent.variable.type,dependent.variable.type
-1,district,RQ1 .....,different problems?,hp 1,hoh.sex,primary.hc.provider,group_difference,,
-2,district,RQ1 .....,different wellbeing?,hp 2,primary.hc.provider,respondent.age,group_difference,,
-3,district,RQ1 .....,different child violence?,hp 3,primary.hc.provider,calc.household,group_difference,,
-4,district,RQ1 .....,different evicted?,hp 4,shelter.type,primary.hc.provider,group_difference,,
-5,district,RQ2 .....,urban/rural needs,hp 5,hoh.sex,young.child.diarrhoea,group_difference,,
-6,district,RQ2 .....,urban/rural needs,hp 6,young.child.diarrhoea,respondent.age,group_difference,,
-7,district,RQ2 .....,urban/rural needs,hp 7,young.child.diarrhoea,calc.household,group_difference,,
-8,district,RQ2 .....,urban/rural needs,hp 8,shelter.type,young.child.diarrhoea,group_difference,,
-9,district,RQ2 .....,demographics,hp 9,hoh.sex,treatment.access.difficulty,group_difference,,
-10,district,RQ2 .....,demographics,hp 10,treatment.access.difficulty,respondent.age,group_difference,,
-11,district,RQ2 .....,vulnerabilities,hp 11,treatment.access.difficulty,calc.household,group_difference,,
-,district,RQ1 .....,,,shelter.type,treatment.access.difficulty,group_difference,,
-,,RQ1 .....,,,hoh.sex,primary.hc.provider,group_difference,,
-,,RQ1 .....,,,primary.hc.provider,respondent.age,group_difference,,
-,,RQ1 .....,,,primary.hc.provider,calc.household,group_difference,,
-,,RQ2 .....,,,shelter.type,primary.hc.provider,group_difference,,
-,,RQ2 .....,,,hoh.sex,young.child.diarrhoea,group_difference,,
-,,RQ2 .....,,,young.child.diarrhoea,respondent.age,group_difference,,
-,,RQ2 .....,,,young.child.diarrhoea,calc.household,group_difference,,
-,,RQ2 .....,,,shelter.type,young.child.diarrhoea,group_difference,,
-,,RQ2 .....,,,hoh.sex,treatment.access.difficulty,group_difference,,
-,,RQ2 .....,,,treatment.access.difficulty,respondent.age,group_difference,,
-,,RQ1 .....,,,treatment.access.difficulty,calc.household,group_difference,,
-,,RQ1 .....,,,shelter.type,treatment.access.difficulty,group_difference,,
-,district,RQ1 .....,,,time.in.settlement,fcs.poor,group_difference,,
-,district,RQ1 .....,,,time.in.settlement,fcs.poor,group_difference,,
-,district,RQ2 .....,,,respondent.type,males.3.5,group_difference,,
-,district,RQ2 .....,,,respondent.type,females.3.5,group_difference,,
-,district,RQ2 .....,,,respondent.type,males.6.12,group_difference,,
-,district,RQ2 .....,,,respondent.type,females.6.12,group_difference,,
-,district,RQ2 .....,,,respondent.type,males.13.18,group_difference,,
-,district,RQ2 .....,,,respondent.type,females.13.18,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.3.5.ecd.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.males.3.5.primary.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.males.3.5.secondary.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.males.3.5.tvet.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.males.3.5.alp.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.3.5.non.formal.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.3.5.unattending.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.3.5.ecd.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.3.5.primary.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.3.5.secondary.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.3.5.tvet.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.3.5.alp.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.3.5.non.formal.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.3.5.unattending.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.males.6.12.ecd.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.males.6.12.primary.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.6.12.secondary.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.6.12.tvet.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.6.12.alp.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.6.12.non.formal.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.6.12.unattending.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.6.12.ecd.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.6.12.primary.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.6.12.secondary.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.6.12.tvet.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.6.12.alp.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.6.12.non.formal.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.6.12.unattending.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.13.18.ecd.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.13.18.primary.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.13.18.secondary.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.13.18.tvet.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.13.18.alp.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.males.13.18.non.formal.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.males.13.18.unattending.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.13.18.ecd.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.13.18.primary.hh,group_difference,,
-,district,RQ1 .....,,,respondent.type,calc.edu.females.13.18.secondary.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.13.18.tvet.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.13.18.alp.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.13.18.non.formal.hh,group_difference,,
-,district,RQ2 .....,,,respondent.type,calc.edu.females.13.18.unattending.hh,group_difference,,
-,district,RQ2 .....,,,time.in.settlement,fcs.poor,group_difference,,
-,district,RQ2 .....,,,time.in.settlement,fcs.borderline,group_difference,,
-,refugee.settlement,RQ2 .....,,,time.in.settlement,fcs.poor,group_difference,,
-,refugee.settlement,RQ1 .....,,,time.in.settlement,fcs.borderline,group_difference,,
+,repeat.for.variable,research.question,sub.research.question,hypothesis,independent.variable,dependent.variable,hypothesis.type,independent.variable.type,dependent.variable.type
+1,NA,RQ1 .....,different problems?,hp 1,informalsettlement,priorityproblems,group_difference,categorical,categorical
+2,NA,RQ1 .....,different wellbeing?,hp 2,informalsettlement,psychwellbeingchild,group_difference,categorical,categorical
+3,NA,RQ1 .....,different child violence?,hp 3,informalsettlement,childrenviolence,group_difference,categorical,categorical
+4,NA,RQ1 .....,different evicted?,hp 4,informalsettlement,evicted,group_difference,categorical,categorical
+5,NA,RQ2 .....,urban/rural needs,hp 5,urbanrural,eie_need,group_difference,categorical,numerical
+6,NA,RQ2 .....,urban/rural needs,hp 6,urbanrural,esfni_need,group_difference,categorical,numerical
+7,NA,RQ2 .....,urban/rural needs,hp 7,urbanrural,fsac_need,group_difference,categorical,numerical
+8,NA,RQ2 .....,urban/rural needs,hp 8,urbanrural,health_need,group_difference,categorical,numerical
+9,NA,RQ2 .....,demographics,hp 9,,headhhgendre,direct_reporting,,categorical
+10,NA,RQ2 .....,demographics,hp 10,,hhnumberindividuals,direct_reporting,,numerical
+11,NA,RQ2 .....,vulnerabilities,hp 11,,headhhdisability,direct_reporting,,categorical
+,,,,,,priorityproblems,direct_reporting,,categorical
+,,,,,,psychwellbeingchild,direct_reporting,,categorical
+,,,,,,childrenviolence,direct_reporting,,categorical
+,,,,,,evicted,direct_reporting,,categorical
+,,,,,,eie_need,direct_reporting,,numerical
+,,,,,,esfni_need,direct_reporting,,numerical
+,,,,,,fsac_need,direct_reporting,,numerical
+,,,,,,health_need,direct_reporting,,numerical
+,,,,,informalsettlement,girls518,group_difference,categorical,numerical
+,,,,,informalsettlement,boys518,group_difference,categorical,numerical
+,,,,,informalsettlement,adults,group_difference,categorical,numerical
+,,,,,informalsettlement,ind1850,group_difference,categorical,numerical
+,,,,,informalsettlement,ind5064,group_difference,categorical,numerical
+,,,,,informalsettlement,elders,group_difference,categorical,numerical
+,,,,,,hhdebt,direct_reporting,,numerical
+,,,,,,howaffectedhhincome,direct_reporting,,categorical
+,,,,,,sourceexpenses,direct_reporting,,categorical
+,,,,,,foodspent,direct_reporting,,numerical

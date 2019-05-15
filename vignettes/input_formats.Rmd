@@ -38,7 +38,7 @@ You should use the hypegrammar `load_*()` functions to load the inputs.
 
 ```{r,include = F,echo = F}
 
-assessment_data<-load_data
+assessment_data<-load_data(file = "../data/testdata.csv")
 
 samplingframe<-load_samplingframe
 
