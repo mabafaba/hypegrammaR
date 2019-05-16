@@ -79,15 +79,6 @@ percent_with_confints_select_multiple <- function(dependent.var,
 
   question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
 
-  sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
-                                   datasanitation_summary_statistics_percent_sm_choice)
-  if(!sanitised$success){
-    warning(sanitised$message)
-    return(datasanitation_return_empty_table(data = design$variables, dependent.var))
-  }
-  design<-sanitised$design
-
-
 
   ### Sanitation checks
   sapply(dependent.var.sm.cols, function(x){

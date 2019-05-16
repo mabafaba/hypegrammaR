@@ -104,33 +104,34 @@ from_analysisplan_map_to_output <- function(data,
   analysisplan <- analysisplan_expand_repeat(analysisplan, data)
 
 
-
   # add "percentcomplete" to print progress to console
     analysisplan$percentcomplete <-
       paste0(floor(1:nrow(analysisplan) / nrow(analysisplan) * 100), "%\n\n")
 
     # Apply rows:
     results <- apply(analysisplan, 1, function(x) {
+
       # subset for current repition (if has a repeat var)
       if (!(x["repeat.var"]) %in% c(NULL, "", " ", NA)) {
         this_valid_data <-
           data[(data[, as.character(x["repeat.var"])] == as.character(x["repeat.var.value"])), ]
-      } else{
+      }else{
         this_valid_data <- data
       }
 
 
-      # subset where dendent and independent has data
+      # subset where dependent and independent has data
+#
+#       this_valid_data <- this_valid_data[which(!(is.na(this_valid_data[, as.character(x["dependent.var"])]))), ,drop=FALSE]
+#       if (!is.na(x["independent.var"])) {
+#         this_valid_data <- this_valid_data[which(!(is.na(this_valid_data[, as.character(x["independent.var"])]))), ]
+#       }
 
-      this_valid_data <- this_valid_data[which(!(is.na(this_valid_data[, as.character(x["dependent.var"])]))), ]
-      if (!is.na(x["independent.var"])) {
-        this_valid_data <- this_valid_data[which(!(is.na(this_valid_data[, as.character(x["independent.var"])]))), ]
-      }
       # print what we're doing to console
 
 
 
-      printparamlist(x, "1/2: calculating summary statistics and hypothesis tests")
+      # printparamlist(x, "1/2: calculating summary statistics and hypothesis tests")
 
 
       if (is.na(x["independent.var"]) | is.null(x["independent.var"])) {
@@ -168,7 +169,7 @@ from_analysisplan_map_to_output <- function(data,
       if (!is.null(x["repeat.var"]) & (!is.na(x["repeat.var"]))) {
         result$parameters$repeat.var <- x["repeat.var"]
         result$parameters$repeat.var.value <-
-          x["repeat.var.value"]
+          x["repeat.var"]
       } else{
         result$parameters$repeat.var <- NA
         result$parameters$repeat.var.value <- NA

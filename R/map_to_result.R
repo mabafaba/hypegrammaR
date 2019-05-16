@@ -31,7 +31,8 @@ map_to_result<-function(data,
                         cluster.variable.name=NULL,
                         weighting=function(df){rep(1,nrow(df))},
                         questionnaire=NULL){
-  options(survey.lonely.psu = "average")
+
+  options(survey.lonely.psu = "remove")
 
   # put the relevant input parameters in a list so we can attach them to the output:
   parameters<-list(

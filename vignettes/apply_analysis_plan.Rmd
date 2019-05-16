@@ -64,7 +64,7 @@ analysisplan<-load_analysisplan(df = hypegrammaR::test_analysisplan)
 
 # Run the analysis plan & save outputs as an html file
 
-```{r 8,eval = T, warnings = F, echo = F}
+```{r 8,eval = T, warnings = F, echo = T, include = F}
 list_of_results <- assessment_data %>%  from_analysisplan_map_to_output(analysisplan = analysisplan,
                                                                         weighting = weights,
                                                                         questionnaire = questionnaire) 
