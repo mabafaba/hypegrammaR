@@ -119,6 +119,11 @@ from_analysisplan_map_to_output <- function(data,
         this_valid_data <- data
       }
 
+      if(!(is_good_dataframe(this_valid_data))){
+        result <- list()
+        return(result)
+      }
+
 
       # subset where dependent and independent has data
 #
