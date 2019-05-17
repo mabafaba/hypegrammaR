@@ -110,7 +110,8 @@ grouped_barchart_percent<-function(result){
 barchart_average<-function(result){
   summary.statistic<-result$summary.statistic
   summary.statistic$min[summary.statistic$min<0]<-0
-  theplot<-ggplot(summary.statistic,aes(x=independent.var.value,y=numbers),fill=reach_style_color_darkgrey(1))+geom_bar(stat = "identity")+theme_tufte()+
+  theplot<-ggplot(summary.statistic,aes(x=independent.var.value,y=numbers),
+                  fill=reach_style_color_darkgrey(1))+geom_bar(stat = "identity")+theme_tufte()+
     xlab("")+ylab(summary.statistic$dependent.var[1])+
     theme(text=element_text(family="Arial Narrow"),
           axis.title.x=element_blank(),
