@@ -136,7 +136,7 @@ from_analysisplan_map_to_output <- function(data,
 
 
 
-      # printparamlist(x, "1/2: calculating summary statistics and hypothesis tests")
+      printparamlist(x, "1/2: calculating summary statistics and hypothesis tests")
 
 
       if (is.na(x["independent.var"]) | is.null(x["independent.var"])) {

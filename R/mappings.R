@@ -43,11 +43,11 @@ map_to_design <- function(data,
 #'
 #' selects an appropriate visualisation function based on the analysis case
 #'
-#' @param case a string uniquely identifying the analysis case. output of map_to_case(). To list valid case strings use hypegrammar::list_all_cases()
+#' @param result a result object containing the summary statistics and hypothesis tests for the case.
 #' @return a _function_ that creates the relevant ggplot object
-#' @examples map_to_visualisation("group_difference_categorical_categorical")
-#' @examples my_case<- map_to_case( ... )
-#' my_vis_fun <- map_to_visualisation(my_case)
+#' @examples map_to_visualisation("result_var1")
+#' @examples result_var1<- map_to_result( ... )
+#' my_vis_fun <- map_to_visualisation(result_var1)
 #' my_ggplot_obj<-my_vis_fun( ... )
 #' my_ggplot_obj # plots the object
 #' @export
@@ -73,8 +73,6 @@ map_to_visualisation <- function(result) {
   visualisation_functions[["CASE_direct_reporting_categorical_"]] <- barchart_percent
   visualisation_functions[["CASE_direct_reporting_numerical_"]] <- barchart_average
 
-
-  vis_input <- result$summary.statistic
 
 ### SHARON MAGIC
   # visualisation_functions[["CASE_group_difference_categorical_categorical"]] <- visualisationIMPACT::grouped_barchart_impact

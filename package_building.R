@@ -40,3 +40,12 @@ devtools::test()
 devtools::build_vignettes()
 
 
+### Making the package more efficient
+
+install.packages("profvis")
+library(profvis)
+
+### From Chiara's RMD
+# profvis({
+#   Output <- from_analysisplan_map_to_output(clData, analysisplan = myPlan, weighting = thisWeighting, questionnaire = quest)
+# })

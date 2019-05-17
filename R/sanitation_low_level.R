@@ -16,7 +16,7 @@ datasanitation_return_empty_table <- function(data, dependent.var, independent.v
     dependent.var,
     independent.var = independent.var,
     dependent.var.value,
-    independent.var.value = independent.var.value,
+    independent.var.value = NA,
     numbers = 1,
     se = NA,
     min = NA,
