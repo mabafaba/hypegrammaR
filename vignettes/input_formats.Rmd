@@ -31,16 +31,12 @@ library(knitr)
 > - select_multiple questions have one column with all responses concatenated (separated by blank space " "), and one column for each response named [question name].[choice name]
 >
 > Your sampling frame must be in the correct format:
->
+> This can be checked with the check_input function of the kobostandards package (see end of vignette)
 
 All input files are expected as csv files.
 You should use the hypegrammar `load_*()` functions to load the inputs.
 
 ```{r,include = F,echo = F}
-
-assessment_data<-load_data(file = "../data/testdata.csv")
-
-samplingframe<-load_samplingframe
 
 data<-read.csv("../data/testdata.csv")
 sf<-read.csv("../data/test_samplingframe.csv")
@@ -187,3 +183,20 @@ analysisplan<-load_analysisplan(file="../data/test_analysisplan.csv")
 #### What you get
 The analysis plan as a data.frame
 
+### Verifying
+
+### Check that all your inputs match and are ready for analysis using hypegrammaR. For this, use the kobostandards package
+```{r, eval = F}
+
+# Once per machine
+
+devtools::install_github("mabafaba/kobostandards")
+
+
+```
+
+```{r, eval = T}
+library(kobostandards)
+library(tibble)
+kobostandards::check_input(data = assessment_data, questions = quest_q, choices = quest_c, samplingframe = sampling_frame, analysisplan = ap)
+```
