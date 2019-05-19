@@ -98,9 +98,10 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
       lapply(function(x){
         if(is.null(x$hypothesis.test$result$p.value)){x$hypothesis.test$result$p.value <- NA}
         if(is.null(x$hypothesis.test$name)){x$hypothesis.test$name <- NA}
+        if(!is.null(x$summary.statistic)){
         data.frame(x$summary.statistic,
              p.value = x$hypothesis.test$result$p.value,
-             test.name = x$hypothesis.test$name)}) %>% do.call(rbind, .)
+             test.name = x$hypothesis.test$name)} %>% do.call(rbind, .)})
   map_to_file(df, filename)
   }
   }
