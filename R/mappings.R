@@ -85,6 +85,26 @@ map_to_visualisation <- function(result) {
   return(visualisation_functions[[result$parameters$case]](result))
   }
 
+#' Make the master table of summary stats
+#'
+#' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
+#' @param filename The name of the file that is produced. The extension needs to be ".csv".
+#' @return a dataframe containing the summary statistics and hypothesis test results for each element in results.
+#' @export
+map_to_master_table <- function(results_object, filename, questionnaire = NULL){
+  if(!is.null(questionnaire)){
+  df <- results_object %>%
+    lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)}) %>%
+      lapply(function(x){
+        if(is.null(x$hypothesis.test$result$p.value)){x$hypothesis.test$result$p.value <- NA}
+        if(is.null(x$hypothesis.test$name)){x$hypothesis.test$name <- NA}
+        data.frame(x$summary.statistic,
+             p.value = x$hypothesis.test$result$p.value,
+             test.name = x$hypothesis.test$name)}) %>% do.call(rbind, .)
+  map_to_file(df, filename)
+  }
+  }
+
 
 #' Save outputs to files
 #'
