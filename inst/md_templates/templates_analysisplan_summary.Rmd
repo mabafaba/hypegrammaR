@@ -31,7 +31,9 @@ for(rq in unique(analysisplan$research.question)){
     
     for(i in which(in_rq & in_srq)){
     table <- results[[i]] %>% map_to_table 
-    results[[i]]$summary.statistic %>% kable
+    if(!is.null(results[[i]]$summary.statistic)){
+      results[[i]]$summary.statistic %>% kable
+    }
     if(!is.null(results[[i]]$hypothesis.test$result$p.value)){
     c(as.character(unique(results[[i]]$hypothesis.test$name)), "P Value:") %>% cat
     results[[i]]$hypothesis.test$result$p.value %>% print}

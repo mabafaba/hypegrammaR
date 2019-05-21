@@ -59,7 +59,7 @@ remotes::install_github('mabafaba/koboquest',build_opts=c())
 ### Once per Assessment
 
 #### Load the hypegrammaR package
-```{r,warning=FALSE,message=FALSE}
+```{r,warning=FALSE,message=FALSE, eval = T}
 library(hypegrammaR)
 
 ```
@@ -113,14 +113,16 @@ You need to know:
 - The hypothesis type. Currently implemented are:
   - `direct_reporting`
   - `group_difference`
+  - `limit`
 - the names of the columns that are your dependent and independent variables
 
-```{r,eval=F}
+```{r,eval=T}
 
 case <- map_to_case(hypothesis.type = "group_difference",
                     dependent.var.type = "numerical",
                     independent.var = "categorical")
 
+case
 ```
 
 
