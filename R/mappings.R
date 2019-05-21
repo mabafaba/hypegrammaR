@@ -85,12 +85,7 @@ map_to_visualisation <- function(result) {
   return(visualisation_functions[[result$parameters$case]](result))
   }
 
-#' Make the master table of summary stats and hypothesis tests
-#'
-#' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
-#' @param filename The name of the file that is produced. The extension needs to be ".csv".
-#' @return a dataframe containing the summary statistics and hypothesis test results for each element in results.
-#' @export
+
 map_to_master_table <- function(results_object, filename, questionnaire = NULL){
   if(!is.null(questionnaire)){
   df <- results_object %>%
@@ -108,12 +103,7 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
   }
 
 
-#' Make the master table of summary stats
-#'
-#' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
-#' @param filename The name of the file that is produced. The extension needs to be ".csv".
-#' @return a dataframe containing the summary statistics for each element in results.
-#' @export
+
 map_to_master_table <- function(results_object, filename, questionnaire = NULL){
   if(!is.null(questionnaire)){
     df <- results_object %>%

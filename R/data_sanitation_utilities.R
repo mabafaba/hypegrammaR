@@ -76,8 +76,8 @@ datasanitation_hypothesistest_chisq<-function(data,dependent.var,independent.var
                          dependent.var,  # all functions take these parameters
                          independent.var,# all functions take these parameters
                          datasanitation_morethan_1_unique_dependent,
-                         datasanitation_morethan_1_unique_independent,
-                         datasanitation_independent_max_unique,
+                         #datasanitation_morethan_1_unique_independent,
+                         #datasanitation_independent_max_unique,
                          datasanitation_dependent_max_unique,
                          datasanitation_morethan_1_record_per_independent_value
 
