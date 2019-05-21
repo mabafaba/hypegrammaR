@@ -175,6 +175,25 @@ datasanitation_question_sm <- function(data,dependent.var,independent.var,...){
   return(successfull_sanitation(data))
 }
 
+datasanitation_dependent_select_one <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_one <- TRUE
+  }else{dependent_is_select_one <- questionnaire$question_is_select_one(dependent.var)
+  }
+  if(!dependent_is_select_one){return(failed_sanitation("Dependent variable is not a select one (categorial), but the function expects one"))
+  }
+}
+
+datasanitation_independent_select_one <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_one <- TRUE
+  }else{independent_is_select_one <- questionnaire$question_is_select_one(independent.var)
+  }
+  if(!independent_is_select_one){return(failed_sanitation("Independent variable is not a select one (categorial), but the function expects one"))
+  }
+  return(successfull_sanitation(data))
+}
+
 question_matches_choices <- function(data, dependent.var, sm.columns){
   if(!exists("questionnaire")) {return(NULL)
     }

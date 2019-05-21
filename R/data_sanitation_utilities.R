@@ -1,3 +1,11 @@
+#' Applies basic sanitation to data before summary statistics or hypothesis test can be applied
+#'
+#' @param design the design object
+#' @param dependent.var a string containing the dependent variable in the analysis case
+#' @param independent.var a string containing the independent variable in the analysis case
+#' @param sanitation_function the function containing all the checks for the analysis function in question
+#' @return returns the cleaned data with a santation success or failure message
+#' @export
 datasanitation_design<-function(design,dependent.var,independent.var,sanitation_function){
   sanitised<-sanitation_function(design$variables,dependent.var,independent.var)
   if(sanitised$success){
@@ -76,8 +84,8 @@ datasanitation_hypothesistest_chisq<-function(data,dependent.var,independent.var
                          dependent.var,  # all functions take these parameters
                          independent.var,# all functions take these parameters
                          datasanitation_morethan_1_unique_dependent,
-                         #datasanitation_morethan_1_unique_independent,
-                         #datasanitation_independent_max_unique,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_independent_max_unique,
                          datasanitation_dependent_max_unique,
                          datasanitation_morethan_1_record_per_independent_value
 
