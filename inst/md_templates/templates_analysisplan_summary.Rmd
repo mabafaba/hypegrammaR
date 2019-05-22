@@ -30,9 +30,9 @@ for(rq in unique(analysisplan$research.question)){
     htmltools::h2(srq) %>% as.character %>% cat
     
     for(i in which(in_rq & in_srq)){
-    table <- results[[i]] %>% map_to_table 
-    if(!is.null(results[[i]]$summary.statistic)){
-      results[[i]]$summary.statistic %>% kable %>% print
+    if(!(is.null(results[[i]]$summary.statistic))){
+      s <- results[[i]]$summary.statistic 
+      lapply(s, function(x){ kable(x) %>% print})
     }
     if(!is.null(results[[i]]$hypothesis.test$result$p.value)){
     c(as.character(unique(results[[i]]$hypothesis.test$name)), "P Value:") %>% cat

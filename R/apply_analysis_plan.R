@@ -59,6 +59,7 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
     analysisplan <-
       rbind(analysisplan.no.repeat,
             analysisplan.repeat,
+
             stringsAsFactors = F)
   }
 }

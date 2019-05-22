@@ -182,6 +182,7 @@ datasanitation_dependent_select_one <- function(data,dependent.var,independent.v
   }
   if(!dependent_is_select_one){return(failed_sanitation("Dependent variable is not a select one (categorial), but the function expects one"))
   }
+  return(successfull_sanitation(data))
 }
 
 datasanitation_independent_select_one <- function(data,dependent.var,independent.var,...){
