@@ -15,7 +15,11 @@ map_to_design <- function(data,
   # if no weighting function / cluster variable provided, set defaults, otherwise use parameters:
   if(is.null(cluster_variable_name)){
     cluster.ids <- as.formula(c("~1"))}else{
-    cluster.ids <- paste0("~",cluster_variable_name)}
+    cluster.ids <- paste0("~",cluster_variable_name)
+    if(any(is.na(data[cluster_variable_name]))){
+  data <- data[!is.na(data[cluster_variable_name]),]
+  warning("some records in the data has a missing cluster variable. These records have been removed")}
+    }
   if(is.null(weighting_function)){
     strata.weights<-rep(1,nrow(data))
   }else{
@@ -114,7 +118,7 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
 #' @param filename The name of the file that is produced. The extension needs to be ".csv".
 #' @return a dataframe containing the summary statistics for each element in results.
 #' @export
-map_to_master_table <- function(results_object, filename, questionnaire = NULL){
+map_to_summary_table <- function(results_object, filename, questionnaire = NULL){
   if(!is.null(questionnaire)){
     df <- results_object %>%
       lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)}) %>%

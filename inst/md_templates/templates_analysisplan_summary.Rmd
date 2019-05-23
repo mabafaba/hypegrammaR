@@ -20,7 +20,7 @@ analysisplan<-resultlist$analysisplan
 knitr::kable(analysisplan,format = "html")
 results<-resultlist$results
 if(!is.null(questionnaire)){
-  results<-lapply(results,map_to_labeled,questionnaire=questionnaire)
+  results<- results %>% lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)})
 }
 for(rq in unique(analysisplan$research.question)){
   htmltools::h1(rq) %>% as.character %>% cat
@@ -28,20 +28,20 @@ for(rq in unique(analysisplan$research.question)){
   for(srq in unique(analysisplan$sub.research.question)){
     in_srq<-(analysisplan$sub.research.question==srq)
     htmltools::h2(srq) %>% as.character %>% cat
-    
     for(i in which(in_rq & in_srq)){
-    table <- results[[i]] %>% map_to_table 
+      print(results[[i]]$summary.statistic)
     if(!is.null(results[[i]]$summary.statistic)){
-      results[[i]]$summary.statistic %>% kable
+    table <- results[[i]]$summary.statistic %>% rmdrs_pretty_summary_table
+    cat(knit(kable(table)))
     }
     if(!is.null(results[[i]]$hypothesis.test$result$p.value)){
     c(as.character(unique(results[[i]]$hypothesis.test$name)), "P Value:") %>% cat
     results[[i]]$hypothesis.test$result$p.value %>% print}
     kable(resultlist$results[[i]]$hypothesis.test %>% as.data.frame,format="html")    }
-    
   }
-  
 }
+
+
 
 
 ```
