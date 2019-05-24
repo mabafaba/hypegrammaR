@@ -5,7 +5,7 @@
 #' @return same as `result` input, but with all variable values labeled
 #' @details if the variable wasn't found in the questionnaire, or the choice wasn't found in the corresponding list of choices, the affected values will remain unchanged.
 #' @export
-map_to_labeled<-function(result,questionnaire){
+map_to_labeled<-function(result, questionnaire){
   if(is.null(result$summary.statistic)){return(result)}
 
   result$summary.statistic<-labels_summary_statistic(result$summary.statistic,

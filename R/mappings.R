@@ -98,20 +98,22 @@ map_to_visualisation <- function(result) {
 #' @return a dataframe containing the summary statistics and p values for each element in results.
 #' @export
 map_to_master_table <- function(results_object, filename, questionnaire = NULL){
-  if(!is.null(questionnaire)){
-  df <- results_object %>%
-    lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)}) %>%
-      lapply(function(x){
+    summary_table_single <- function(x, questions = questionnaire){
+      if(!is.null(questions)){
+      x <- map_to_labeled(result = x, questionnaire = questions)}
         if(is.null(x$hypothesis.test$result$p.value)){x$hypothesis.test$result$p.value <- NA}
         if(is.null(x$hypothesis.test$name)){x$hypothesis.test$name <- NA}
-        if(!is.null(x$summary.statistic)){
-        data.frame(x$summary.statistic,
+      y <- NULL
+      if(!is.null(x$summary.statistic)){
+        y <- data.frame(x$summary.statistic,
              p.value = x$hypothesis.test$result$p.value,
              test.name = x$hypothesis.test$name)}
-        }) %>% do.call(rbind, .)
+      return(y)
+    }
+    df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
-  }
-  }
+}
+
 
 
 
@@ -123,15 +125,18 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
 #' @return a dataframe containing the summary statistics for each element in results.
 #' @export
 map_to_summary_table <- function(results_object, filename, questionnaire = NULL){
-  if(!is.null(questionnaire)){
-    df <- results_object %>%
-      lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)}) %>%
-      lapply(function(x){
-        if(!is.null(x$summary.statistic)){
-          x$summary.statistic}
-      }) %>% do.call(rbind, .)
-    map_to_file(df, filename)
-  }
+  summary_table_single <- function(x, questions = questionnaire){
+    if(!is.null(questions)){
+      x <- map_to_labeled(result = x, questionnaire = questions)}
+    y <- NULL
+    if(!is.null(x$summary.statistic)){
+      y <- data.frame(x$summary.statistic,
+                      p.value = x$hypothesis.test$result$p.value,
+                      test.name = x$hypothesis.test$name)}
+    return(y)}
+  df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+  map_to_file(df, filename)
+
 }
 
 #' Save outputs to files
