@@ -1,7 +1,0 @@
-repeat.for.variable,research.question,sub.research.question,hypothesis,hypothesis.type,dependent.variable,dependent.variable.type,independent.variable,independent.variable.type
-mantika,R1,SR1.1,average age of  HoH,group_difference,age.hoh,numerical,displacement.status,categorical
-mantika,R1,SR1.2,gender of HoH,group_difference,sex.hoh,categorical,displacement.status,categorical
-mantika,R2,SR2.1,dwelling type,group_difference,occupancy.type,categorical,displacement.status,categorical
-mantika,R2,SR2.2,threat of eviction,group_difference,threat.eviction,categorical,displacement.status,categorical
-,R3,SR3.1,government salary,direct_reporting,hh.gov.salary,categorical,,
-,R3,SR3.1,Problems faced vary over mantikas,group_difference,problem.faced.return,categorical,mantika,categorical
