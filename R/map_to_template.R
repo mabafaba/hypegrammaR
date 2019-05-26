@@ -3,13 +3,20 @@
 #' @param x hypegrammaR result or list of results (created with map_to_result() or from_analysisplan_map_to_output())
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
 #' @param dir the directory in which to save the output file (absolute path or relative to current working directory)
+#' @param type the type of report template to use. Currently one of "full", "visual" or "summary"
 #' @param filename the name of the file. must end in '.html'
 #' @export
-map_to_template <- function(x, questionnaire = NULL, dir, filename) {
+map_to_template <- function(x, questionnaire = NULL, dir, type, filename) {
+
+  type <-recode(type,
+                visual= "templates_analysisplan_report_visuals.rmd",
+                summary ="templates_analysisplan_summary.rmd",
+                full = "templates_analysisplan_report_full.rmd")
+
   if (class(x) == "hypegrammar_resultlist") {
     template <-
       system.file("md_templates",
-                  "templates_analysisplan_report.rmd",
+                  type,
                   package = "hypegrammaR")
   }
   render_environment <- new.env()
@@ -24,8 +31,8 @@ map_to_template <- function(x, questionnaire = NULL, dir, filename) {
     envir = render_environment,
     knit_root_dir = getwd()
   )
-  path<-"/asdasd/sd/"
-  full_path<-path %>% gsub("/$","",.) %>% gsub("^/","",.)
+
+  full_path<-dir %>% gsub("/$","",.) %>% gsub("^/","",.)
   full_path<-paste0(getwd(),full_path)
   message("document written to:")
   message(full_path)

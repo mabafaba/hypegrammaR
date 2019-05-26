@@ -6,7 +6,7 @@
 \usage{
 labels_summary_statistic(summary.statistic, questionnaire,
   label.dependent.var.value = T, label.independent.var.value = T,
-  label.dependent.var = F, label.independent.var = F,
+  label.dependent.var = T, label.independent.var = T,
   independent.linebreak = T, dependent.linebreak = F)
 }
 \arguments{

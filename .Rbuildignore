@@ -1,3 +1,5 @@
+^Meta$
+^doc$
 ^data-raw$
 ^\.*\\.R$
 ^build_package\.R$

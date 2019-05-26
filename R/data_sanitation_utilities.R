@@ -1,3 +1,11 @@
+#' Applies basic sanitation to data before summary statistics or hypothesis test can be applied
+#'
+#' @param design the design object
+#' @param dependent.var a string containing the dependent variable in the analysis case
+#' @param independent.var a string containing the independent variable in the analysis case
+#' @param sanitation_function the function containing all the checks for the analysis function in question
+#' @return returns the cleaned data with a santation success or failure message
+#' @export
 datasanitation_design<-function(design,dependent.var,independent.var,sanitation_function){
   sanitised<-sanitation_function(design$variables,dependent.var,independent.var)
   if(sanitised$success){
@@ -10,6 +18,64 @@ datasanitation_design<-function(design,dependent.var,independent.var,sanitation_
 
 
 # BLOCK SPECIFIC SANITATIONS:
+
+datasanitation_summary_statistics_percent_with_confints_select_one <- function(data,dependent.var,independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_question_not_sm,
+                         datasanitation_morethan_1_unique_dependent)
+}
+
+
+datasanitation_summary_statistics_percent_sm_choice <- function(data,dependent.var,independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_dependent_max_unique)
+}
+
+datasanitation_summary_statistics_percent_sm_choice_groups <- function(data,dependent.var,independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_dependent_max_unique,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_independent_max_unique)}
+
+
+datasanitation_summary_statistics_percent_groups <- function(data,dependent.var,independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_question_not_sm,
+                         datasanitation_dependent_max_unique,
+                         datasanitation_independent_max_unique)
+}
+
+datasanitation_summary_statistics_mean <- function(data, dependent.var, independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_dependent_numeric)
+}
+
+datasanitation_summary_statistics_mean_groups <- function(data, dependent.var, independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_dependent_numeric,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_independent_max_unique)
+}
+
+
+
+
 datasanitation_hypothesistest_chisq<-function(data,dependent.var,independent.var){
   # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
 
@@ -20,9 +86,29 @@ datasanitation_hypothesistest_chisq<-function(data,dependent.var,independent.var
                          datasanitation_morethan_1_unique_dependent,
                          datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique,
+                         datasanitation_dependent_max_unique,
                          datasanitation_morethan_1_record_per_independent_value
 
   )
+
+  }
+
+
+datasanitation_hypothesistest_chisq_sm<-function(data,dependent.var,independent.var){
+  # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
+
+
+  apply_data_sanitations(data,           # all functions take these parameters
+                         dependent.var,  # all functions take these parameters
+                         independent.var,# all functions take these parameters
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_independent_max_unique,
+                         datasanitation_dependent_max_unique,
+                         datasanitation_morethan_1_record_per_independent_value
+
+  )
+
 }
 
 datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
@@ -38,6 +124,30 @@ datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
                          datasanitation_independent_max_unique,
                          datasanitation_morethan_1_record_per_independent_value
 
+  )
+}
+
+
+datasanitation_hypothesistest_limit<-function(data,dependent.var,independent.var){
+  # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
+
+
+  apply_data_sanitations(data,           # all functions take these parameters
+                         dependent.var,  # all functions take these parameters
+                         independent.var,# all functions take these parameters
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_dependent_numeric
+                         )
+}
+
+datasanitation_logistic_regression <- function(data, dependent.var, independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_unique_independent,
+                         datasanitation_dependent_numeric,
+                         datasanitation_independent_numeric
   )
 }
 
@@ -110,93 +220,11 @@ apply_data_sanitations<-function(data,dependent.var,independent.var,...){
     # if sanitation failed, quit sanitation (return), and return an empty sanitation with the message:
     if(data_sanitised$success==F){return(data_sanitised)}
     # otherwise, go ahead with the next sanitation
+    data <- data_sanitised$data # after updating the data!!!
   }
   return(data_sanitised)
 }
 
-
-
-
-
-
-# GENERIC LOW LEVEL SANITATIONS:
-
-
-
-datasanitation_is_good_dataframe<-function(data,...){
-  if(!is.data.frame(data)){return(failed_sanitation("data is not a data frame"))}
-  if(ncol(data)<1){return(failed_sanitation("data has no columns"))}
-  if(nrow(data)<1){return(failed_sanitation("data has no rows"))}
-  if(as.vector(data) %>% is.na %>% all){return(failed_sanitation("all data is NA"))}
-  return(successfull_sanitation(data))
-}
-
-
-datasanitation_morethan_1_unique_dependent<-function(data,dependent.var,independent.var){
-  dependent_more_than_1 <- length(unique(data[[dependent.var]])) > 1
-  if(!dependent_more_than_1){return(failed_sanitation("less than two unique values in the dependent variable"))}
-  return(successfull_sanitation(data))
-}
-
-datasanitation_morethan_1_unique_independent<-function(data,dependent.var,independent.var){
-  dependent_more_than_1 <- length(unique(data[[independent.var]])) > 1
-  if(!dependent_more_than_1){return(failed_sanitation("less than two unique values in the independent variable"))}
-  return(successfull_sanitation(data))
-}
-
-datasanitation_remove_missing<-function(data,dependent.var,independent.var,...){
-  data<-data[!is.na(data[[dependent.var]]),]
-  data<-data[(data[[dependent.var]]!=""),]
-  if(nrow(data)<=2){return(failed_sanitation("less than 3 records have valid values in the dependent variable and in the independent variable"))}
-  return(successfull_sanitation(data))
-}
-
-datasanitation_variables_in_data_colnames<-function(data,dependent.var,independent.var,...){
-  dep_var_name_in_data_headers<- grep(paste0("^",dependent.var),colnames(data),value = T)
-  indep_var_name_in_data_headers<- grep(paste0("^",independent.var),colnames(data),value = T)
-  if(length(dep_var_name_in_data_headers)==0){return(failed_sanitation(paste0("dependent variable \"",dependent.var,"\" not found in data.")))}
-  if(length(indep_var_name_in_data_headers)==0 & !is.null(independent.var)){
-    return(failed_sanitation(paste0("independent variable \"",independent.var,"\" not found in data.")))}
-  successfull_sanitation(data)
-}
-
-datasanitation_independent_max_unique<-function(data,dependent.var,independent.var){
-  n_max<-30
-  valid<-length(unique(data[[independent.var]])) <= n_max
-  datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in independent variable"))
-}
-
-datasanitation_morethan_1_record_per_independent_value<-  function(data,dependent.var,independent.var){
-  which_independent_more_than_one_record <- table(data[[independent.var]])
-  which_independent_more_than_one_record <- which_independent_more_than_one_record[which(which_independent_more_than_one_record>1)]
-  which_independent_more_than_one_record <- names(which_independent_more_than_one_record)
-  data <- data[data[[independent.var]] %in% which_independent_more_than_one_record,]
-  successfull_sanitation(data)
-}
-
-datasanitation_morethan_2_records_total<-function(data,dependent.var,independent.var,...){
-  datasanitation_generic_check(data,dependent.var,independent.var,valid=nrow(data)>2,"less than 2 records two samples with valid data available for this combination of dependent and independent variable")
-}
-
-
-
-
-datasanitation_dependent_numeric<-function(data,dependent.var,independent.var,...){
-  if(is.factor(data[[dependent.var]])){data[[dependent.var]]<-as.character(data[[dependent.var]])}
-  data[[dependent.var]]<-suppressWarnings(as.numeric(data[[dependent.var]]))
-  if(all(is.na(data[[dependent.var]]))){return(failed_sanitation("dependent variable is not numeric"))}
-  data<-data[!is.na(data[[dependent.var]]),]
-  return(successfull_sanitation(data))
-}
-
-
-datasanitation_independent_numeric<-function(data,dependent.var,independent.var,...){
-  if(is.factor(data[[dependent.var]])){data[[dependent.var]]<-as.character(data[[dependent.var]])}
-  data[[dependent.var]]<-as.numeric(data[[dependent.var]])
-  if(all(is.na(data[[dependent.var]]))){return(failed_sanitation("independent variable is not numeric"))}
-  data<-data[!is.na(data[[dependent.var]]),]
-  return(successfull_sanitation(data))
-}
 
 
 

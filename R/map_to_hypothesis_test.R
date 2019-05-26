@@ -4,7 +4,6 @@
 #'
 #' selects an appropriate hypothesis test function based on the analysis case
 #'
-<<<<<<< HEAD
 #' @param case a string uniquely identifying the analysis case. output of map_to_case().
 #' @return a _function_ that computes the relevant hypothesis test
 #' @examples map_to_summary_statistic("group_difference_categorical_categorical")
@@ -16,7 +15,8 @@ map_to_hypothesis_test <- function(design,
                                    dependent.var,
                                    independent.var,
                                    case,
-                                   questionnaire = NULL) {
+                                   questionnaire = NULL,
+                                   limit = NULL) {
   # prefill all valid cases with 'not implemented' errors:
   hypothesis_test_functions <- list()
 
@@ -58,6 +58,20 @@ map_to_hypothesis_test <- function(design,
                                         independent.var,
                                         design))
   }
+
+  if (case == "CASE_limit_categorical") {
+    return(hypothesis_test_t_one_sample(dependent.var,
+                                        limit,
+                                        design))
+  }
+
+  if (case == "CASE_limit_numerical") {
+    return(hypothesis_test_t_one_sample(dependent.var,
+                                        limit,
+                                        design))
+  }
+
+
   if (case == "CASE_direct_reporting_numerical_") {
     return(hypothesis_test_empty(message = "no hypothesis test on case 'Direct reporting'"))
   }

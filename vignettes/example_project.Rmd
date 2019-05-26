@@ -1,6 +1,5 @@
 ---
 title: "Example Analysis"
-author: "Martin Barner"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -10,32 +9,32 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
 
 
-```{r,include=F,echo=F}
+```{r,include=T,echo=F}
 library(hypegrammaR)
 
-assessment_data<-load_data("../tests/testthat/testdata.csv")
+assessment_data<-load_data("../data/testdata.csv")
 
-samplingframe<-load_samplingframe("../tests/testthat/test_samplingframe.csv")
+samplingframe<-load_samplingframe("../data/test_samplingframe.csv")
 
 weights<-map_to_weighting(sampling.frame = samplingframe,
-                               data.stratum.column = "stratification",
-                               sampling.frame.population.column = "population",
-                               sampling.frame.stratum.column = "strata names",
-                               data = assessment_data)
+                          data.stratum.column = "stratification",
+                          sampling.frame.population.column = "population",
+                          sampling.frame.stratum.column = "strata.names",
+                          data = assessment_data)
 
 questionnaire<-load_questionnaire(data = assessment_data,
-                                             questions.file = "../tests/testthat/kobo questions.csv",
-                                             choices.file = "../tests/testthat/kobo choices.csv",
-                                  choices.label.column.to.use = "label::English"
-                                             )
+                                  questions = "../data/test_questionnaire_questions.csv",
+                                  choices = "../data/test_questionnaire_choices.csv",
+                                  choices.label.column.to.use = "label::English")
 
 ```
-
-
 
 
 
@@ -52,7 +51,9 @@ case<-map_to_case(hypothesis.type = "group_difference",
                   dependent.var.type = "numerical",
                   independent.var.type = "categorical")
 
+```
 
+```{r,include=T,warning=F,echo=F}
 result<-map_to_result(assessment_data,
                       dependent.var = "health_need",
                       independent.var = "region",
@@ -111,7 +112,7 @@ vis<-edu1 %>% map_to_labeled(questionnaire) %>%  map_to_visualisation
 vis
 ```
 
-```{r}
+```{r, warning = FALSE}
 
 map_to_result(assessment_data,"hhexperienced",
               case=map_to_case('direct_reporting','categorical'),
@@ -120,12 +121,5 @@ map_to_result(assessment_data,"hhexperienced",
 
 
 ```
-
-
-
-
-
-
-
 
 

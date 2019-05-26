@@ -1,0 +1,46 @@
+---
+title: "Analysisplan report"
+author: "Martin B"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(htmltools)
+library(hypegrammaR)
+
+```
+
+
+```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
+resultlist <- x
+analysisplan<-resultlist$analysisplan
+knitr::kable(analysisplan,format = "html")
+results<-resultlist$results
+if(!is.null(questionnaire)){
+  results<-lapply(results,map_to_labeled,questionnaire=questionnaire)
+}
+for(rq in unique(analysisplan$research.question)){
+  htmltools::h1(rq) %>% as.character %>% cat
+  in_rq<-(analysisplan$research.question==rq)
+  for(srq in unique(analysisplan$sub.research.question)){
+    in_srq<-(analysisplan$sub.research.question==srq)
+    htmltools::h2(srq) %>% as.character %>% cat
+    
+    for(i in which(in_rq & in_srq)){
+      results[[i]] %>% map_to_table
+    c(results[[i]]$hypothesis.test$name, "P Value:", results[[i]]$hypothesis.test$result) %>% cat
+    tryCatch(print(results[[i]] %>% map_to_visualisation %>% .$ggplot), error=function(e) print("Cant supply discrete values to a heatmap"))
+    tryCatch(print(results[[i]] %>% map_to_visualisation_heatmap %>% .$ggplot),error=function(e) print("Cant supply discrete values to a heatmap"))
+    kable(resultlist$results[[i]]$hypothesis.test %>% as.data.frame,format="html")    }
+    
+  }
+  
+}
+
+
+```
+
+

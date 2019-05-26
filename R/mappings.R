@@ -15,7 +15,11 @@ map_to_design <- function(data,
   # if no weighting function / cluster variable provided, set defaults, otherwise use parameters:
   if(is.null(cluster_variable_name)){
     cluster.ids <- as.formula(c("~1"))}else{
-    cluster.ids <- paste0("~",cluster_variable_name)}
+    cluster.ids <- paste0("~",cluster_variable_name)
+    if(any(is.na(data[cluster_variable_name]))){
+  data <- data[!is.na(data[cluster_variable_name]),]
+  warning("some records in the data has a missing cluster variable. These records have been removed")}
+    }
   if(is.null(weighting_function)){
     strata.weights<-rep(1,nrow(data))
   }else{
@@ -43,11 +47,11 @@ map_to_design <- function(data,
 #'
 #' selects an appropriate visualisation function based on the analysis case
 #'
-#' @param case a string uniquely identifying the analysis case. output of map_to_case(). To list valid case strings use hypegrammar::list_all_cases()
+#' @param result a result object containing the summary statistics and hypothesis tests for the case.
 #' @return a _function_ that creates the relevant ggplot object
-#' @examples map_to_visualisation("group_difference_categorical_categorical")
-#' @examples my_case<- map_to_case( ... )
-#' my_vis_fun <- map_to_visualisation(my_case)
+#' @examples map_to_visualisation("result_var1")
+#' @examples result_var1<- map_to_result( ... )
+#' my_vis_fun <- map_to_visualisation(result_var1)
 #' my_ggplot_obj<-my_vis_fun( ... )
 #' my_ggplot_obj # plots the object
 #' @export
@@ -73,9 +77,67 @@ map_to_visualisation <- function(result) {
   visualisation_functions[["CASE_direct_reporting_categorical_"]] <- barchart_percent
   visualisation_functions[["CASE_direct_reporting_numerical_"]] <- barchart_average
 
+
+### SHARON MAGIC
+  # visualisation_functions[["CASE_group_difference_categorical_categorical"]] <- visualisationIMPACT::grouped_barchart_impact
+  # visualisation_functions[["CASE_group_difference_numerical_categorical"]] <- visualisationIMPACT::grouped_boxplot_impact
+  # visualisation_functions[["CASE_direct_reporting_categorical_"]] <- visualisationIMPACT::barchart_impact
+  # visualisation_functions[["CASE_direct_reporting_numerical_"]] <- visualisationIMPACT::boxplot_impact
+  #
+ # return(visualisation_functions[[result$parameters$case]](.data = vis_input, x = vis_input$independent.var, y = vis_input$dependent.var))
+
   return(visualisation_functions[[result$parameters$case]](result))
+  }
+
+
+#' Make the master table of summary stats and hypothesis tests
+#'
+#' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
+#' @param filename The name of the file that is produced. The extension needs to be ".csv".
+#' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
+#' @return a dataframe containing the summary statistics and p values for each element in results.
+#' @export
+map_to_master_table <- function(results_object, filename, questionnaire = NULL){
+    summary_table_single <- function(x, questions = questionnaire){
+      if(!is.null(questions)){
+      x <- map_to_labeled(result = x, questionnaire = questions)}
+        if(is.null(x$hypothesis.test$result$p.value)){x$hypothesis.test$result$p.value <- NA}
+        if(is.null(x$hypothesis.test$name)){x$hypothesis.test$name <- NA}
+      y <- NULL
+      if(!is.null(x$summary.statistic)){
+        y <- data.frame(x$summary.statistic,
+             p.value = x$hypothesis.test$result$p.value,
+             test.name = x$hypothesis.test$name)}
+      return(y)
+    }
+    df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+  map_to_file(df, filename)
 }
 
+
+
+
+#' Make the master table of summary stats
+#'
+#' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
+#' @param filename The name of the file that is produced. The extension needs to be ".csv".
+#' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
+#' @return a dataframe containing the summary statistics for each element in results.
+#' @export
+map_to_summary_table <- function(results_object, filename, questionnaire = NULL){
+  summary_table_single <- function(x, questions = questionnaire){
+    if(!is.null(questions)){
+      x <- map_to_labeled(result = x, questionnaire = questions)}
+    y <- NULL
+    if(!is.null(x$summary.statistic)){
+      y <- data.frame(x$summary.statistic,
+                      p.value = x$hypothesis.test$result$p.value,
+                      test.name = x$hypothesis.test$name)}
+    return(y)}
+  df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+  map_to_file(df, filename)
+
+}
 
 #' Save outputs to files
 #'

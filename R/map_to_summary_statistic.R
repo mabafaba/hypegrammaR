@@ -68,6 +68,16 @@ map_to_summary_statistic <-
         )
     }
 
+
+    if (case == "CASE_regression_numerical_categorical") {
+      summary_stat <-
+        mean_with_confints_groups(
+          dependent.var = dependent.var,
+          independent.var = independent.var,
+          design = design
+        )
+    }
+
     if (case == "CASE_direct_reporting_numerical_") {
       summary_stat <- mean_with_confints(
         dependent.var = dependent.var,
@@ -109,7 +119,7 @@ map_to_summary_statistic <-
 
       if (!dependent_is_select_multiple) {
         summary_stat <-
-          percent_with_confints_select_multiple_groups(
+          percent_with_confints_select_one_groups(
             dependent.var = dependent.var,
             independent.var = independent.var,
             design = design
@@ -117,6 +127,44 @@ map_to_summary_statistic <-
       }
     }
 
+    if (case == "CASE_direct_reporting_numerical_categorical") {
+      summary_stat <-
+        mean_with_confints_groups(
+          dependent.var = dependent.var,
+          independent.var = independent.var,
+          design = design
+        )
+
+    }
+
+
+
+    if (case == "CASE_limit_categorical") {
+      if (dependent_is_select_multiple) {
+        summary_stat <-
+          percent_with_confints_select_multiple(
+            dependent.var = dependent.var,
+            dependent.var.sm.cols = dependent.var.sm.cols,
+            design = design
+          )
+      }
+
+
+      if (!dependent_is_select_multiple) {
+        summary_stat <-
+          percent_with_confints_select_one(
+            dependent.var = dependent.var,
+            design = design
+          )
+      }
+    }
+
+    if (case == "CASE_limit_numerical") {
+      summary_stat <- mean_with_confints(
+        dependent.var = dependent.var,
+        design = design
+      )
+    }
 
     if (case == "") {
       preferred_summary_statistic_fun <-
