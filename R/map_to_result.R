@@ -20,6 +20,7 @@
 #'     - map_to_labeled()
 #'     - map_to_visualisation()
 #'     - map_to_table()
+#'     - map_to_master_table()
 #'     - map_to_visualisation_heatmap()
 #'
 #' @return A list with the summary.statistic the hypothesis.test result
@@ -48,7 +49,9 @@ map_to_result<-function(data,
   # data <- data[!is.na(data[,dependent.var]),]
   # if(nrow(data)==0){stop('provided data has no rows where dependent.var is not NA')}
   # if(all(is.na(data[,dependent.var]))){stop(paste('variable', dependent.var, 'can\'t be all NA'))}
-
+  if(is.null(weighting)){
+    weighting=function(df){rep(1,nrow(df))}
+  }
   if(!is.function(weighting)){
     stop("'weighting' must be a function. You can create one with weighting_fun_from_samplingframe(). You can also write your own function (must take a dataframe as input and return a scalar)")
   }
