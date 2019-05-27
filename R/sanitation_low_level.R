@@ -16,7 +16,7 @@ datasanitation_return_empty_table <- function(data, dependent.var, independent.v
     dependent.var,
     independent.var = independent.var,
     dependent.var.value,
-    independent.var.value = independent.var.value,
+    independent.var.value = NA,
     numbers = 1,
     se = NA,
     min = NA,
@@ -91,7 +91,10 @@ datasanitation_morethan_1_unique_independent<-function(data,dependent.var,indepe
 
 datasanitation_remove_missing<-function(data,dependent.var,independent.var,...){
   data<-data[!is.na(data[[dependent.var]]),]
+  data[[dependent.var]] <- as.character(data[[dependent.var]])
   data<-data[(data[[dependent.var]]!=""),]
+  data<-data[(data[[dependent.var]]!="NA"),]
+  data<-data[(data[[dependent.var]]!="<NA>"),]
   if(nrow(data)<=2){return(failed_sanitation("less than 3 records have valid values in the dependent variable and in the independent variable"))}
   return(successfull_sanitation(data))
 }
@@ -148,16 +151,59 @@ datasanitation_independent_numeric<-function(data,dependent.var,independent.var,
 
 as.numeric_factors_from_names<-function(x){
   if(is.factor((x))){x<-as.character(x)}
-  as.numeric(x)
+  return(as.numeric(x))
 }
 
 datasanitation_question_not_sm <- function(data,dependent.var,independent.var,...){
-  if(is.null(questionnaire)) {
-  dependent_is_select_multiple <- FALSE}else{
-    dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
-if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))}
-  return(successfull_sanitation(data))}
+  if(!exists("questionnaire")) {
+    dependent_is_select_multiple <- FALSE
+  }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)
+    }
+  if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))
+  }
+  return(successfull_sanitation(data))
+}
 
+
+datasanitation_question_sm <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_multiple <- TRUE
+  }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)
+    }
+  if(!dependent_is_select_multiple){return(failed_sanitation("Question is not select multiple, but the function expects one"))
+  }
+  return(successfull_sanitation(data))
+}
+
+datasanitation_dependent_select_one <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_one <- TRUE
+  }else{dependent_is_select_one <- questionnaire$question_is_select_one(dependent.var)
+  }
+  if(!dependent_is_select_one){return(failed_sanitation("Dependent variable is not a select one (categorial), but the function expects one"))
+  }
+  return(successfull_sanitation(data))
+}
+
+datasanitation_independent_select_one <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_one <- TRUE
+  }else{independent_is_select_one <- questionnaire$question_is_select_one(independent.var)
+  }
+  if(!independent_is_select_one){return(failed_sanitation("Independent variable is not a select one (categorial), but the function expects one"))
+  }
+  return(successfull_sanitation(data))
+}
+
+question_matches_choices <- function(data, dependent.var, sm.columns){
+  if(!exists("questionnaire")) {return(NULL)
+    }
+  if(!questionnaire$question_is_select_multiple(dependent.var)){return(warning("Variable provided is not select multiple, Using only the choices to calculate summary statistics."))
+    }
+q_m_c <- all(questionnaire$choices_for_select_multiple(dependent.var, data) == sm.columns)
+  if(!q_m_c){return(warning("The choices don't match the question provided. Using only the choices to calculate summary statistics."))
+    }
+}
 
 
 

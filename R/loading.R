@@ -1,11 +1,22 @@
+
+
 to_alphanumeric_lowercase <- function(x){tolower(gsub("[^a-zA-Z0-9_]", "\\.", x))}
+
+
 to_alphanumeric_lowercase_colnames_df <- function(df){
   names(df) <- to_alphanumeric_lowercase(names(df))
   return(df)
 }
+
+#' loading function with automatic default
+#'
+#' @param file path to a csv file with the assessment data
+#'
+#' @details the file is loaded with stringsAsFactors = F and with column names in alphanumeric lowercase
+#' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
+#' @export
 read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
-  df <- data.table::fread(file, stringsAsFactors = stringsAsFactors, ...) %>%
-    as.data.frame
+  df <- data.table::fread(file, stringsAsFactors = stringsAsFactors, ...) %>% as.data.frame
   colnames(df) <- to_alphanumeric_lowercase(colnames(df))
   return(df)
 }
@@ -18,8 +29,8 @@ read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
 #' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
 #' @export
 load_data<-function(file){
-  assertthat::assert_that(assertthat::is.readable(file))
-  assertthat::assert_that(grepl(".csv$",file),msg = paste0("file must end with '.csv' (..and actually be a .csv file)\n instead: ",file))
+
+  assertthat::assert_that(grepl(x = file, pattern = ".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
   data <- read.csv.auto.sep(file, stringsAsFactors = F)
   names(data) <- to_alphanumeric_lowercase(names(data))
   return(data)
@@ -29,23 +40,15 @@ load_data<-function(file){
 
 #' Load a sampling frame from csv
 #' @param file the path and name of the sampling frame csv file to load.
-#' @details
-#' @examples
-#'
-#' # load the sampling frame:
-#' sf <- load_samplingframe("./somefolder/samplingframe.csv")
-#'
-#' # it can be used to make weights with map_to_weighting()
-#'
+#' @details function loads the sampling frame and can be used to make weights ith map_to_weighting()
+#' @examples sf <- load_samplingframe("./somefolder/samplingframe.csv")
 #'
 #' @export
 load_samplingframe<-function(file){
 
   assertthat::assert_that(assertthat::is.readable(file))
-  assertthat::assert_that(grepl(".csv$",file),msg = "file must end with '.csv' (..and actually be a .csv file)")
+  assertthat::assert_that(grepl(x= file, pattern = ".csv$"),msg = "file must end with '.csv' (..and actually be a .csv file)")
   samplingframe<-read.csv.auto.sep(file, stringsAsFactors = F)
-  names(data) <- to_alphanumeric_lowercase(names(data))
-
 }
 
 
@@ -92,18 +95,17 @@ load_questionnaire<-function(data,
 load_analysisplan<-function(file=NULL,df=NULL){
 
 if(!is.null(file) & !is.null(df)){stop("provide `file` or `df` parameters, not both")}
-if(is.null(file) & is.null(df)) stop("provide one of `file` or `df` parameters")
+if(is.null(file) & is.null(df)){stop("provide one of `file` or `df` parameters")}
 
-if(is.null(file)) {ap_raw <- df}
-if(is.null(df  )) {ap_raw <- read.csv.auto.sep(file)}
+if(!is.null(file)){df <- read.csv.auto.sep(file)}
+if(!is.null(df)){df <- df}
 
-assert_valid_analysisplan(ap_raw)
-
+assert_valid_analysisplan(df)
 
 
 
 # convert missing to NA, remove empty rows..:
-ap_raw<-analysisplan_clean(ap_raw)
+ap_raw <- analysisplan_clean(df)
 
 if(nrow(ap_raw)==0){stop("all rows in analysis plan are empty")}
 
@@ -119,15 +121,6 @@ return(ap_raw)
 
 
 
-
-
-
-
-
-
-
-
-
 assert_valid_analysisplan<-function(df){
   expected_column_names<-c("repeat.for.variable",
                            "research.question",
@@ -140,7 +133,8 @@ assert_valid_analysisplan<-function(df){
                            "dependent.variable.type")
 
   assertthat::assert_that(is.data.frame(df))
-  expected_colnames_not_found<-expected_column_names[!(expected_column_names %in% colnames(df))]
+  expected_colnames_not_found <- expected_column_names[!(expected_column_names %in% colnames(df))]
+
   if(length(expected_colnames_not_found)){
     stop(paste("expected analysis plan columns not found:\n",
                paste(expected_colnames_not_found,collapse="\n"),"\n"

@@ -1,6 +1,6 @@
 ---
 title: "Quickstart"
-author: "Martin Barner"
+author: "Martin Barner / Eliora Henzler"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -44,7 +44,8 @@ get all your files in csv format first:
 #### Install the hypegrammaR package
 This line you only have to run _once_ when using hypegrammaR for the first time, or to update to a new version.
 ```{r,eval=F}
-devtools::install_github("mabafaba/hypegrammaR",build_opts = c(), ref = "training")
+devtools::install_github("ellieallien/hypegrammaR",build_opts = c(), ref = "master")
+
 ```
 (the `build_opts = c()` makes sure the package includes all extra help pages & documentation)
 For this step only, you need a more or less stable internet connection.
@@ -52,6 +53,7 @@ For this step only, you need a more or less stable internet connection.
 #### Load the hypegrammaR package
 ```{r,warning=FALSE,message=FALSE}
 library(hypegrammaR)
+library(koboquest)
 ```
 
 #### Load your files
@@ -60,7 +62,7 @@ library(hypegrammaR)
 ##### The data
 `load_data` takes only one argument `file`, the path to the csv file. 
 ```{r}
-assessment_data<-load_data(file = "../tests/testthat/testdata.csv")
+assessment_data<-load_data(file = "../data/testdata.csv")
 ```
 Conditions:
 
@@ -78,7 +80,7 @@ The sampling frame should be a csv file with one column with strata names, one c
 
 ```{r}
 
-sampling_frame<-read.csv(file = "../tests/testthat/test_samplingframe.csv",stringsAsFactors = F)
+sampling_frame<-load_samplingframe(file = "../data/test_samplingframe.csv")
 ```
 
 Now turn your sampling frame into a weighting function with `map_to_weighting`. We see that the relevant columns in the sampling frame are called "strata names" and "population". The column in the data correspoinding to the strata names is called "stratification" in this data set. We need to supply these column names as arguments to `map_to_weighing`:
@@ -103,11 +105,9 @@ The parameters are:
 - `choices.label.column.to.use`: the exact name of the column containing the labels that should be used. You can add an extra column with custom labels to your choices sheet if you don't want to use the choice labels from the original questionnaire
 
 ```{r}
-koboquestions<-read.csv("../tests/testthat/test_questionnaire_questions.csv")
-kobochoices<-  read.csv("../tests/testthat/test_questionnaire_choices.csv")
-questionnaire<-load_questionnaire(data = assessment_data,
-                                  questions = koboquestions,
-                                  choices = kobochoices,
+questionnaire<- koboquest::load_questionnaire(data = assessment_data,
+                                  questions = "../data/test_questionnaire_questions.csv",
+                                  choices = "../data/test_questionnaire_choices.csv",
                                   choices.label.column.to.use = "label::English"
                                              )
 

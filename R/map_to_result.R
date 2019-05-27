@@ -31,8 +31,8 @@ map_to_result<-function(data,
                         cluster.variable.name=NULL,
                         weighting=function(df){rep(1,nrow(df))},
                         questionnaire=NULL){
-  options(survey.lonely.psu = "average")
 
+  options(survey.lonely.psu = "remove")
 
   # put the relevant input parameters in a list so we can attach them to the output:
   parameters<-list(
@@ -61,22 +61,22 @@ map_to_result<-function(data,
 
 
 
-  data_sanitised<-sanitise_data(data,
-                                dependent.var,
-                                independent.var,
-                                case)
-  if(data_sanitised$success){
-    data<-data_sanitised$data
-  }else{
-    return(
-      list(parameters=parameters,
-        summary.statistic=NULL,
-        hypothesis.test.result=NULL,
-        message=data_sanitised$message
-      )
-
-    )
-  }
+  # data_sanitised<-sanitise_data(data,
+  #                               dependent.var,
+  #                               independent.var,
+  #                               case)
+  # if(data_sanitised$success){
+  #   data<-data_sanitised$data
+  # }else{
+  #   return(
+  #     list(parameters=parameters,
+  #       summary.statistic=NULL,
+  #       hypothesis.test.result=NULL,
+  #       message=data_sanitised$message
+  #     )
+  #
+  #   )
+  # }
 
 
   design <- map_to_design(data = data,
