@@ -1,23 +1,74 @@
 # GENERIC LOW LEVEL SANITATIONS:
 
 datasanitation_return_empty_table <- function(data, dependent.var, independent.var = NULL){
+
+  #### this is really counter intuitive - why would an empty table return 1? -> especially in mean this should not happen.
+  #### therefore added this row to go straight to NA.
+  #### I'm assuming thought that this creats an issue elsewhere... if it's 100% of a single independent.var... then i guess it should be 1?
+  #### not sure how to catch this _here_ though.. "datasanitation_return_empty_table" doesnt know if its numbers or cateogricals etc..
+  #### I think maybe the return 1 should be a different function?
+  #### not sure
+  #### but changing this regardless.. function fails all the time, it's too convoluted further down; all the time the values submitted to the df to return have different lengths and breaks it.
+  return(datasanitation_return_empty_table_NA(data,dependent.var,independent.var = independent.var))
+
+
   if(datasanitation_variables_in_data_colnames(data, dependent.var, independent.var)$success == F){
     return(datasanitation_return_empty_table_NA(data, dependent.var, independent.var))
   }
+#
+#   num_unique_dependent_values <- length(data[[dependent.var]] %>% unique %>% .[!is.na(.)])
+#   num_unique_independent_values <- length(data[[independent.var]] %>% unique %>% .[!is.na(.)])
+#   num_combos<-   num_unique_dependent_values* num_unique_independent_values
+#
+#
+#   if(num_combos == 0){
+#     return(datasanitation_return_empty_table_NA(dependent.var = dependent.var))
+#   }
+#
+#   if(num_combos == 1){
+#     numbers <- 1
+#     dependent.var.value   <- data[[  dependent.var]] %>% unique %>% .[!is.na(.)]
+#     independent.var.value <- data[[independent.var]] %>% unique %>% .[!is.na(.)]
+#
+#   }
+
+
+
+  # expect a single category by default:
+  numbers <- 1
+
   dependent.var.value <- unique(data[[dependent.var]])
-  if(!is.null(independent.var)){
+
+  if(length(dependent.var.value[!is.na(dependent.var.value)]) == 1){
+    numbers <- 1
+  }else{
+    numbers <- NA
+  }
+
+
+
+  if(!is.null(independent.var) & !is.na(independent.var) & length(independent.var) != 0 ){
     independent.var.value <- unique(data[[independent.var]])
+    if(length(independent.var.value) < 1){
+      independent.var.value<-NA
+      numbers<-NA
+    }
+
   }else{
     independent.var <- NA
     independent.var.value <- NA
+    numbers <- NA
   }
+
+
+
 
   return(data.frame(
     dependent.var,
     independent.var = independent.var,
     dependent.var.value,
-    independent.var.value = NA,
-    numbers = 1,
+    independent.var.value = independent.var.value,
+    numbers = numbers,
     se = NA,
     min = NA,
     max = NA

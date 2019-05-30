@@ -1,6 +1,8 @@
+
+
 ---
 title: "Analysisplan report"
-author: "Eliora H"
+author: "IMPACT Initiatives"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -15,11 +17,19 @@ library(hypegrammaR)
 
 ```
 
+```{r}
+# resultlist <- x
+resultlist <- readRDS(file = "../../../../deployment_resources/by_country/IRQ/MCNA_Analysys_Iraq/output/resultlist.RDS")
+questionnaire <- readRDS(file = "../../../../deployment_resources/by_country/IRQ/MCNA_Analysys_Iraq/output/questionnaire.RDS")
+
+source("../../../../deployment_resources/by_country/IRQ/MCNA_Analysys_Iraq/functions/results_handling.R")
+resultlist<-results_subset(resultlist,logical = runif(length(resultlist$results))<0.05)
+```
 
 ```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
-resultlist <- x
+
 analysisplan<-resultlist$analysisplan
-knitr::kable(analysisplan,format = "html")
+# knitr::kable(analysisplan,format = "html")
 results<-resultlist$results
 if(!is.null(questionnaire)){
   results<- results %>% lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)})
@@ -36,6 +46,7 @@ for(rq in unique(analysisplan$research.question)){
     if(!is.null(results[[i]]$summary.statistic)){
     table <- results[[i]]$summary.statistic %>% (hypegrammaR:::rmdrs_pretty_summary_table)
     cat(knitr::kable(table))
+    cat("\n\n")
     
     }
     if(!is.null(results[[i]]$hypothesis.test$result$p.value)){

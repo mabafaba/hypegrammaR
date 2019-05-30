@@ -76,11 +76,25 @@ list_of_results <- assessment_data %>%  from_analysisplan_map_to_output(analysis
 ```{r 9,eval = T, warning = F, echo = F}
 
 list_of_results %>% map_to_template(questionnaire = questionnaire,
-                                    dir = "../",
+                                    dir = "C:/Users/Martin Barner/",
                                     type = "summary",
                                     filename = "my_example_report.html")
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
