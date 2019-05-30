@@ -23,7 +23,7 @@ resultlist <- readRDS(file = "../../../../deployment_resources/by_country/IRQ/MC
 questionnaire <- readRDS(file = "../../../../deployment_resources/by_country/IRQ/MCNA_Analysys_Iraq/output/questionnaire.RDS")
 
 source("../../../../deployment_resources/by_country/IRQ/MCNA_Analysys_Iraq/functions/results_handling.R")
-resultlist<-results_subset(resultlist,logical = runif(length(resultlist$results))<0.05)
+resultlist<-results_subset(resultlist,logical = runif(length(resultlist$results))<0.004)
 ```
 
 ```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
@@ -36,23 +36,30 @@ if(!is.null(questionnaire)){
 }
 for(rq in unique(analysisplan$research.question)){
   htmltools::h1(rq) %>% as.character %>% cat
+      cat("\n\n")
+
   in_rq<-(analysisplan$research.question==rq)
   for(srq in unique(analysisplan$sub.research.question)){
     in_srq<-(analysisplan$sub.research.question==srq)
     htmltools::h2(srq) %>% as.character %>% cat
+        cat("\n\n")
+
     for(i in which(in_rq & in_srq)){
 
-      print(results[[i]]$summary.statistic)
+
     if(!is.null(results[[i]]$summary.statistic)){
     table <- results[[i]]$summary.statistic %>% (hypegrammaR:::rmdrs_pretty_summary_table)
-    cat(knitr::kable(table))
+    cat(knitr::kable(table, format = "html"))
     cat("\n\n")
     
     }
     if(!is.null(results[[i]]$hypothesis.test$result$p.value)){
     c(as.character(unique(results[[i]]$hypothesis.test$name)), "P Value:") %>% cat
     results[[i]]$hypothesis.test$result$p.value %>% print}
-    knitr::kable(resultlist$results[[i]]$hypothesis.test %>% as.data.frame,format="html")    }
+    knitr::kable(resultlist$results[[i]]$hypothesis.test %>% as.data.frame,format="html")
+        cat("\n\n")
+
+    }
   }
 }
 
