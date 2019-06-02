@@ -6,7 +6,16 @@
 #' @param type the type of report template to use. Currently one of "full", "visual" or "summary"
 #' @param filename the name of the file. must end in '.html'
 #' @export
-map_to_template <- function(x, questionnaire = NULL, dir, type, filename) {
+map_to_template <- function(x, questionnaire = NULL, dir, type = NULL, filename,custom_template = NULL) {
+
+  if(is.null(type)&is.null(custom_template)){stop("must provide either type or custom_template arguments")}
+  if(!is.null(type)&!isnull(custom_template)){stop("most provide only one of type or custom_template arguments")}
+
+  if(!is.null(custom_template)){
+    template<-custom_template
+  }
+
+  if(!is.null(type)){
 
   type <-recode(type,
                 visual= "templates_analysisplan_report_visuals.rmd",
@@ -19,6 +28,11 @@ map_to_template <- function(x, questionnaire = NULL, dir, type, filename) {
                   type,
                   package = "hypegrammaR")
   }
+
+  }
+
+
+
   render_environment <- new.env()
 
   render_environment$x <- x

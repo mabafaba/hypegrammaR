@@ -1,5 +1,5 @@
 map_to_datamerge<-function(results,
-                                      rows=c("independent.var","independent.var.value"),
+                                      rows=c("repeat.var","repeat.var.value"),
                                       values="numbers",
                                       ignore=c("se","min","max"),
                                       questionnaire=NULL){
@@ -11,7 +11,7 @@ map_to_datamerge<-function(results,
     }) %>%
     do.call(rbind,.)
   if(!is.null(questionnaire)){
-  all_summary_statistics_labeled<-results %>% lapply(map_to_labeled(questionnaire)) %>% lapply(function(x){x$summary.statistic}) %>%
+  all_summary_statistics_labeled<-results %>% lapply(map_to_labeled,questionnaire) %>% lapply(function(x){x$summary.statistic}) %>%
     do.call(rbind,.)
   }else{all_summary_statistics_labeled<-all_summary_statistics}
   if(nrow(all_summary_statistics)<nrow(all_summary_statistics_labeled)){
