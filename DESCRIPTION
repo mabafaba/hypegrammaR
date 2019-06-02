@@ -15,7 +15,7 @@ Imports:
     dplyr,
     reshape2,
     questionr,
-    koboquest,
+    koboquest (>= 1.0.1),
     data.table,
     surveyweights,
     knitr,

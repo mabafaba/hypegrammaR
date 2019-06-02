@@ -26,10 +26,6 @@ library(kableExtra)
 # - by_prefix
 # - render_result_with
 
-# keep<-rep(FALSE,length(resultlist$results))
-# keep[1:250]<-TRUE
-# resultlist<-results_subset(resultlist,logical = keep)
-
 ```
 
 ```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
@@ -52,7 +48,8 @@ md_out <- resultlist_recursive_markdown(resultlist,
                               by_analysisplan_columns = by_analysisplan_columns,
                               by_prefix = by_prefix,
                               level = level,
-                              render_result_with = render_result_with)
+                              render_result_with = render_result_with,
+                              label_varnames = label_varnames)
 
 cat(md_out)
 
