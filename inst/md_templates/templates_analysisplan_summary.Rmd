@@ -32,10 +32,9 @@ for(rq in unique(analysisplan$research.question)){
     htmltools::h2(srq) %>% as.character %>% cat
     for(i in which(in_rq & in_srq)){
 
-      print(results[[i]]$summary.statistic)
     if(!is.null(results[[i]]$summary.statistic)){
     table <- results[[i]]$summary.statistic %>% (hypegrammaR:::rmdrs_pretty_summary_table)
-    cat(knitr::kable(table))
+    cat(knitr::kable(table),format = "html")
     
     }
     if(!is.null(results[[i]]$hypothesis.test$result$p.value)){
