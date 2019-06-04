@@ -74,6 +74,7 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
 #' @param cluster_variable_name optional: the name of the variable with the cluster IDs
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
 #' @param labeled do you want the resuts to display labels rather than xml names ? defaults to false, requires the questionnaire
+#' @param should progress be printed to the console? (default TRUE, slightly faster if FALSE)
 #' @return returns a list of hypegrammaR "result" objects (see map_to_result())
 #' @export
 
@@ -82,7 +83,8 @@ from_analysisplan_map_to_output <- function(data,
            weighting = NULL,
            cluster_variable_name = NULL,
            questionnaire = NULL,
-           labeled = FALSE) {
+           labeled = FALSE,
+           verbose = TRUE) {
 
 
   #overwrite 'labeled' paramater if questionnaire is missing
@@ -136,9 +138,9 @@ from_analysisplan_map_to_output <- function(data,
       # print what we're doing to console
 
 
-
-      printparamlist(x, "1/2: calculating summary statistics and hypothesis tests")
-
+      if(verbose){
+      printparamlist(x, "calculating summary statistics and hypothesis tests")
+      }
 
       if (is.na(x["independent.var"]) | is.null(x["independent.var"])) {
         indep.var <- NULL
