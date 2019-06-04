@@ -113,7 +113,7 @@ from_analysisplan_map_to_output <- function(data,
     results <- apply(analysisplan, 1, function(x) {
 
       # subset for current repition (if has a repeat var)
-      if (!(x["repeat.var"]) %in% c(NULL, "", " ", NA)) {
+      if (!(x["repeat.var"]) %in% c(NULL, "", " ", NA) & !is.na(x["repeat.var"])) {
         this_valid_data <-
           data[(data[, as.character(x["repeat.var"])] == as.character(x["repeat.var.value"])), ]
       }else{
