@@ -16,6 +16,8 @@ Imports:
     reshape2,
     questionr,
     koboquest (>= 1.0.1),
+    kobostandards,
+    xlsformfill,
     data.table,
     surveyweights,
     knitr,
@@ -24,6 +26,7 @@ Imports:
 Remotes:
     github::mabafaba/koboquest,
     github::mabafaba/kobostandards,
+    github::mabafaba/xlsformfill,
     github::ellieallien/surveyweights
 License: What license is it under?
 Encoding: UTF-8
