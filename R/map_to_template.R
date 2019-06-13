@@ -10,7 +10,7 @@
 map_to_template <- function(x, questionnaire = NULL, dir, type = NULL, filename,custom_template = NULL) {
 
   if(is.null(type)&is.null(custom_template)){stop("must provide either type or custom_template arguments")}
-  if(!is.null(type)&!isnull(custom_template)){stop("most provide only one of type or custom_template arguments")}
+  if(!is.null(type)&!is.null(custom_template)){stop("most provide only one of type or custom_template arguments")}
 
   if(!is.null(custom_template)){
     template<-custom_template
