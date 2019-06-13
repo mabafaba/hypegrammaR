@@ -12,16 +12,16 @@ map_to_template <- function(x, questionnaire = NULL, dir, type = NULL, filename,
   if(is.null(type)&is.null(custom_template)){stop("must provide either type or custom_template arguments")}
   if(!is.null(type)&!is.null(custom_template)){stop("most provide only one of type or custom_template arguments")}
 
-  if(!is.null(custom_template)){
-    template<-custom_template
-  }
-
   if(!is.null(type)){
 
   type <-recode(type,
                 visual= "templates_analysisplan_report_visuals.rmd",
                 summary ="templates_analysisplan_summary.rmd",
                 full = "templates_analysisplan_report_full.rmd")
+
+  if(!is.null(custom_template)){
+    type<-custom_template
+  }
 
   if (class(x) == "hypegrammar_resultlist") {
     template <-
