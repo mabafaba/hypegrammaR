@@ -24,12 +24,10 @@ Imports:
     htmltools,
     assertthat,
     hypegrammaR (>= 0.0.0.9000),
-    visualisationIMPACT (>= 0.1.0),
     composr (>= 0.1.1)
 Remotes:  
     github::mabafaba/koboquest,
     github::mabafaba/kobostandards,
-    sharonorengo/visualisationIMPACT,
     mabafaba/composr,
     ellieallien/surveyweights,
     mabafaba/koboquest
