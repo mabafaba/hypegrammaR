@@ -23,7 +23,6 @@ Imports:
     knitr,
     htmltools,
     assertthat,
-    hypegrammaR (>= 0.0.0.9000),
     composr (>= 0.1.1)
 Remotes:  
     github::mabafaba/koboquest,
