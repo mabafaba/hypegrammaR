@@ -44,11 +44,7 @@ map_to_result<-function(data,
     case=case
   )
 
-  # sanitise input
 
-  # data <- data[!is.na(data[,dependent.var]),]
-  # if(nrow(data)==0){stop('provided data has no rows where dependent.var is not NA')}
-  # if(all(is.na(data[,dependent.var]))){stop(paste('variable', dependent.var, 'can\'t be all NA'))}
   if(is.null(weighting)){
     weighting=function(df){rep(1,nrow(df))}
   }
@@ -63,23 +59,6 @@ map_to_result<-function(data,
     }
 
 
-
-  # data_sanitised<-sanitise_data(data,
-  #                               dependent.var,
-  #                               independent.var,
-  #                               case)
-  # if(data_sanitised$success){
-  #   data<-data_sanitised$data
-  # }else{
-  #   return(
-  #     list(parameters=parameters,
-  #       summary.statistic=NULL,
-  #       hypothesis.test.result=NULL,
-  #       message=data_sanitised$message
-  #     )
-  #
-  #   )
-  # }
 
 
   design <- map_to_design(data = data,
@@ -99,12 +78,6 @@ map_to_result<-function(data,
                                               independent.var = independent.var,
                                               case = case,
                                               questionnaire = questionnaire)
-  # do hypothesis test:
-
-
-  # add results to the visualisation:
-  # visualisation<-visualisation+ggplot()...
-
 
 
 
