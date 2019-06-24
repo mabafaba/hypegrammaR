@@ -1,0 +1,137 @@
+---
+title: "Example MSNA"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example MSNA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(hypegrammaR)
+```
+
+
+## Main Steps
+
+
+- DEFINE YOUR ANALYSIS
+    - create analysisplan 
+    - create recoding plan
+    - add newly created variables to kobo tool - to pretend they had been collected
+- LOAD PACKAGES
+- PREPARE INPUTS
+    - load inputs _as data.frames_ from csv
+        - questionnaire questions sheet ("questions") (excel -> save active sheet as csv)
+        - questionnaire choices sheet ("choices")
+        - analysisplan
+        - recoding plan
+        - data
+        - sampling frame
+    - (Generate data)
+        - xlsformfill:xlsformfill (questions & choices) -> data
+    - create koboquest questionnaire object (load_questionnaire(data, questions, choices))
+    - (generate samplingframe) -> samplingframe
+- RECODING
+    - batch recode from recodingplan
+- SAMPLING STRATEGY PREPARATIONS
+      - stratification weighting:
+        - create a data variable whos values match _exactly_ the strata names in the sampling frame
+            - for _all_ stratification elements: districts & population groups!
+    - (cluster weighting: maybe.. depending on sampling strategy)
+        - same as stratitifaction
+        - use surveyweights::combine_weighting_functions() to combine weighting functions
+    - Create unique cluster id variable in the data
+    - create weighting function (map_to_weighting) -> weighting
+- RAW RESULTS
+    - from analysisplan map to outputs ==> analysisplan_outputs
+        - _Recoded_ data
+        - analysisplan
+        - weighting
+        - cluster id variable name
+        - questionnaire
+- FINAL OUTPUTS
+    - individual results
+        - map_to_visualisation
+        - map_to_table
+        - map_to_labeled
+    - list of results (analysisplan_outputs$results)
+        - lapply(map_to_visualisation)
+        - lapply(map_to_table)
+        - lapply(map_to_labeled)
+    - **analysisplan_outputs**
+        - hypegrammaR:::map_to_generic_hierarchical_html
+            - FUNCTION TO TURN RESULT INTO MARKDOWN
+                - hypegrammaR:::from_result_map_to_md_table
+                - map_to_md_hypothesis_test(result)
+            - analysisplan columns you want to use to structure output
+            - prefixes for these when they become headlines
+            - level = 2
+            - questionnaire
+            - output directory
+            - output file
+
+
+
+
+
+
+
+
+### load packages
+
+
+
+
+
+```{r}
+library(koboquest)
+library(hypegrammaR)
+library(composr)
+library(kobostandards)
+library(dplyr)
+library(xlsformfill)
+
+
+```
+
+
+### Create matching columns in sampling frame and data 
+
+```{r, eval = T, echo = F}
+library(dplyr)
+sf <- data.frame(district = c("hargeisa", "mogadishu","hargeisa", "mogadishu"),population = c(1000,2000,3000,4000), population_group = c("idp","non_displaced"))
+
+
+sf %>% mutate(stratum_name = paste0(district, "__", population_group)) %>% (knitr::kable)
+
+
+```
+
+Matching data column!!!:
+```{r,eval = T}
+mydata <- data.frame(popgroup = c("idp","non_displaced"), district = c("hargeisa","hargeisa"))
+mydata <- mydata %>% mutate(strata = paste0(district, "__",popgroup))
+mydata %>% (knitr::kable)
+
+```
+
+**YOU NEED THE SAME FOR YOUR CLUSTERS!**
+
+
+
+
+
+
+
+
+
+
