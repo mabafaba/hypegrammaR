@@ -17,7 +17,6 @@ Imports:
     questionr,
     koboquest (>= 1.0.1),
     kobostandards,
-    xlsformfill,
     data.table,
     surveyweights (>= 0.1.0),
     knitr,
@@ -26,6 +25,7 @@ Imports:
     kableExtra
 Remotes:
     github::mabafaba/koboquest,
+    github::mabafaba/xlsformfill,
     github::mabafaba/kobostandards,
     mabafaba/composr,
     ellieallien/surveyweights,
