@@ -27,7 +27,7 @@ The flow of an analysis according to the data analysis guidelines:
 
 The implementation in hypegrammaR:
 
-![analysis flow hypegrammaR](./hypegrammaR_flowchart.jpg)
+![analysis flow hypegrammaR](./hypegrammaR_flowchart2.jpg)
 
 
 
