@@ -22,9 +22,9 @@ Imports:
     surveyweights (>= 0.1.0),
     knitr,
     htmltools,
-    assertthat
+    assertthat,
+    kableExtra
 Remotes:
-    kableExtra,
     github::mabafaba/koboquest,
     github::mabafaba/kobostandards,
     mabafaba/composr,
