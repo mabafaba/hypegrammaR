@@ -24,7 +24,7 @@ Imports:
     htmltools,
     assertthat
 Remotes:
-    kableExtra
+    kableExtra,
     github::mabafaba/koboquest,
     github::mabafaba/kobostandards,
     mabafaba/composr,
