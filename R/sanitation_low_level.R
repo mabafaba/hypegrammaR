@@ -160,7 +160,7 @@ datasanitation_variables_in_data_colnames<-function(data,dependent.var,independe
   return(successfull_sanitation(data))
 }
 
-datasanitation_independent_max_unique<-function(data,dependent.var,independent.var, n_max = 30){
+datasanitation_independent_max_unique<-function(data,dependent.var,independent.var, n_max = 50){
   valid<-length(unique(data[[independent.var]])) <= n_max
   datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in independent variable"))
 }
