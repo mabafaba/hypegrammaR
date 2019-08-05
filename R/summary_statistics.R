@@ -2,6 +2,7 @@
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'
 #'@param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
 #'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
 #'@examples percent_with_confints_select_one("population_group", design)
@@ -10,13 +11,15 @@ percent_with_confints_select_one <-
   function(dependent.var,
            independent.var = NULL,
            design,
-           na.rm = TRUE) {
+           na.rm = TRUE,
+           confidence_level = 0.95) {
     if (!is.null(independent.var)) {
       warning(
         "confidence intervals calculated without disaggregation, but received data for an independent variable."
       )
     }
 
+    stopifnot(is.numeric(confidence_level))
     sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
                                      datasanitation_summary_statistics_percent_with_confints_select_one)
 
@@ -33,7 +36,7 @@ percent_with_confints_select_one <-
             as.factor(design$variables[[dependent.var]])
 
           result_svy_format <-
-            svymean(formula(paste0("~", dependent.var)), design, level = 0.95) %>% cbind(., confint(.))
+            svymean(formula(paste0("~", dependent.var)), design, level = confidence_level) %>% cbind(., confint(.))
           colnames(result_svy_format) <- c("numbers", "min", "max")
           summary_with_confints <- data.frame(
             dependent.var = dependent.var,
@@ -68,14 +71,18 @@ percent_with_confints_select_one <-
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
 #'@param dependent.var.sm.cols a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_select_multiple(question.name, data)
 #'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.
 #'@export
 percent_with_confints_select_multiple <- function(dependent.var,
                                                   dependent.var.sm.cols,
                                                   design,
-                                                  na.rm = TRUE) {
+                                                  na.rm = TRUE,
+                                                  confidence_level = 0.95) {
 
+
+  stopifnot(is.numeric(confidence_level))
 
   question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
 
@@ -102,7 +109,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
   result_hg_format <- lapply(names(choices), function(x) {
     design$variables[[x]] <- as.logical(design$variables[[x]])
     result_svy_format <-
-      svymean(formula(paste0("~", x)), design, level = 0.95) %>% cbind(., confint(.))
+      svymean(formula(paste0("~", x)), design, level = confidence_level) %>% cbind(., confint(.))
     result_svy_format <-
       result_svy_format[rownames(result_svy_format) == paste0(x, TRUE), , drop =
                           F]
@@ -149,6 +156,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'
 #'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
 #'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category in each group of the independent variable.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
 #'@examples percent_with_confints_select_one_groups("population_group", "resp_gender", design)
@@ -156,8 +164,10 @@ percent_with_confints_select_multiple <- function(dependent.var,
 percent_with_confints_select_one_groups <- function(dependent.var,
                                                     independent.var,
                                                     design,
-                                                    na.rm = TRUE) {
+                                                    na.rm = TRUE,
+                                                    confidence_level = 0.95) {
 
+  stopifnot(is.numeric(confidence_level))
 
   sanitised<-datasanitation_design(design,dependent.var,independent.var,
                                    datasanitation_summary_statistics_percent_groups)
@@ -183,7 +193,8 @@ percent_with_confints_select_one_groups <- function(dependent.var,
         svymean,
         na.rm = T,
         keep.var = T,
-        vartype = "ci"
+        vartype = "ci",
+        level = confidence_level
       )
 
     unique.dependent.var.values <-
@@ -232,6 +243,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 #'@param dependent.var.sm.cols a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_Select_multiple(question.name, data)
 #'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
 #'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select multiple. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.
 #'@export
@@ -241,7 +253,11 @@ percent_with_confints_select_multiple_groups <-
            dependent.var.sm.cols,
            independent.var,
            design,
-           na.rm = TRUE) {
+           na.rm = TRUE,
+           confidence_level = 0.95) {
+
+    stopifnot(is.numeric(confidence_level))
+
     # if dependent and independent variables have only one value, just return that:
 
     question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
@@ -277,7 +293,8 @@ percent_with_confints_select_multiple_groups <-
           svymean,
           na.rm = T,
           keep.var = T,
-          vartype = "ci"
+          vartype = "ci",
+          level = confidence_level
         )
 
       summary_stat_colname <- formula_string_sans_tilde
@@ -323,12 +340,17 @@ percent_with_confints_select_multiple_groups <-
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a numerical variable.
 #'@param independent.var should be null ! For other functions: string with the column name in `data` of the independent variable
 #'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details This function takes the design object and the name of your dependent variable when the latter is a numerical. It calculates the weighted mean for your variable.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value (=NA), independent.var (= NA), independent.var.value (= NA), numbers (= mean), se, min and max.
 #'@export
 mean_with_confints <- function(dependent.var,
                                independent.var = NULL,
-                               design) {
+                               design,
+                               confidence_level = 0.95) {
+
+  stopifnot(is.numeric(confidence_level))
+
   if (!is.null(independent.var)) {
     warning(
       "confidence intervals calculated without disaggregation, but received data for an independent variable."
@@ -343,8 +365,11 @@ mean_with_confints <- function(dependent.var,
 
   datasanitation_summary_statistics_mean
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
-  summary <- svymean(formula(formula_string), design, na.rm = T)
-  confints <- confint(summary, level = 0.95)
+  summary <- svymean(formula(formula_string),
+                     design,
+                     na.rm = T)
+
+  confints <- confint(summary, level = confidence_level)
   results <- data.frame(
     dependent.var = dependent.var,
     independent.var = "NA",
@@ -362,12 +387,14 @@ mean_with_confints <- function(dependent.var,
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a numerical variable.
 #'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
 #'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details This function takes the design object and the name of your dependent variable when the latter is a numerical. It calculates the weighted mean for your variable.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value (=NA), independent.var, independent.var.value, numbers (= mean), se, min and max.
 #'@export
 mean_with_confints_groups <- function(dependent.var,
                                       independent.var,
-                                      design) {
+                                      design,
+                                      confidence_level = 0.95) {
 
   sanitised <-datasanitation_design(design,dependent.var,independent.var,
                                    datasanitation_summary_statistics_mean_groups)
@@ -387,7 +414,8 @@ mean_with_confints_groups <- function(dependent.var,
       svymean,
       na.rm = T,
       keep.var = T,
-      vartype = "ci"
+      vartype = "ci",
+      level = confidence_level
     )
   unique.independent.var.values <-
     design$variables[[independent.var]] %>% unique
@@ -418,13 +446,14 @@ mean_with_confints_groups <- function(dependent.var,
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a select_one or a select_multiple.
 #'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
 #'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details This function takes the design object and the name of your dependent variable, and returns the most frequent answer for each category in independent.var
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value (=NA), independent.var, independent.var.value, numbers (= mean), se, min and max.
 #'@export
 summary_statistic_mode_select_one <-
-  function(dependent.var, independent.var, design) {
+  function(dependent.var, independent.var, design, confidence_level = 0.95) {
     percent <-
-      percent_with_confints_select_one_groups(dependent.var, independent.var, design)
+      percent_with_confints_select_one_groups(dependent.var, independent.var, design,confidence_level = confidence_level)
     modes <-
       percent %>% split.data.frame(percent$independent.var.value, drop = T) %>% lapply(function(x) {
         x[which.max(x$numbers), ]
@@ -433,9 +462,9 @@ summary_statistic_mode_select_one <-
   }
 
 summary_statistic_rank <-
-  function(dependent.var, independent.var, design) {
+  function(dependent.var, independent.var, design, confidence_level = 0.95) {
     percent <-
-      percent_with_confints(dependent.var, independent.var, design)
+      percent_with_confints(dependent.var, independent.var, design, confidence_level = confidence_level)
     ranked <-
       percent %>% split.data.frame(percent$independent.var.value, drop = T) %>% lapply(function(x) {
         mutate(x, rank = rank(x$numbers, ties.method = "min"))

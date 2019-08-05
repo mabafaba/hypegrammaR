@@ -4,7 +4,8 @@
 \alias{map_to_template}
 \title{Map results to an output template}
 \usage{
-map_to_template(x, questionnaire = NULL, dir, type, filename)
+map_to_template(x, questionnaire = NULL, dir, type = NULL, filename,
+  custom_template = NULL)
 }
 \arguments{
 \item{x}{hypegrammaR result or list of results (created with map_to_result() or from_analysisplan_map_to_output())}
