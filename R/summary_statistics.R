@@ -36,7 +36,7 @@ percent_with_confints_select_one <-
             as.factor(design$variables[[dependent.var]])
 
           result_svy_format <-
-            svymean(formula(paste0("~", dependent.var)), design, level = confidence_level) %>% cbind(., confint(.))
+            svymean(formula(paste0("~", dependent.var)), design, level = confidence_level) %>% cbind(., confint(.,level = confidence_level))
           colnames(result_svy_format) <- c("numbers", "min", "max")
           summary_with_confints <- data.frame(
             dependent.var = dependent.var,
@@ -109,7 +109,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
   result_hg_format <- lapply(names(choices), function(x) {
     design$variables[[x]] <- as.logical(design$variables[[x]])
     result_svy_format <-
-      svymean(formula(paste0("~", x)), design, level = confidence_level) %>% cbind(., confint(.))
+      svymean(formula(paste0("~", x)), design, level = confidence_level) %>% cbind(., confint(.,level = confidence_level))
     result_svy_format <-
       result_svy_format[rownames(result_svy_format) == paste0(x, TRUE), , drop =
                           F]
