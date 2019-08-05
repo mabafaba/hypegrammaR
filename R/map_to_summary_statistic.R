@@ -2,7 +2,12 @@
 #'
 #' selects an appropriate summary statistic function based on the analysis case
 #'
+#' @param design the design object (map_to_design())
+#' @param dependent.var the name of the dependent variable
+#' @param independent.var the name of the independent variable
 #' @param case a string uniquely identifying the analysis case. output of map_to_case().
+#' @param questionnaire the questionnaire (from load_questionnaire())
+#' @param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #' @return a _function_ that computes the relevant summary statistic
 #' @examples map_to_summary_statistic("group_difference_categorical_categorical")
 #' @examples my_case<- map_to_case( ... )
@@ -14,7 +19,8 @@ map_to_summary_statistic <-
            dependent.var,
            independent.var,
            case,
-           questionnaire = NULL) {
+           questionnaire = NULL,
+           confidence_level = 0.95) {
     # sanitise input:
     if (!is_valid_case_string(case)) {
       stop(
@@ -64,7 +70,8 @@ map_to_summary_statistic <-
         mean_with_confints_groups(
           dependent.var = dependent.var,
           independent.var = independent.var,
-          design = design
+          design = design,
+          confidence_level = confidence_level
         )
     }
 
@@ -74,14 +81,16 @@ map_to_summary_statistic <-
         mean_with_confints_groups(
           dependent.var = dependent.var,
           independent.var = independent.var,
-          design = design
+          design = design,
+          confidence_level = confidence_level
         )
     }
 
     if (case == "CASE_direct_reporting_numerical_") {
       summary_stat <- mean_with_confints(
         dependent.var = dependent.var,
-        design = design
+        design = design,
+        confidence_level = confidence_level
       )
     }
 
@@ -91,7 +100,8 @@ map_to_summary_statistic <-
           percent_with_confints_select_multiple(
             dependent.var = dependent.var,
             dependent.var.sm.cols = dependent.var.sm.cols,
-            design = design
+            design = design,
+            confidence_level = confidence_level
           )
       }
 
@@ -100,7 +110,8 @@ map_to_summary_statistic <-
         summary_stat <-
           percent_with_confints_select_one(
             dependent.var = dependent.var,
-            design = design
+            design = design,
+            confidence_level = confidence_level
           )
       }
     }
@@ -113,7 +124,8 @@ map_to_summary_statistic <-
             dependent.var.sm.cols =
               dependent.var.sm.cols,
             independent.var = independent.var,
-            design = design
+            design = design,
+            confidence_level = confidence_level
           )
       }
 
@@ -122,7 +134,8 @@ map_to_summary_statistic <-
           percent_with_confints_select_one_groups(
             dependent.var = dependent.var,
             independent.var = independent.var,
-            design = design
+            design = design,
+            confidence_level = confidence_level
           )
       }
     }
@@ -132,7 +145,8 @@ map_to_summary_statistic <-
         mean_with_confints_groups(
           dependent.var = dependent.var,
           independent.var = independent.var,
-          design = design
+          design = design,
+          confidence_level = confidence_level
         )
 
     }
@@ -145,7 +159,8 @@ map_to_summary_statistic <-
           percent_with_confints_select_multiple(
             dependent.var = dependent.var,
             dependent.var.sm.cols = dependent.var.sm.cols,
-            design = design
+            design = design,
+            confidence_level = confidence_level
           )
       }
 
@@ -154,7 +169,8 @@ map_to_summary_statistic <-
         summary_stat <-
           percent_with_confints_select_one(
             dependent.var = dependent.var,
-            design = design
+            design = design,
+            confidence_level = confidence_level
           )
       }
     }
@@ -162,17 +178,14 @@ map_to_summary_statistic <-
     if (case == "CASE_limit_numerical") {
       summary_stat <- mean_with_confints(
         dependent.var = dependent.var,
-        design = design
+        design = design,
+        confidence_level = confidence_level
       )
     }
 
     if (case == "") {
-      preferred_summary_statistic_fun <-
-        summary_stat(
-          dependent.var = dependent.var,
-          independent.var = independent.var,
-          design = design
-        )
+  stop('case can not be an empty string')
+
     }
 
 
