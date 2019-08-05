@@ -26,7 +26,7 @@ map_to_generic_hierarchical_html <- function(resultlist,
   assertthat::assert_that(assertthat::is.writeable(dir))
   assertthat::assert_that(assertthat::is.writeable(paste0(dir,"/",filename)))
   assertthat::assert_that(is.function(render_result_with))
-  assertthat::assert_that(length(by_analysisplan_columns) == length(by_prefex))
+  assertthat::assert_that(length(by_analysisplan_columns) == length(by_prefix))
   if(!grepl(filename,".html$")){stop("file must end in .html")}
 
   template <-
