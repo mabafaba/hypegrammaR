@@ -12,6 +12,7 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  eval = F,
   comment = "#>"
 )
 ```
@@ -51,7 +52,7 @@ devtools::install_github("ellieallien/hypegrammaR",build_opts = c(), ref = "mast
 For this step only, you need a more or less stable internet connection.
 
 #### Load the hypegrammaR package
-```{r,warning=FALSE,message=FALSE}
+```{r,warning=FALSE,message=FALSE, eval = F}
 library(hypegrammaR)
 library(koboquest)
 ```

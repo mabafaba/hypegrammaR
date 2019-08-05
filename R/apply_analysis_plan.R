@@ -103,6 +103,8 @@ from_analysisplan_map_to_output <- function(data,
   analysisplan <- analysisplan[!is.na(analysisplan$dependent.var), ]
   analysisplan <- analysisplan_clean(analysisplan)
 
+  lapply(analysisplan,function(x){if(is.factor(x)){return(as.character(x))};x}) %>% as.data.frame(stringsAsFactors = FALSE)
+
   # each 'repeat.var' repetition gets their own row
   analysisplan <- analysisplan_expand_repeat(analysisplan, data)
 
@@ -138,9 +140,9 @@ from_analysisplan_map_to_output <- function(data,
       # print what we're doing to console
 
 
-
-      printparamlist(x, "1/2: calculating summary statistics and hypothesis tests")
-
+      if(verbose){
+      printparamlist(x, "calculating summary statistics and hypothesis tests")
+      }
 
       if (is.na(x["independent.var"]) | is.null(x["independent.var"])) {
         indep.var <- NULL

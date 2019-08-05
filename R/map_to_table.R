@@ -27,8 +27,8 @@ map_to_table<-function(result){
     min_formated<-paste0(round(result$summary.statistic$min*100),"%")
     max_formated<-paste0(round(result$summary.statistic$max*100),"%")
     }else{
-      min_formated<-paste0(round(result$summary.statistic$min,2),"%")
-      max_formated<-paste0(round(result$summary.statistic$max),"%")
+      min_formated<-paste0(round(result$summary.statistic$min,2),"")
+      max_formated<-paste0(round(result$summary.statistic$max,2),"")
     }
     interval<-paste0("(",min_formated,"-",max_formated,")")
   }else{

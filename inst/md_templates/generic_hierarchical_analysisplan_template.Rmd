@@ -25,12 +25,7 @@ library(kableExtra)
 # - by_analysisplan_columns
 # - by_prefix
 # - render_result_with
-source("../../../../deployment_resources/by_country/IRQ/MCNA_Analysys_Iraq/functions/results_handling.R")
-keep<-rep(FALSE,length(resultlist$results))
-keep[1:250]<-TRUE
-resultlist<-results_subset(resultlist,logical = keep)
-source("../../R/map_to_table.R")
-source("../../R/template_result_utils.R")
+
 ```
 
 ```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
@@ -53,7 +48,8 @@ md_out <- resultlist_recursive_markdown(resultlist,
                               by_analysisplan_columns = by_analysisplan_columns,
                               by_prefix = by_prefix,
                               level = level,
-                              render_result_with = render_result_with)
+                              render_result_with = render_result_with,
+                              label_varnames = label_varnames)
 
 cat(md_out)
 
@@ -68,7 +64,7 @@ margin-left:5px;
 padding-left:5px;
 background: rgba(0, 0, 0, 0.1); 
 }")
-cat(css_styles)
+
 cat("</style>")
 
 ```

@@ -1,0 +1,174 @@
+---
+title: "Example MSNA"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example MSNA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+
+## Main Steps
+
+- once: setup github repository
+- once: install packages
+- load packages
+- load inputs from csv files
+- preprocess inputs
+- make sure all inputs can be matched
+- create analysisplan
+- run analysisplan
+- export results
+
+## Details
+
+### DEFINE YOUR ANALYSIS
+
+- create analysisplan 
+- create recoding plan
+- add newly created variables to kobo tool - to pretend they had been collected
+
+### LOAD PACKAGES
+
+
+```{r}
+library(koboquest)
+library(hypegrammaR)
+library(composr)
+library(kobostandards)
+library(dplyr)
+library(xlsformfill)
+```
+
+
+### PREPARE INPUTS
+
+- load inputs _as data.frames_ from csv
+    - questionnaire questions sheet ("questions") (excel -> save active sheet as csv)
+    - questionnaire choices sheet ("choices")
+        - add external choices to the regular choices sheet
+        - replace "select_one_external" and "select_multiple_external" by "select_one"
+    - analysisplan
+    - recoding plan
+    - data
+    - sampling frame
+- (Generate data)
+- create koboquest questionnaire object
+
+```{r}
+mydata <- read.csv("./input/data.csv", stringsAsFactors = F)
+...
+
+```
+
+```{r}
+mydata <- xlsform_fill(questions,choices,1000)
+
+```
+
+```{r}
+load_questionnaire(mydata, questions, choices)
+```
+### RECODING
+
+- batch recode from recodingplan
+
+
+
+### SAMPLING STRATEGY PREPARATIONS
+- stratification weighting:
+    - create a data variable whos values match _exactly_ the strata names in the sampling frame
+        - for _all_ stratification elements: districts & population groups!
+- (cluster weighting: maybe.. depending on sampling strategy)
+    - same as stratitifaction
+    - use surveyweights::combine_weighting_functions() to combine weighting functions
+- Create unique cluster id variable in the data
+- create weighting function (map_to_weighting) -> weighting
+
+```{r}
+
+samplingframe_tidy<- samplingframe_tidy %>%
+  mutate(stratum_id = paste0(district.pcode,"_",population_group))
+
+
+data <- data %>%
+  mutate(data_stratum_id = paste0("YE",
+                                  a3_metadata,
+                                  "_",
+                                  data_stratum_id))  
+
+```
+
+### RAW RESULTS
+
+- from analysisplan map to outputs ==> analysisplan_outputs
+    - _Recoded_ data
+    - analysisplan
+    - weighting
+    - cluster id variable name
+    - questionnaire
+
+```{r}
+
+
+results <- from_analysisplan_map_to_output(response, analysisplan = analysisplan[1:20,],
+                                           weighting = strata_weight_fun,
+                                           cluster_variable_name = NULL,
+                                           questionnaire)
+```
+
+
+### FINAL OUTPUTS
+- individual results
+    - map_to_visualisation
+    - map_to_table
+    - map_to_labeled
+- list of results (analysisplan_outputs$results)
+    - lapply(map_to_visualisation)
+    - lapply(map_to_table)
+    - lapply(map_to_labeled)
+- **analysisplan_outputs**
+    - hypegrammaR:::map_to_generic_hierarchical_html
+        - FUNCTION TO TURN RESULT INTO MARKDOWN
+            - hypegrammaR:::from_result_map_to_md_table
+            - map_to_md_hypothesis_test(result)
+        - analysisplan columns you want to use to structure output
+        - prefixes for these when they become headlines
+        - level = 2
+        - questionnaire
+        - output directory
+        - output file
+
+```{r}
+
+
+map_to_hierarchical_template(results,
+                             questionnaire = questionnaire,
+                             by_analysisplan_columns =c("dependent.var"
+                                                        # ,"repeat.var"
+                                                        # ,"repeat.var.value"
+                                                        # ,"independent.var",
+                                                        # ,"independent.var.value"
+                             ),
+                             filename = "./output/test.html")
+
+
+browseURL("./output/test.html")
+
+map_to_master_table(results,"test.csv")
+```
+
+
+
+
+
+
+
