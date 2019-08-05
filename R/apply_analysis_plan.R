@@ -103,6 +103,8 @@ from_analysisplan_map_to_output <- function(data,
   analysisplan <- analysisplan[!is.na(analysisplan$dependent.var), ]
   analysisplan <- analysisplan_clean(analysisplan)
 
+  lapply(analysisplan,function(x){if(is.factor(x)){return(as.character(x))};x}) %>% as.data.frame(stringsAsFactors = FALSE)
+
   # each 'repeat.var' repetition gets their own row
   analysisplan <- analysisplan_expand_repeat(analysisplan, data)
 

@@ -44,6 +44,7 @@ map_to_result<-function(data,
     case=case
   )
 
+  data<-koboquest:::to_alphanumeric_lowercase_colnames_df(data)
 
   if(is.null(weighting)){
     weighting=function(df){rep(1,nrow(df))}
