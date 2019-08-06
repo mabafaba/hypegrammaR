@@ -31,35 +31,25 @@ percent_with_confints_select_one <-
     tryCatch(
       expr = {
         result_hg_format <-
-        {
-          design$variables[[dependent.var]] <-
-            as.factor(design$variables[[dependent.var]])
 
-          result_svy_format <-
-            svymean(formula(paste0("~", dependent.var)), design, level = confidence_level) %>% cbind(., confint(.,level = confidence_level))
-          colnames(result_svy_format) <- c("numbers", "min", "max")
-          summary_with_confints <- data.frame(
-            dependent.var = dependent.var,
-            independent.var = NA,
-            dependent.var.value = gsub(
-              paste0("^", dependent.var),
-              "",
-              rownames(result_svy_format)
-            ),
-            independent.var.value = NA,
-            numbers = result_svy_format[, "numbers"],
-            se = NA,
-            min = result_svy_format[, "min"],
-            max = result_svy_format[, "max"]
-          )
-          summary_with_confints[, "min"] <-
-            summary_with_confints[, "min"] %>% replace(summary_with_confints[, "min"] < 0 , 0)
-          summary_with_confints[, "max"] <-
-            summary_with_confints[, "max"] %>% replace(summary_with_confints[, "max"] > 1 , 1)
-          summary_with_confints %>% as.data.frame
-        }
-        return(result_hg_format)
-      },
+
+
+        design <- srvyr::as_survey_design(design)
+        result<- design %>% srvyr::group_by_(dependent.var) %>%
+          summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+
+
+        result_hg_format <-  data.frame(
+          dependent.var = dependent.var,
+          independent.var = NA,
+          dependent.var.value = result[[dependent.var]],
+          independent.var.value = NA,
+          numbers = result$numbers,
+          se = NA,
+          min = result$numbers_low,
+          max = result$numbers_upp
+        )
+        return(dependent.var)},
       error = function(e) {
         .write_to_log("percent_with_confints_select_one failed with error:")
         .write_to_log(e$message)
@@ -90,12 +80,12 @@ percent_with_confints_select_multiple <- function(dependent.var,
   ### Sanitation checks
   sapply(dependent.var.sm.cols, function(x){
 
-    dependent.var <- names(design$variables)[x]
-    sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
+    dependent.var.check <- names(design$variables)[x]
+    sanitised<-datasanitation_design(design,dependent.var.check,independent.var = NULL,
                                      datasanitation_summary_statistics_percent_sm_choice)
     if(!sanitised$success){
       warning(sanitised$message)
-      return(datasanitation_return_empty_table(data = design$variables, dependent.var))
+      return(datasanitation_return_empty_table(data = design$variables, dependent.var.check))
       }
     design<-sanitised$design
     }
@@ -107,23 +97,24 @@ percent_with_confints_select_multiple <- function(dependent.var,
 
 
   result_hg_format <- lapply(names(choices), function(x) {
-    design$variables[[x]] <- as.logical(design$variables[[x]])
-    result_svy_format <-
-      svymean(formula(paste0("~", x)), design, level = confidence_level) %>% cbind(., confint(.,level = confidence_level))
-    result_svy_format <-
-      result_svy_format[rownames(result_svy_format) == paste0(x, TRUE), , drop =
-                          F]
-    colnames(result_svy_format) <- c("numbers", "min", "max")
-    if (nrow(result_svy_format) > 0) {
+    design$variables[[x]] <- factor(as.logical(design$variables[[x]]),levels = c("TRUE","FALSE"))
+
+
+    design <- srvyr::as_survey_design(design)
+
+    result <- design %>% srvyr::group_by_(x) %>%
+      summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+
+    if (nrow(result) > 0) {
       summary_with_confints <- data.frame(
         dependent.var = dependent.var,
         independent.var = NA,
         dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
         independent.var.value = NA,
-        numbers = result_svy_format[, "numbers"],
+        numbers = result$numbers,
         se = NA,
-        min = result_svy_format[, "min"],
-        max = result_svy_format[, "max"]
+        min = result$numbers_low,
+        max = result$numbers_upp
       )
     } else{
       summary_with_confints <- data.frame(
@@ -177,62 +168,28 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
   design<-sanitised$design
 
-  formula_string <- paste0("~", dependent.var , sep = "")
-  by <- paste0("~", independent.var , sep = "")
-
-
-  result_hg_format <- {
     design$variables[[dependent.var]] <-
       as.factor(design$variables[[dependent.var]])
 
-    result_svy_format <-
-      svyby(
-        formula(formula_string),
-        formula(by),
-        design,
-        svymean,
-        na.rm = T,
-        keep.var = T,
-        vartype = "ci",
-        level = confidence_level
-      )
 
-    unique.dependent.var.values <-
-      design$variables[[dependent.var]] %>% unique
-    summary_with_confints <- unique.dependent.var.values %>%
-      lapply(function(x) {
-        summary_stat_colname <- paste0(dependent.var, x)
-        lower_confint_colname <- paste0("ci_l.", summary_stat_colname)
-        upper_confint_colname <- paste0("ci_u.", summary_stat_colname)
+    design <- srvyr::as_survey_design(design)
 
-        dependent_value_x_stats <-
-          result_svy_format[, c(
-            independent.var,
-            summary_stat_colname,
-            lower_confint_colname,
-            upper_confint_colname
-          )]
-        colnames(dependent_value_x_stats) <-
-          c("independent.var.value", "numbers", "min", "max")
-        data.frame(
+    result<- design %>% srvyr::group_by_(dependent.var,independent.var) %>%
+      summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+
+
+    result_hg_format <-  data.frame(
           dependent.var = dependent.var,
           independent.var = independent.var,
-          dependent.var.value = x,
-          independent.var.value = dependent_value_x_stats[, "independent.var.value"],
-          numbers = dependent_value_x_stats[, "numbers"],
+          dependent.var.value = result[[dependent.var]],
+          independent.var.value = result[[independent.var]],
+          numbers = result$numbers,
           se = NA,
-          min = dependent_value_x_stats[, "min"],
-          max = dependent_value_x_stats[, "max"]
+          min = result$numbers_low,
+          max = result$numbers_upp
         )
-      }) %>% do.call(rbind, .)
 
 
-    summary_with_confints[, "min"] <-
-      summary_with_confints[, "min"] %>% replace(summary_with_confints[, "min"] < 0 , 0)
-    summary_with_confints[, "max"] <-
-      summary_with_confints[, "max"] %>% replace(summary_with_confints[, "max"] > 1 , 1)
-    summary_with_confints %>% as.data.frame
-  }
 
   return(result_hg_format)
 }
@@ -258,70 +215,62 @@ percent_with_confints_select_multiple_groups <-
 
     stopifnot(is.numeric(confidence_level))
 
-    # if dependent and independent variables have only one value, just return that:
-
     question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
+
 
     ### Sanitation checks
     sapply(dependent.var.sm.cols, function(x){
 
-      dependent.var <- names(design$variables)[x]
-      sanitised<-datasanitation_design(design,dependent.var,independent.var,
-                                       datasanitation_summary_statistics_percent_sm_choice_groups)
+      dependent.var.check <- names(design$variables)[x]
+      sanitised<-datasanitation_design(design,dependent.var.check,independent.var = NULL,
+                                       datasanitation_summary_statistics_percent_sm_choice)
       if(!sanitised$success){
         warning(sanitised$message)
-        return(datasanitation_return_empty_table_NA(data = design$variables, dependent.var, independent.var)) ### hack because in the etch case of a numeric dependent the whole thing goes
+        return(datasanitation_return_empty_table(data = design$variables, dependent.var.check))
       }
       design<-sanitised$design
-    })
-
+    }
+    )
     ###
+
     # Get the columns with the choices data into an object
     choices <- design$variables[, dependent.var.sm.cols]
 
 
-    result_hg_format <- lapply(names(choices), function(x){
-      formula_string_sans_tilde <- paste0("as.numeric(", x , ")", sep = "")
-      formula_string <- paste0("~as.numeric(", x , ")", sep = "")
-      by <- paste0("~", independent.var , sep = "")
+    result_hg_format <- lapply(names(choices), function(x) {
+      design$variables[[x]] <- factor(as.logical(design$variables[[x]]),levels = c("TRUE","FALSE"))
 
-      result_svy_format <-
-        svyby(
-          formula(formula_string),
-          formula(by),
-          design,
-          svymean,
-          na.rm = T,
-          keep.var = T,
-          vartype = "ci",
-          level = confidence_level
+
+      design <- srvyr::as_survey_design(design)
+
+      result <- design %>% srvyr::group_by_(x, independent.var) %>%
+        summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+
+      if (nrow(result) > 0) {
+        summary_with_confints <- data.frame(
+          dependent.var = dependent.var,
+          independent.var = NA,
+          dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
+          independent.var.value = NA,
+          numbers = result$numbers,
+          se = NA,
+          min = result$numbers_low,
+          max = result$numbers_upp
         )
+      } else{
+        summary_with_confints <- data.frame(
+          dependent.var = dependent.var,
+          independent.var = NA,
+          dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
+          independent.var.value = NA,
+          numbers = NA,
+          se = NA,
+          min = NA,
+          max = NA
+        )
+      }
 
-      summary_stat_colname <- formula_string_sans_tilde
-      lower_confint_colname <- paste0("ci_l")
-      upper_confint_colname <- paste0("ci_u")
-
-      dependent_value_x_stats <-
-        result_svy_format[, c(
-          independent.var,
-          summary_stat_colname,
-          lower_confint_colname,
-          upper_confint_colname
-        )]
-      colnames(dependent_value_x_stats) <-
-        c("independent.var.value", "numbers", "min", "max")
-      data.frame(
-        dependent.var = dependent.var,
-        independent.var = independent.var,
-        dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
-        independent.var.value = dependent_value_x_stats[, "independent.var.value"],
-        numbers = dependent_value_x_stats[, "numbers"],
-        se = NA,
-        min = dependent_value_x_stats[, "min"],
-        max = dependent_value_x_stats[, "max"]
-      )
     })
-
     result_hg_format %<>% do.call(rbind, .)
 
     result_hg_format[, "min"] <-
@@ -330,8 +279,8 @@ percent_with_confints_select_multiple_groups <-
       result_hg_format[, "max"] %>% replace(result_hg_format[, "max"] > 1 , 1)
     result_hg_format %>% as.data.frame
 
-
     return(result_hg_format)
+
   }
 
 
