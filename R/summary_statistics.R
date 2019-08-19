@@ -32,10 +32,15 @@ percent_with_confints_select_one <-
       expr = {
 
 
-        design <- design %>%  srvyr::as_survey_design(design)
-        result <- design %>% srvyr::group_by_(dependent.var) %>%
-          srvyr::summarize(numbers = srvyr::survey_mean(vartype = "ci",
-                                                        level = confidence_level))
+        srvyr_design <- srvyr::as_survey_design(design)
+        srvyr_design_grouped <- srvyr::group_by_(srvyr_design,dependent.var)
+        result <- srvyr::summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(vartype = "ci",
+                                                                                     level = confidence_level)
+        )
+
+
+
+
         result_hg_format <- data.frame(dependent.var = dependent.var,
                                        independent.var = NA, dependent.var.value = result[[dependent.var]],
                                        independent.var.value = NA, numbers = result$numbers,
@@ -92,10 +97,14 @@ percent_with_confints_select_multiple <- function(dependent.var,
     design$variables[[x]] <- factor(as.logical(design$variables[[x]]),levels = c("TRUE","FALSE"))
 
 
-    design <- srvyr::as_survey_design(design)
 
-    result <- design %>% srvyr::group_by_(x) %>%
-      summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+    srvyr_design <- srvyr::as_survey_design(design)
+
+    srvyr_design_grouped <- srvyr::group_by_(srvyr_design, x)
+
+    result <- srvyr::summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(vartype = "ci",
+                                                                                 level = confidence_level)
+    )
 
     if (nrow(result) > 0) {
       summary_with_confints <- data.frame(
@@ -196,11 +205,14 @@ percent_with_confints_select_one_groups <- function(dependent.var,
       }
 
 
-    design <- srvyr::as_survey_design(design)
 
-    design_grouped <- design %>% srvyr::group_by_(dependent.var,independent.var)
+      srvyr_design <- srvyr::as_survey_design(design)
 
-    result <- design_grouped %>% (srvyr::summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level)))
+      srvyr_design_grouped <- group_by_(srvyr_design,dependent.var, independent.var)
+
+      result <- summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(vartype = "ci",
+                                                                  level = confidence_level)
+      )
 
 
     result_hg_format <-  data.frame(
@@ -293,10 +305,17 @@ percent_with_confints_select_multiple_groups <-
       design$variables[[x]] <- factor(as.logical(design$variables[[x]]),levels = c("TRUE","FALSE"))
 
 
-      design <- srvyr::as_survey_design(design)
 
-      result <- design %>% srvyr::group_by_(x, independent.var) %>%
-        srvyr::summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+      srvyr_design <- srvyr::as_survey_design(design)
+
+      srvyr_design_grouped <- srvyr::group_by_(srvyr_design,x, independent.var)
+
+      result<-srvyr::summarise(srvyr_design_grouped,
+                               numbers = srvyr::survey_mean(vartype = "ci",
+                                                            level = confidence_level)
+      )
+
+
 
       if (nrow(result) > 0) {
         summary_with_confints <- data.frame(
