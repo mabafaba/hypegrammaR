@@ -26,7 +26,7 @@
 #'
 #' @return A list with the summary.statistic the hypothesis.test result
 #' @export
-map_to_result<-function(data,
+map_to_result <- function(data,
                         dependent.var,
                         independent.var = NULL,
                         case,
@@ -35,7 +35,7 @@ map_to_result<-function(data,
                         questionnaire=NULL,
                         confidence_level = 0.95){
 
-  options(survey.lonely.psu = "remove")
+  options(survey.lonely.psu = "adjust")
 
   # put the relevant input parameters in a list so we can attach them to the output:
   parameters<-list(
