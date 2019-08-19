@@ -30,26 +30,18 @@ percent_with_confints_select_one <-
     design<-sanitised$design
     tryCatch(
       expr = {
-        result_hg_format <-
 
 
+        design <- design %>%  srvyr::as_survey_design(design)
+        result <- design %>% srvyr::group_by_(dependent.var) %>%
+          srvyr::summarize(numbers = srvyr::survey_mean(vartype = "ci",
+                                                        level = confidence_level))
+        result_hg_format <- data.frame(dependent.var = dependent.var,
+                                       independent.var = NA, dependent.var.value = result[[dependent.var]],
+                                       independent.var.value = NA, numbers = result$numbers,
+                                       se = NA, min = result$numbers_low, max = result$numbers_upp)
 
-        design <- srvyr::as_survey_design(design)
-        result<- design %>% srvyr::group_by_(dependent.var) %>%
-          summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
-
-
-        result_hg_format <-  data.frame(
-          dependent.var = dependent.var,
-          independent.var = NA,
-          dependent.var.value = result[[dependent.var]],
-          independent.var.value = NA,
-          numbers = result$numbers,
-          se = NA,
-          min = result$numbers_low,
-          max = result$numbers_upp
-        )
-        return(dependent.var)},
+        return(result_hg_format)},
       error = function(e) {
         .write_to_log("percent_with_confints_select_one failed with error:")
         .write_to_log(e$message)
@@ -160,22 +152,52 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
   stopifnot(is.numeric(confidence_level))
 
+  # if independent.var has only one level, redirect to percent_with_confints
+  # if(!is.factor(design$variables[[independent.var]])){
+    independent_levels<-unique(design$variables[[independent.var]])
+
+  # }else{
+    # independent_levels<-levels(design$variables[[independent.var]])
+  # }
+  if(length(independent_levels)<=1){
+    sumstat <- percent_with_confints_select_one(dependent.var,design = design,
+                                                confidence_level = confidence_level)
+    sumstat$independent.var<-independent.var
+
+    sumstat$independent.var.value <- independent_levels
+    return(sumstat[,c('dependent.var','independent.var','dependent.var.value','independent.var.value', 'numbers','se','min','max')])
+  }
+
+
   sanitised<-datasanitation_design(design,dependent.var,independent.var,
                                    datasanitation_summary_statistics_percent_groups)
+
+
+  # design$variables %>% split.data.frame(design$variables['independent.var']) %>%
+  #   lapply(split.data.frame(design$variables['dependent.var'])){
+  #
+  #   }
+
+
   if(!sanitised$success){
     warning(sanitised$message)
     return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var))}
 
-  design<-sanitised$design
+    design<-sanitised$design
 
     design$variables[[dependent.var]] <-
       as.factor(design$variables[[dependent.var]])
 
+    design$variables[[independent.var]] <-
+      as.factor(design$variables[[independent.var]])
+
+
 
     design <- srvyr::as_survey_design(design)
 
-    result<- design %>% srvyr::group_by_(dependent.var,independent.var) %>%
-      summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+    design_grouped <- design %>% srvyr::group_by_(dependent.var,independent.var)
+
+    result <- design_grouped %>% (srvyr::summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level)))
 
 
     result_hg_format <-  data.frame(
@@ -215,6 +237,30 @@ percent_with_confints_select_multiple_groups <-
 
     stopifnot(is.numeric(confidence_level))
 
+
+    # if independent.var has only one level, redirect to percent_with_confints_select_multiple (no groups)
+    # if(!is.factor(design$variables[[independent.var]])){
+      independent_levels<-unique(design$variables[[independent.var]])
+    # }else{
+      # independent_levels<-levels(design$variables[[independent.var]])
+    # }
+
+    if(length(independent_levels)<=1){
+
+      sumstat <- percent_with_confints_select_multiple(
+        dependent.var,
+        dependent.var.sm.cols = dependent.var.sm.cols,
+        design = design,
+        confidence_level = confidence_level)
+
+      sumstat$independent.var<-independent.var
+
+      sumstat$independent.var.value <- independent_levels
+      return(sumstat[,c('dependent.var','independent.var','dependent.var.value','independent.var.value', 'numbers','se','min','max')])
+
+    }
+
+
     question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
 
 
@@ -244,7 +290,7 @@ percent_with_confints_select_multiple_groups <-
       design <- srvyr::as_survey_design(design)
 
       result <- design %>% srvyr::group_by_(x, independent.var) %>%
-        summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
+        srvyr::summarize(numbers = srvyr::survey_mean(vartype = 'ci', level =confidence_level))
 
       if (nrow(result) > 0) {
         summary_with_confints <- data.frame(
