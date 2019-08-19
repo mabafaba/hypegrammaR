@@ -152,21 +152,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
   stopifnot(is.numeric(confidence_level))
 
-  # if independent.var has only one level, redirect to percent_with_confints
-  # if(!is.factor(design$variables[[independent.var]])){
-    independent_levels<-unique(design$variables[[independent.var]])
 
-  # }else{
-    # independent_levels<-levels(design$variables[[independent.var]])
-  # }
-  if(length(independent_levels)<=1){
-    sumstat <- percent_with_confints_select_one(dependent.var,design = design,
-                                                confidence_level = confidence_level)
-    sumstat$independent.var<-independent.var
-
-    sumstat$independent.var.value <- independent_levels
-    return(sumstat[,c('dependent.var','independent.var','dependent.var.value','independent.var.value', 'numbers','se','min','max')])
-  }
 
 
   sanitised<-datasanitation_design(design,dependent.var,independent.var,
@@ -191,6 +177,23 @@ percent_with_confints_select_one_groups <- function(dependent.var,
     design$variables[[independent.var]] <-
       as.factor(design$variables[[independent.var]])
 
+
+
+    # if independent.var has only one level, redirect to percent_with_confints
+      # if(!is.factor(design$variables[[independent.var]])){
+      independent_levels<-unique(design$variables[[independent.var]])
+
+      # }else{
+      # independent_levels<-levels(design$variables[[independent.var]])
+      # }
+      if(length(independent_levels)<=1){
+        sumstat <- percent_with_confints_select_one(dependent.var,design = design,
+                                                    confidence_level = confidence_level)
+        sumstat$independent.var<-independent.var
+
+        sumstat$independent.var.value <- independent_levels
+        return(sumstat[,c('dependent.var','independent.var','dependent.var.value','independent.var.value', 'numbers','se','min','max')])
+      }
 
 
     design <- srvyr::as_survey_design(design)
@@ -238,27 +241,7 @@ percent_with_confints_select_multiple_groups <-
     stopifnot(is.numeric(confidence_level))
 
 
-    # if independent.var has only one level, redirect to percent_with_confints_select_multiple (no groups)
-    # if(!is.factor(design$variables[[independent.var]])){
-      independent_levels<-unique(design$variables[[independent.var]])
-    # }else{
-      # independent_levels<-levels(design$variables[[independent.var]])
-    # }
 
-    if(length(independent_levels)<=1){
-
-      sumstat <- percent_with_confints_select_multiple(
-        dependent.var,
-        dependent.var.sm.cols = dependent.var.sm.cols,
-        design = design,
-        confidence_level = confidence_level)
-
-      sumstat$independent.var<-independent.var
-
-      sumstat$independent.var.value <- independent_levels
-      return(sumstat[,c('dependent.var','independent.var','dependent.var.value','independent.var.value', 'numbers','se','min','max')])
-
-    }
 
 
     question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
@@ -278,6 +261,29 @@ percent_with_confints_select_multiple_groups <-
     }
     )
     ###
+    # if independent.var has only one level, redirect to percent_with_confints_select_multiple (no groups)
+    # if(!is.factor(design$variables[[independent.var]])){
+    independent_levels<-unique(design$variables[[independent.var]])
+    # }else{
+    # independent_levels<-levels(design$variables[[independent.var]])
+    # }
+
+    if(length(independent_levels)<=1){
+
+      sumstat <- percent_with_confints_select_multiple(
+        dependent.var,
+        dependent.var.sm.cols = dependent.var.sm.cols,
+        design = design,
+        confidence_level = confidence_level)
+
+      sumstat$independent.var<-independent.var
+
+      sumstat$independent.var.value <- independent_levels
+      return(sumstat[,c('dependent.var','independent.var','dependent.var.value','independent.var.value', 'numbers','se','min','max')])
+
+    }
+
+
 
     # Get the columns with the choices data into an object
     choices <- design$variables[, dependent.var.sm.cols]
