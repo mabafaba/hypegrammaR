@@ -23,8 +23,9 @@ datasanitation_summary_statistics_percent_with_confints_select_one <- function(d
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_question_not_sm,
-                         datasanitation_morethan_1_unique_dependent)
+                         datasanitation_question_not_sm
+                         # datasanitation_morethan_1_unique_dependent
+                         )
 }
 
 

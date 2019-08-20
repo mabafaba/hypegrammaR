@@ -27,17 +27,44 @@ percent_with_confints_select_one <-
       warning(sanitised$message)
       return(datasanitation_return_empty_table(data = design$variables, dependent.var, independent.var))}
 
+
     design<-sanitised$design
+
+    if(length(unique(design$variables[[dependent.var]]))==1 & length(levels(design$variables[[dependent.var]]))<=1){
+
+
+      return(data.frame(dependent.var = dependent.var,
+                        independent.var = NA,
+                        independent.var.value = NA,
+                        dependent.var.value = unique(design$variables[[dependent.var]]),
+                        numbers = 1,
+                        se = NA, min = NA, max = NA)
+
+      )
+    }
+
+
     tryCatch(
       expr = {
 
 
         srvyr_design <- srvyr::as_survey_design(design)
         srvyr_design_grouped <- srvyr::group_by_(srvyr_design,dependent.var)
-        result <- srvyr::summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(vartype = "ci",
-                                                                                     level = confidence_level)
-        )
+        result <- srvyr::summarise(srvyr_design_grouped,
+                                   numbers = srvyr::survey_mean(vartype = "ci",
+                                                                level = confidence_level))
 
+        get_confints<-purrr::possibly(function(...){
+
+          confints<-survey::svymean(x = formula(paste0('~',dependent.var)),
+                                    design = srvyr_design) %>% confint(level = confidence_level)
+
+        },otherwise = matrix(NA,ncol = 2,nrow = nrow(result)))
+
+        confints<-get_confints()
+
+        result$numbers_low<-confints[,1]
+        result$numbers_upp<-confints[,2]
 
 
 
@@ -205,10 +232,31 @@ percent_with_confints_select_one_groups <- function(dependent.var,
       }
 
 
+      if(length(unique(design$variables[[dependent.var]]))==1 & length(levels(design$variables[[dependent.var]]))<=1){
+
+
+        result_counts <- table(design$variables[[dependent.var]],design$variables[[independent.var]]) %>% as.data.frame
+        colnames(result_counts)<-c("dependent.var.value","independent.var.value","n")
+        result_counts$nums<-rep(1,nrow(result_counts))
+        result_counts$nums[result_counts$n==0]<-NA
+
+        return(data.frame(dependent.var = dependent.var,
+                          independent.var = independent.var,
+                          independent.var.value = result_counts$independent.var.value,
+                          dependent.var.value = result_counts$dependent.var.value,
+                          numbers = result_counts$nums,
+                          se = NA, min = NA, max = NA)
+
+        )
+      }
+
+
+
+
 
       srvyr_design <- srvyr::as_survey_design(design)
 
-      srvyr_design_grouped <- group_by_(srvyr_design,dependent.var, independent.var)
+      srvyr_design_grouped <- group_by_(srvyr_design,independent.var, dependent.var)
 
       result <- summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(vartype = "ci",
                                                                   level = confidence_level)
@@ -305,10 +353,10 @@ percent_with_confints_select_multiple_groups <-
       design$variables[[x]] <- factor(as.logical(design$variables[[x]]),levels = c("TRUE","FALSE"))
 
 
-
+      # THIS PART IS A MESS
       srvyr_design <- srvyr::as_survey_design(design)
 
-      srvyr_design_grouped <- srvyr::group_by_(srvyr_design,x, independent.var)
+      srvyr_design_grouped <- srvyr::group_by_(srvyr_design, independent.var, x)
 
       result<-srvyr::summarise(srvyr_design_grouped,
                                numbers = srvyr::survey_mean(vartype = "ci",
