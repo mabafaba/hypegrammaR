@@ -432,12 +432,12 @@ mean_with_confints <- function(dependent.var,
     return(datasanitation_return_empty_table(design$variables, dependent.var))}
 
 
-  # formula_string <- paste0("~as.numeric(", dependent.var, ")")
-  # summary <- svymean(formula(formula_string),
-  #                    design,
-  #                    na.rm = T)
-  #
-  # confints <- confint(summary, level = confidence_level)
+  formula_string <- paste0("~as.numeric(", dependent.var, ")")
+  summary <- svymean(formula(formula_string),
+                     design,
+                     na.rm = T)
+
+  confints <- confint(summary, level = confidence_level)
 
 
   if(!dependent.var=="dependent.var"){
