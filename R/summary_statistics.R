@@ -446,7 +446,7 @@ mean_with_confints <- function(dependent.var,
   srvyr_design <- srvyr::as_survey_design(design)
 
 
-  result <- srvyr::summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
+  result <- srvyr::summarise(srvyr_design,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
                                                                                level = confidence_level)
   )
 
