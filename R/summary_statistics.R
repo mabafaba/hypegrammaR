@@ -443,12 +443,12 @@ mean_with_confints <- function(dependent.var,
   if(!dependent.var=="dependent.var"){
     design$variables$dependent.var <-design$variables[[dependent.var]]
   }
-  srvyr_design <- srvyr::as_survey_design(design)
-
-
-  result <- srvyr::summarise(srvyr_design,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
-                                                                               level = confidence_level)
-  )
+  # srvyr_design <- srvyr::as_survey_design(design)
+  #
+  #
+  # result <- srvyr::summarise(srvyr_design,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
+  #                                                                              level = confidence_level)
+  # )
 
 
 
