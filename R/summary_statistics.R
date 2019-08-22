@@ -25,7 +25,7 @@ percent_with_confints_select_one <-
 
     if(!sanitised$success){
       warning(sanitised$message)
-      return(datasanitation_return_empty_table(data = design$variables, dependent.var, independent.var))}
+      return(datasanitation_return_empty_table(data = design$variables, dependent.var, independent.var,message = sanitised$message))}
 
 
     design<-sanitised$design
@@ -33,13 +33,17 @@ percent_with_confints_select_one <-
     if(length(unique(design$variables[[dependent.var]]))==1 & length(levels(design$variables[[dependent.var]]))<=1){
 
 
-      return(data.frame(dependent.var = dependent.var,
-                        independent.var = NA,
-                        independent.var.value = NA,
-                        dependent.var.value = unique(design$variables[[dependent.var]]),
-                        numbers = 1,
-                        se = NA, min = NA, max = NA)
+      all_1_table<-data.frame(dependent.var = dependent.var,
+                 independent.var = NA,
+                 independent.var.value = NA,
+                 dependent.var.value = unique(design$variables[[dependent.var]]),
+                 numbers = 1,
+                 se = NA, min = NA, max = NA)
+      attributes(all_1_table)$hg_summary_statistic_fail_message <- "only one unique value in the dependent variable"
 
+
+      return(
+        all_1_table
       )
     }
 
@@ -77,6 +81,7 @@ percent_with_confints_select_one <-
       error = function(e) {
         .write_to_log("percent_with_confints_select_one failed with error:")
         .write_to_log(e$message)
+        return(datasanitation_return_empty_table(dependent.var = dependent.var,independent.var = independent.var,message = e$message))
       }
     )
   }
@@ -109,7 +114,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
                                      datasanitation_summary_statistics_percent_sm_choice)
     if(!sanitised$success){
       warning(sanitised$message)
-      return(datasanitation_return_empty_table(data = design$variables, dependent.var.check))
+      return(datasanitation_return_empty_table(data = design$variables, dependent.var.check, message =sanitised$message))
       }
     design<-sanitised$design
     }
@@ -203,7 +208,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
   if(!sanitised$success){
     warning(sanitised$message)
-    return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var))}
+    return(datasanitation_return_empty_table(data = design$variables, dependent.var,independent.var, message = sanitised$message))}
 
     design<-sanitised$design
 
@@ -300,10 +305,6 @@ percent_with_confints_select_multiple_groups <-
 
     stopifnot(is.numeric(confidence_level))
 
-
-
-
-
     question_matches_choices(design$variables, dependent.var, sm.columns = dependent.var.sm.cols)
 
 
@@ -315,7 +316,7 @@ percent_with_confints_select_multiple_groups <-
                                        datasanitation_summary_statistics_percent_sm_choice)
       if(!sanitised$success){
         warning(sanitised$message)
-        return(datasanitation_return_empty_table(data = design$variables, dependent.var.check))
+        return(datasanitation_return_empty_table(data = design$variables, dependent.var.check, message = sanitised$message))
       }
       design<-sanitised$design
     }
@@ -429,7 +430,7 @@ mean_with_confints <- function(dependent.var,
                                    datasanitation_summary_statistics_mean)
   if(!sanitised$success){
     warning(sanitised$message)
-    return(datasanitation_return_empty_table(design$variables, dependent.var))}
+    return(datasanitation_return_empty_table(design$variables, dependent.var, message = sanitised$message))}
 
 
   # formula_string <- paste0("~as.numeric(", dependent.var, ")")
@@ -446,7 +447,8 @@ mean_with_confints <- function(dependent.var,
   srvyr_design <- srvyr::as_survey_design(design)
 
 
-  result <- srvyr::summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
+
+  result <- srvyr::summarise(srvyr_design,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
                                                                                level = confidence_level)
   )
 
@@ -482,7 +484,7 @@ mean_with_confints_groups <- function(dependent.var,
                                    datasanitation_summary_statistics_mean_groups)
   if(!sanitised$success){
     warning(sanitised$message)
-    return(datasanitation_return_empty_table_NA(design$variables, dependent.var, independent.var))}
+    return(datasanitation_return_empty_table_NA(design$variables, dependent.var, independent.var, message = sanitised$message))}
 
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
   by <- paste0("~", independent.var, sep = "")
