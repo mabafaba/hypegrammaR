@@ -433,24 +433,24 @@ mean_with_confints <- function(dependent.var,
     return(datasanitation_return_empty_table(design$variables, dependent.var, message = sanitised$message))}
 
 
-  # formula_string <- paste0("~as.numeric(", dependent.var, ")")
-  # summary <- svymean(formula(formula_string),
-  #                    design,
-  #                    na.rm = T)
-  #
-  # confints <- confint(summary, level = confidence_level)
+  formula_string <- paste0("~as.numeric(", dependent.var, ")")
+  summary <- svymean(formula(formula_string),
+                     design,
+                     na.rm = T)
+
+  confints <- confint(summary, level = confidence_level)
 
 
   if(!dependent.var=="dependent.var"){
     design$variables$dependent.var <-design$variables[[dependent.var]]
   }
-  srvyr_design <- srvyr::as_survey_design(design)
 
-
-
-  result <- srvyr::summarise(srvyr_design,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
-                                                                               level = confidence_level)
-  )
+  # srvyr_design <- srvyr::as_survey_design(design)
+  #
+  #
+  # result <- srvyr::summarise(srvyr_design,numbers = srvyr::survey_mean(dependent.var,vartype = "ci",
+  #                                                                              level = confidence_level)
+  # )
 
 
 
