@@ -90,35 +90,36 @@ map_to_visualisation <- function(result) {
   }
 
 
-#' #' Make the master table of summary stats and hypothesis tests
-#' #'
-#' #' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
-#' #' @param filename The name of the file that is produced. The extension needs to be ".csv".
-#' #' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
-#' #' @return a dataframe containing the summary statistics and p values for each element in results.
-#' #' @export
-#' map_to_master_table <- function(results_object, filename, questionnaire = NULL){
-#'     summary_table_single <- function(x, questions = questionnaire){
-#'         if(!is.null(questions)){
-#'           x <- map_to_labeled(result = x, questionnaire = questions)
-#'         }
-#'         y <- NULL
-#'         no_pvalue <- is.null(x$hypothesis.test$result$p.value)
-#'         no_hypothesis.test <- is.null(x$hypothesis.test$name)
-#'         if(no_pvalue|no_hypothesis.test){
-#'           x$hypothesis.test$result$p.value <- NA
-#'           x$hypothesis.test$name <- NA
-#'         } if(!is.null(x$summary.statistic)){
-#'         y <- as.data.frame(x$summary.statistic,
-#'              p.value = x$hypothesis.test$result$p.value,
-#'              test.name = x$hypothesis.test$name)
-#'         }
-#'       return(y)
-#'     }
-#'     df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
-#'   map_to_file(df, filename)
-#' }
+#' Make the master table of summary stats and hypothesis tests
 #'
+#' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
+#' @param filename The name of the file that is produced. The extension needs to be ".csv".
+#' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
+#' @return a dataframe containing the summary statistics and p values for each element in results.
+#' @export
+map_to_master_table <- function(results_object, filename, questionnaire = NULL){
+    summary_table_single <- function(x, questions = questionnaire){
+        if(!is.null(questions)){
+          x <- map_to_labeled(result = x, questionnaire = questions)
+        }
+        y <- NULL
+        no_pvalue <- is.null(x$hypothesis.test$result$p.value)
+        no_hypothesis.test <- is.null(x$hypothesis.test$name)
+        if(no_pvalue|no_hypothesis.test){
+          x$hypothesis.test$result$p.value <- NA
+          x$hypothesis.test$name <- NA
+        }
+        if(!is.null(x$summary.statistic)){
+        y <- as.data.frame(x$summary.statistic,
+             p.value = x$hypothesis.test$result$p.value,
+             test.name = x$hypothesis.test$name)
+        }
+      return(y)
+    }
+    df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+  map_to_file(df, filename)
+}
+
 
 
 
