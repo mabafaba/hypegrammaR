@@ -10,7 +10,7 @@
 #' @export
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
-                          weighting_function = weighting) {
+                          weighting_function = weighting_hype) {
 
   # if no weighting function / cluster variable provided, set defaults, otherwise use parameters:
   if(is.null(cluster_variable_name)){
@@ -229,17 +229,21 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
                                                   sampling.frame.population.column = sampling.frame.population.column,
                                                   sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
   ### weighting function now live in hypegrammaR !!!! WOOO
-  weighting <<- weighting_f
+  weighting_hype <<- weighting_f
   return(weighting_f)
+}
+
+#' secret weighting function
+weighting_hype <- function(data){
+  weighting_internal(data)
 }
 
 #' empty weighting function
 #' @export
-weighting <- function(data){
+weighting_internal <- function(data){
   weights <- rep(1,nrow(data))
   return(weights)
 }
-
 
 #' presentable p-value format
 #' @export
