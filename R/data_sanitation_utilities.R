@@ -6,10 +6,10 @@
 #' @param sanitation_function the function containing all the checks for the analysis function in question
 #' @return returns the cleaned data with a santation success or failure message
 #' @export
-datasanitation_design<-function(design,dependent.var,independent.var,sanitation_function){
+datasanitation_design<-function(design,dependent.var,independent.var, sanitation_function, weighting_function = weighting){
   sanitised<-sanitation_function(design$variables,dependent.var,independent.var)
   if(sanitised$success){
-    sanitised$design<-map_to_design(sanitised$data)
+    sanitised$design<-map_to_design(sanitised$data, weighting_function = weighting)
   }else{
     sanitised$design<-NULL
   }
@@ -23,8 +23,7 @@ datasanitation_summary_statistics_percent_with_confints_select_one <- function(d
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_question_not_sm,
-                         datasanitation_morethan_1_unique_dependent)
+                         datasanitation_question_not_sm)
 }
 
 

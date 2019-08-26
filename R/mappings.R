@@ -10,7 +10,7 @@
 #' @export
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
-                          weighting_function = NULL) {
+                          weighting_function = weighting) {
 
   # if no weighting function / cluster variable provided, set defaults, otherwise use parameters:
   if(is.null(cluster_variable_name)){
@@ -90,30 +90,35 @@ map_to_visualisation <- function(result) {
   }
 
 
-#' Make the master table of summary stats and hypothesis tests
+#' #' Make the master table of summary stats and hypothesis tests
+#' #'
+#' #' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
+#' #' @param filename The name of the file that is produced. The extension needs to be ".csv".
+#' #' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
+#' #' @return a dataframe containing the summary statistics and p values for each element in results.
+#' #' @export
+#' map_to_master_table <- function(results_object, filename, questionnaire = NULL){
+#'     summary_table_single <- function(x, questions = questionnaire){
+#'         if(!is.null(questions)){
+#'           x <- map_to_labeled(result = x, questionnaire = questions)
+#'         }
+#'         y <- NULL
+#'         no_pvalue <- is.null(x$hypothesis.test$result$p.value)
+#'         no_hypothesis.test <- is.null(x$hypothesis.test$name)
+#'         if(no_pvalue|no_hypothesis.test){
+#'           x$hypothesis.test$result$p.value <- NA
+#'           x$hypothesis.test$name <- NA
+#'         } if(!is.null(x$summary.statistic)){
+#'         y <- as.data.frame(x$summary.statistic,
+#'              p.value = x$hypothesis.test$result$p.value,
+#'              test.name = x$hypothesis.test$name)
+#'         }
+#'       return(y)
+#'     }
+#'     df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+#'   map_to_file(df, filename)
+#' }
 #'
-#' @param results_object a list containing one or more hypegrammaR result objects: the output of map_to_result
-#' @param filename The name of the file that is produced. The extension needs to be ".csv".
-#' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
-#' @return a dataframe containing the summary statistics and p values for each element in results.
-#' @export
-map_to_master_table <- function(results_object, filename, questionnaire = NULL){
-    summary_table_single <- function(x, questions = questionnaire){
-      if(!is.null(questions)){
-      x <- map_to_labeled(result = x, questionnaire = questions)}
-        if(is.null(x$hypothesis.test$result$p.value)){x$hypothesis.test$result$p.value <- NA}
-        if(is.null(x$hypothesis.test$name)){x$hypothesis.test$name <- NA}
-      y <- NULL
-      if(!is.null(x$summary.statistic)){
-        y <- data.frame(x$summary.statistic,
-             p.value = x$hypothesis.test$result$p.value,
-             test.name = x$hypothesis.test$name)}
-      return(y)
-    }
-    df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
-  map_to_file(df, filename)
-}
-
 
 
 
@@ -130,13 +135,10 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
       x <- map_to_labeled(result = x, questionnaire = questions)}
     y <- NULL
     if(!is.null(x$summary.statistic)){
-      y <- data.frame(x$summary.statistic,
-                      p.value = x$hypothesis.test$result$p.value,
-                      test.name = x$hypothesis.test$name)}
+      y <- as.data.frame(x$summary.statistic)}
     return(y)}
   df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
-
 }
 
 #' Save outputs to files
@@ -221,10 +223,20 @@ map_to_file<-function(object,filename,...){
 #' @export
 map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.population.column = "population",
                            sampling.frame.stratum.column = "stratum", data = NULL){
-  surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
+  weighting_f <- surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
                                                   data.stratum.column = data.stratum.column,
                                                   sampling.frame.population.column = sampling.frame.population.column,
                                                   sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
+  ### weighting function now live in hypegrammaR !!!! WOOO
+  weighting <<- weighting_f
+  return(weighting_f)
+}
+
+#' empty weighting function
+#' @export
+weighting <- function(data){
+  weights <- rep(1,nrow(data))
+  return(weights)
 }
 
 
