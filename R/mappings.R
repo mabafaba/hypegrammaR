@@ -12,7 +12,8 @@ map_to_design <- function(data,
                           cluster_variable_name = NULL,
                           weighting_function = weighting_hype) {
 
-  # if no weighting function / cluster variable provided, set defaults, otherwise use parameters:
+  # if no weighting function / cluster variable provided,
+  # the first default of the function is to check what weighting function is defined inside hypegrammaR, then to set defaults, otherwise use parameters:
   if(is.null(cluster_variable_name)){
     cluster.ids <- as.formula(c("~1"))}else{
     cluster.ids <- paste0("~",cluster_variable_name)
@@ -206,6 +207,7 @@ map_to_file<-function(object,filename,...){
 #' @param data.stratum.column data column name that holds the record's strata names
 #' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
+#' CAREFUL ! The last call of this function overwrites the internal weighting function default in hypegrammaR
 #' @examples
 #' # laod data and sampling frames:
 #' mydata<-read.csv("mydata.csv")
@@ -228,9 +230,41 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
                                                   data.stratum.column = data.stratum.column,
                                                   sampling.frame.population.column = sampling.frame.population.column,
                                                   sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
-  ### weighting function now live in hypegrammaR !!!! WOOO
+  ### weighting function now live in hypegrammaR !
   weighting_hype <<- weighting_f
   return(weighting_f)
+}
+
+
+#' creates a weighting function from a sampling frame
+#'
+#' @param sampling.frame.file data frame containing the sampling frame. should contain columns "stratum" and "population", otherwise column names must be specified.
+#' @param sampling.frame.population.column sampling frame name of column holding population counts. defaults to "population"
+#' @param sampling.frame.stratum.column sampling frame name of column holding stratum names. defaults to "stratum". Stratum names must match exactly values in:
+#' @param data.stratum.column data column name that holds the record's strata names
+#' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
+#' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
+#' CAREFUL ! This overwrites the internal weighting function default in hypegrammaR
+#' @examples
+#' # laod data and sampling frames:
+#' mydata<-read.csv("mydata.csv")
+#' mysamplingframe<-read.csv("mysamplingframe.csv")
+#' # create weighting function:
+#' weighting<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
+#'                                  data.stratum.column = "strata_names",
+#'                                  sampling.frame.population.column = "pop",
+#'                                  sampling.frame.stratum.column = "strat_name")
+#' # use weighting function:
+#' mydata$weights<-weighting(mydata)
+#'
+#' # this also works on subsets of the data:
+#' mydata_subset<-mydata[1:100,]
+#' subset_weights<- weighting(mydata)
+#' @export
+combine_weighting_functions<-function(weight_function_1, weight_function_2){
+  weighting_f_n <- surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
+  weighting_hype <<- weighting_f_n
+  return(weighting_f_n)
 }
 
 #' secret weighting function
