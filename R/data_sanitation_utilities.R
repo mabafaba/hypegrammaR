@@ -6,10 +6,10 @@
 #' @param sanitation_function the function containing all the checks for the analysis function in question
 #' @return returns the cleaned data with a santation success or failure message
 #' @export
-datasanitation_design<-function(design,dependent.var,independent.var, sanitation_function, weighting_function = weighting){
+datasanitation_design<-function(design,dependent.var,independent.var, sanitation_function){
   sanitised<-sanitation_function(design$variables,dependent.var,independent.var)
   if(sanitised$success){
-    sanitised$design<-map_to_design(sanitised$data, weighting_function = weighting)
+    sanitised$design<-map_to_design(sanitised$data, weighting_function = weighting_hype, cluster_ids = design$cluster)
   }else{
     sanitised$design<-NULL
   }

@@ -10,6 +10,7 @@
 #' @export
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
+                          cluster_ids = NULL,
                           weighting_function = weighting_hype) {
 
   # if no weighting function / cluster variable provided,
@@ -31,6 +32,10 @@ map_to_design <- function(data,
       ids = formula(cluster.ids),
       strata = names(strata.weights),
       weights = as.vector(strata.weights),nest = T)
+
+  if(!(is.null(cluster_ids))){
+    survey.design$cluster <- cluster_ids
+  }
     return(survey.design)}
 #add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
 
@@ -236,30 +241,12 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
 }
 
 
-#' creates a weighting function from a sampling frame
+#' Combine weight functions from two sampling frames
 #'
-#' @param sampling.frame.file data frame containing the sampling frame. should contain columns "stratum" and "population", otherwise column names must be specified.
-#' @param sampling.frame.population.column sampling frame name of column holding population counts. defaults to "population"
-#' @param sampling.frame.stratum.column sampling frame name of column holding stratum names. defaults to "stratum". Stratum names must match exactly values in:
-#' @param data.stratum.column data column name that holds the record's strata names
-#' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
+#' @param weight_function_1 first weighthing function
+#' @param weight_function_2 second weightng function
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
 #' CAREFUL ! This overwrites the internal weighting function default in hypegrammaR
-#' @examples
-#' # laod data and sampling frames:
-#' mydata<-read.csv("mydata.csv")
-#' mysamplingframe<-read.csv("mysamplingframe.csv")
-#' # create weighting function:
-#' weighting<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
-#'                                  data.stratum.column = "strata_names",
-#'                                  sampling.frame.population.column = "pop",
-#'                                  sampling.frame.stratum.column = "strat_name")
-#' # use weighting function:
-#' mydata$weights<-weighting(mydata)
-#'
-#' # this also works on subsets of the data:
-#' mydata_subset<-mydata[1:100,]
-#' subset_weights<- weighting(mydata)
 #' @export
 combine_weighting_functions<-function(weight_function_1, weight_function_2){
   weighting_f_n <- surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
