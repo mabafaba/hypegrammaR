@@ -1,6 +1,6 @@
 # GENERIC LOW LEVEL SANITATIONS:
 
-datasanitation_return_empty_table <- function(data, dependent.var, independent.var = NULL){
+datasanitation_return_empty_table <- function(data, dependent.var, independent.var = NULL, message = NA){
 
   #### this is really counter intuitive - why would an empty table return 1? -> especially in mean this should not happen.
   #### therefore added this row to go straight to NA.
@@ -9,13 +9,14 @@ datasanitation_return_empty_table <- function(data, dependent.var, independent.v
   #### I think maybe the return 1 should be a different function?
   #### not sure
   #### but changing this regardless.. function fails all the time, it's too convoluted further down; all the time the values submitted to the df to return have different lengths and breaks it.
-  return(datasanitation_return_empty_table_NA(data,dependent.var,independent.var = independent.var))
+  return(datasanitation_return_empty_table_NA(data,dependent.var,independent.var = independent.var,message = message))
 
 
-  if(datasanitation_variables_in_data_colnames(data, dependent.var, independent.var)$success == F){
-    return(datasanitation_return_empty_table_NA(data, dependent.var, independent.var))
-  }
-#
+#   if(datasanitation_variables_in_data_colnames(data, dependent.var, independent.var)$success == F){
+#     return(datasanitation_return_empty_table_NA(data, dependent.var, independent.var))
+#   }
+
+# #
 #   num_unique_dependent_values <- length(data[[dependent.var]] %>% unique %>% .[!is.na(.)])
 #   num_unique_independent_values <- length(data[[independent.var]] %>% unique %>% .[!is.na(.)])
 #   num_combos<-   num_unique_dependent_values* num_unique_independent_values
@@ -76,9 +77,9 @@ datasanitation_return_empty_table <- function(data, dependent.var, independent.v
   )
 }
 
-datasanitation_return_empty_table_NA <- function(data, dependent.var, independent.var = NULL){
+datasanitation_return_empty_table_NA <- function(data, dependent.var, independent.var = NULL,message = NA){
 
-return(data.frame(
+empty_table<-data.frame(
   dependent.var,
   independent.var = NA,
   dependent.var.value = NA,
@@ -88,7 +89,9 @@ return(data.frame(
   min = NA,
   max = NA
 )
-)
+attributes(empty_table)$hg_summary_statistic_fail_message <- message
+return(empty_table)
+
 }
 
 datasanitation_is_good_dataframe<-function(data,...){
