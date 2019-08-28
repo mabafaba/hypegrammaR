@@ -21,5 +21,5 @@ a string that other functions can use to know what analysis case they are dealin
 creates a string that other functions can use to know what analysis case they are dealing with
 }
 \examples{
-map_to_case()
+\dontrun{map_to_case("group_difference","categorical","categorical")}
 }

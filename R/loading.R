@@ -41,7 +41,7 @@ load_data<-function(file){
 #' Load a sampling frame from csv
 #' @param file the path and name of the sampling frame csv file to load.
 #' @details function loads the sampling frame and can be used to make weights ith map_to_weighting()
-#' @examples sf <- load_samplingframe("./somefolder/samplingframe.csv")
+#' @examples \dontrun{sf <- load_samplingframe("./somefolder/samplingframe.csv")}
 #'
 #' @export
 load_samplingframe<-function(file){
@@ -60,12 +60,12 @@ load_samplingframe<-function(file){
 #' @return A list containing the original questionnaire questions and choices, the choices matched 1:1 with the data columns, and all functions created by this function relating to the specific questionnaire (they are written to the global space too, but you can use these when using multiple questionnaires in parallel.)
 #' @export
 #' @examples
-#'
+#'\dontrun{
 #'load_questionnaire(mydata,
 #'                   questions.file="koboquestions.csv",
 #'                   choices.file="kobochoices.csv",
 #'                   choices.label.column.to.use="Label::English")
-#'
+#'}
 #'
 load_questionnaire<-function(data,
                              questions,

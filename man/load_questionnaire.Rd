@@ -23,11 +23,11 @@ A list containing the original questionnaire questions and choices, the choices 
 load_questionnaire
 }
 \examples{
-
+\dontrun{
 load_questionnaire(mydata,
                   questions.file="koboquestions.csv",
                   choices.file="kobochoices.csv",
                   choices.label.column.to.use="Label::English")
-
+}
 
 }

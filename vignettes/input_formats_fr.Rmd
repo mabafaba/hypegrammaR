@@ -1,0 +1,324 @@
+---
+title: "Quickstart"
+author: "Sharon Orengo"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quickstart}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+## Pretext
+Le package hypegrammaR implemente les [lignes directrices pour l'analyse de donnees quantitatives IMPACT] (http://example.com). Bien que ce guide fonctionne de maniere autonome, tout cela aura plus de sens si vous les lisez en premier.
+
+## De quoi as-tu besoin:
+Obtenez d'abord tous vos fichiers au format csv:
+
+  - vos donn?es sous forme de fichier csv
+  - vos bases de sondage en tant que fichier (s) csv si l'analyse doit etre ponderee
+  
+  - vos questions sur le questionnaire kobo et les feuilles de choix sous forme de deux fichiers csv; N?cessaire si vous avez des questions select_multiple, sautez la logique ou souhaitez utiliser les ?tiquettes.
+
+
+
+> _ ** REMARQUE IMPORTANTE: ** _ vos donn?es et votre questionnaire doivent ?tre conformes ? la sortie standard de style xml de kobo, sinon cela ne fonctionnera pas ou ne produira pas de r?sultats erron?s.
+>
+> - en-t?tes de colonne inchang?s
+> - noms des questionnaires inchang?s
+> - valeurs xml (NON ?tiquet?es)
+> - Les questions select_multiple ont une colonne avec toutes les r?ponses concat?n?es (s?par?es par un espace "") et une colonne pour chaque r?ponse nomm?e [nom de la question]. [nom du choix]
+>
+> Votre base de sondage doit ?tre au bon format:
+>
+> - doit avoir une ligne par strate; une colonne pour les chiffres de population; une colonne pour les noms de strates
+> - Les valeurs de la colonne avec les noms de strates doivent appara?tre exactement identiques dans une colonne des donn?es
+
+## Pr?paration
+#### Installer le paquet hypegrammaR
+Sur cette ligne, vous devez uniquement ex?cuter _once_ lors de la premi?re utilisation de hypegrammaR ou effectuer la mise ? jour vers une nouvelle version.
+```{r,eval=F}
+remotes::install_github("ellieallien/hypegrammaR",build_opts = c())
+```
+(le `build_opts = c ()` assure que le paquet inclut toutes les pages d'aide suppl?mentaires et la documentation)
+Pour cette ?tape seulement, vous avez besoin d'une connexion Internet plus ou moins stable.
+
+#### Charger le paquet hypegrammaR
+```{r,warning=FALSE,message=FALSE}
+library(hypegrammaR)
+```
+
+#### Chargez vos fichiers
+
+
+##### Les donn?es
+`load_data` ne prend qu'un seul argument` file`, le chemin du fichier csv.
+```{r}
+assessment_data<-load_data(file = "../data/testdata.csv")
+```
+Conditions:
+
+- il doit adh?rer au format standard kobo xml
+- il ne doit pas contenir de valeurs ?tiquet?es
+- il doit avoir une rang?e unique pour les en-t?tes de colonnes (inchang? ? la sortie de kobo)
+- il peut contenir des colonnes suppl?mentaires qui ne figuraient pas dans le questionnaire initial. Il est recommand? d'ajouter de nouvelles variables en tant que lignes suppl?mentaires au questionnaire, en sp?cifiant le type de variable, les choix, etc.
+
+##### Charger la base de sondage
+
+Ceci n'est n?cessaire que si l'analyse doit ?tre pond?r?e.
+
+La base de sondage doit ?tre un fichier csv avec une colonne avec les noms de strates, une colonne avec les num?ros de population.
+`load_samplingframe` ne prend qu'un seul argument` file`, le chemin d'acc?s au fichier csv.
+
+```{r}
+
+sampling_frame<-hypegrammaR::load_samplingframe(file = "../data/test_samplingframe.csv")
+
+```
+
+Maintenant, convertissez votre sampling frame en une fonction de pond?ration avec `map_to_weighting`. Nous voyons que les colonnes pertinentes de la base de sondage s'appellent "noms de strates" et "population". La colonne dans les donn?es correspondant aux noms de strates est appel?e "stratification" dans cet ensemble de donn?es. Nous devons fournir ces noms de colonne comme arguments de `map_to_weighing`:
+
+```{r}
+myweighter<-map_to_weighting(sampling.frame = sampling_frame,
+                             data.stratum.column = "stratification",
+                             sampling.frame.population.column = "population",
+                             sampling.frame.stratum.column = "strata.names", 
+                             data = assessment_data)
+```
+
+#### Le questionnaire
+Enfin, le questionnaire, qui d?pend de la question et de la feuille de choix en tant que csv.
+hypegrammaR peut vivre sans cela, mais un questionnaire est n?cessaire pour une analyse correcte des questions select_multiple.
+
+Les param?tres sont:
+
+- `data`: l'objet qui stocke les donn?es charg?es ci-dessus
+- `questions.file`: le chemin d'acc?s ? la feuille de questions sous forme de fichier csv
+- `choices.file` le chemin d'acc?s ? la feuille de choix en tant que fichier csv
+- `choices.label.column.to.use`: nom exact de la colonne contenant les ?tiquettes ? utiliser. Vous pouvez ajouter une colonne suppl?mentaire avec des ?tiquettes personnalis?es ? votre feuille de choix si vous ne souhaitez pas utiliser les ?tiquettes de choix du questionnaire d'origine.
+
+```{r,warning = FALSE}
+
+questionnaire<- koboquest::load_questionnaire(data = assessment_data,
+                                  questions = "../data/test_questionnaire_questions.csv",
+                                  choices = "../data/test_questionnaire_choices.csv",
+                                  choices.label.column.to.use = "label::English"
+                                             )
+
+```
+Conditions:
+
+- Les fichiers csv de choix et de questions doivent ?tre des copies exactes des feuilles respectives sous la forme kobo xml (? l'exception des ajouts mentionn?s ci-dessus.)
+
+### Une analyse
+
+#### Identifiez vos param?tres d'analyse
+
+- quels sont les en-t?tes de colonne de vos variables d?pendantes et ind?pendantes, et quels sont leurs types de donn?es?
+     - cet exemple: * "assistancerneceeceived" (cat?gorique) * et * "informalsettlement" (cat?gorique) *
+- quel type d'hypoth?se avez-vous?
+     - cet exemple: la * diff?rence entre les groupes *
+
+#### map pour le cas d'analyse
+Pour cet exemple, notre hypoth?se est que les m?nages des quartiers informels ont re?u une assistance diff?rente de celle des quartiers non informels.
+
+```{r}
+my_case<-map_to_case(hypothesis.type = "group_difference",
+                  dependent.var.type = "categorical",
+                  independent.var.type =  "categorical")
+
+
+```
+
+
+Vous pouvez savoir ce que vous pouvez / devez entrer exactement pour ces param?tres en ex?cutant `? Map_to_case`, ce qui ouvrira la page d'aide pour la fonction (cela fonctionne pour n'importe quelle fonction)
+
+#### Lancer l'analyse
+
+Maintenant, vous utilisez les entr?es charg?es ci-dessus pour un r?sultat d'analyse:
+```{r}
+
+assistance_informal_settlements<-map_to_result(data = assessment_data,
+                      dependent.var = "assistancereceived",
+                      independent.var = 'informalsettlement',
+                      case = my_case,
+                      weighting = myweighter,
+                      questionnaire = questionnaire)
+
+
+```
+
+## Montrer les r?sultats
+
+Premi?rement, nous ajoutons des ?tiquettes au r?sultat (en supposant que vous ayez charg? un questionnaire):
+
+```{r, warning=F}
+assistance_informal_settlements<-map_to_labeled(result = assistance_informal_settlements,
+                                                questionnaire = questionnaire)
+```
+
+Enfin, nous pouvons obtenir des visualisations, des tableaux, etc.:
+
+```{r, warning=F}
+chart<- map_to_visualisation(assistance_informal_settlements)
+table<-map_to_table(assistance_informal_settlements)
+chart
+table
+
+```
+
+
+### Sauvegarder / exporter les r?sultats
+Pour sauvegarder / exporter les r?sultats, vous pouvez utiliser la fonction g?n?rique `map_to_file`. Par exemple:
+```{r,eval=F}
+# map_to_file(results$summary.statistics,"summary_stat.csv")
+# map_to_file(myvisualisation,"barchart.jpg",width="5",height="5")
+
+```
+Vous trouverez les fichiers dans votre r?pertoire de travail actuel (que vous pouvez trouver avec `getwd ()`)
+
+## ?chantillons stratifi?s
+Pour la pond?ration, nous utiliserons le paquet `surveyweights` d'IMPACT. Il a ?t? install? quand vous avez install? `hypegrammaR`. Charge le:
+```{r}
+# library(surveyweights)
+```
+Pour les ?chantillons stratifi?s, nous devons fournir un _sampling frame_.
+```{r}
+# mysamplingframe<-read.csv("../tests/testthat/test_samplingframe.csv")
+
+```
+
+Le sampling frame doit comporter exactement une ligne par strate; une colonne pour les noms de strates, une colonne pour les chiffres de population. Notre exemple de trame de donn?es ressemble ? ceci:
+
+```{r}
+# head(mysamplingframe)
+
+```
+Les noms doivent correspondre exactement aux valeurs d'une colonne de donn?es. dans ce cas, il s'agit de ?mydata $ stratification?.
+
+```{r}
+# head(mydata$stratification)
+```
+Nous pouvons maintenant cr?er un objet "pond?r?":
+
+```{r}
+# myweighter<-weighting_fun_from_samplingframe(sampling.frame = mysamplingframe,
+#                                              data.stratum.column = "stratification",
+#                                              sampling.frame.population.column = "population",
+#                                              sampling.frame.stratum.column = "strata.names")
+```
+
+Maintenant, nous pouvons utiliser `analyse_indicator` comme avant, mais transmettons le poids que nous venons de cr?er, ainsi la pond?ration sera appliqu?e (faites attention au dernier argument):
+
+```{r}
+# result<-analyse_indicator(
+#                   data = mydata,
+#                   dependent.var = "nutrition_need",
+#                   independent.var = "region",
+#                   hypothesis.type = "group_difference",
+#                   independent.var.type = "categorical",
+#                   dependent.var.type="numerical",
+#                   weighting = myweighter)
+
+
+# result$summary.statistic
+
+```
+
+
+
+
+## ?chantillons de cluster
+
+### sans pond?ration suppl?mentaire
+Si les cluster n'ont pas besoin d'?tre pond?r?es (en plus des strates), il vous suffit d'indiquer `analyse_indicator` quelle variable de donn?es identifie la grappe:
+
+```{r}
+
+# result<-analyse_indicator(
+#                   data = mydata,
+#                   dependent.var = "nutrition_need",
+#                   independent.var = "region",
+#                   hypothesis.type = "group_difference",
+#                   independent.var.type = "categorical",
+#                   dependent.var.type="numerical",
+#                   weighting = myweighter,
+#                   cluster.variable.name = "village")
+
+
+```
+
+
+## Avec pond?ration suppl?mentaire
+Si la classification est fournie avec ses propres pond?rations (si les probabilit?s de s?lection des enregistrements de diff?rentes grappes de la m?me strate sont diff?rentes), vous devez charger la base de sondage de la m?me mani?re que pour la stratification, puis combiner les deux fonctions de pond?ration. :
+
+```{r,eval=F}
+
+# samplingframe2<-read.csv("../tests/testthat/test_samplingframe2.csv")
+# 
+# myweighting_cluster<-weighting_fun_from_samplingframe(samplingframe2,
+#                                                     data.stratum.column = "village",
+#                                                     sampling.frame.population.column = "populations",
+#                                                     sampling.frame.stratum.column = "village.name")
+# 
+
+# combined_weighting<-combine_weighting_functions(myweighing,myweighting_cluster)
+
+# result<-analyse_indicator(
+#                   data = mydata,
+#                   dependent.var = "nutrition_need",
+#                   independent.var = "region",
+#                   hypothesis.type = "group_difference",
+#                   independent.var.type = "categorical",
+#                   dependent.var.type="numerical",
+#                   weighting = combined_weighting,
+#                   cluster.variable.name = "village")
+
+
+
+```
+
+
+
+## Utilisation du questionnaire
+Si nous chargeons davantage le questionnaire, nous pourrons faire des choses tr?s int?ressantes:
+
+- Mieux analyser les questions select_multiples
+- Identifier automatiquement les types de donn?es
+- mettre des ?tiquettes appropri?es sur les graphes
+
+### Chargement du questionnaire
+```{r}
+require("koboquest")
+# questionnaire<- load_questionnaire(mydata,
+#                               questions.file = "../tests/testthat/kobo questions.csv",
+#                               choices.file = "../tests/testthat/kobo choices.csv")
+
+
+
+# result<-analyse_indicator(mydata,
+#                   dependent.var = "accesstomarket",
+#                   independent.var = "region",
+#                   dependent.var.type = "categorical",
+#                   independent.var.type = "categorical",
+#                   hypothesis.type = "group_difference",
+#                   weighting=myweighter)
+
+
+# vis<-map_to_visualisation(result)
+
+
+```
+
+
+  
+  
+  
+  
+  

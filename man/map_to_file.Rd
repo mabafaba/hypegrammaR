@@ -18,12 +18,12 @@ the object that was given as input (unchanged).
 Save outputs to files
 }
 \examples{
-# some table:
+\dontrun{# some table:
 mytable<-data.frame(a=1:10,b=1:10)
 map_to_file(mytable,"mytable.csv")
 
 # some graphic made with ggplot:
 mygraphic<-ggplot(mytable,aes(a,b))+geom_point()
 map_to_file(mygraphic,"visualisation.jpg")
-map_to_file(mygraphic,"visualisation.pdf")
+map_to_file(mygraphic,"visualisation.pdf")}
 }

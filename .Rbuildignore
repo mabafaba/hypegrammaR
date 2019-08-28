@@ -7,3 +7,5 @@
 ^\.Rproj\.user$
 ^todo\.md$
 ^\.httr-oauth$
+^appveyor\.yml$
+^LICENSE\.md$

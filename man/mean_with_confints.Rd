@@ -4,7 +4,8 @@
 \alias{mean_with_confints}
 \title{Weighted means with confidence intervals}
 \usage{
-mean_with_confints(dependent.var, independent.var = NULL, design)
+mean_with_confints(dependent.var, independent.var = NULL, design,
+  confidence_level = 0.95)
 }
 \arguments{
 \item{dependent.var}{string with the column name in `data` of the dependent variable. Should be a numerical variable.}
@@ -12,6 +13,8 @@ mean_with_confints(dependent.var, independent.var = NULL, design)
 \item{independent.var}{should be null ! For other functions: string with the column name in `data` of the independent variable}
 
 \item{design}{the svy design object created using map_to_design or directly with svydesign}
+
+\item{confidence_level}{the confidence level to be used for confidence intervals (default: 0.95)}
 }
 \value{
 A table in long format of the results, with the column names dependent.var, dependent.var.value (=NA), independent.var (= NA), independent.var.value (= NA), numbers (= mean), se, min and max.

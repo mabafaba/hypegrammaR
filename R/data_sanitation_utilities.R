@@ -6,10 +6,13 @@
 #' @param sanitation_function the function containing all the checks for the analysis function in question
 #' @return returns the cleaned data with a santation success or failure message
 #' @export
-datasanitation_design<-function(design,dependent.var,independent.var,sanitation_function){
+datasanitation_design<-function(design,dependent.var,independent.var, sanitation_function){
   sanitised<-sanitation_function(design$variables,dependent.var,independent.var)
   if(sanitised$success){
-    sanitised$design<-map_to_design(sanitised$data)
+    sanitised$design<-map_to_design(sanitised$data,
+                                    cluster_variable_name = attr(design,"hg_cluster_variable_name"),
+                                    weighting_function = attr(design,"hg_weighting_function")
+                                    )
   }else{
     sanitised$design<-NULL
   }
@@ -23,8 +26,9 @@ datasanitation_summary_statistics_percent_with_confints_select_one <- function(d
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_question_not_sm,
-                         datasanitation_morethan_1_unique_dependent)
+                         datasanitation_question_not_sm
+                         # datasanitation_morethan_1_unique_dependent
+                         )
 }
 
 
@@ -32,7 +36,7 @@ datasanitation_summary_statistics_percent_sm_choice <- function(data,dependent.v
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_morethan_1_unique_dependent,
+                         # datasanitation_morethan_1_unique_dependent, # this is taken out because the choice is always logical & we don't want NA for 0 or 100%.
                          datasanitation_dependent_max_unique)
 }
 
@@ -40,9 +44,9 @@ datasanitation_summary_statistics_percent_sm_choice_groups <- function(data,depe
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_morethan_1_unique_dependent,
+                         # datasanitation_morethan_1_unique_dependent,
                          datasanitation_dependent_max_unique,
-                         datasanitation_morethan_1_unique_independent,
+                         # datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique)}
 
 
@@ -50,8 +54,8 @@ datasanitation_summary_statistics_percent_groups <- function(data,dependent.var,
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_morethan_1_unique_dependent,
-                         datasanitation_morethan_1_unique_independent,
+                         # datasanitation_morethan_1_unique_dependent,
+                         # datasanitation_morethan_1_unique_independent,
                          datasanitation_question_not_sm,
                          datasanitation_dependent_max_unique,
                          datasanitation_independent_max_unique)
@@ -69,7 +73,7 @@ datasanitation_summary_statistics_mean_groups <- function(data, dependent.var, i
                          dependent.var,
                          independent.var,
                          datasanitation_dependent_numeric,
-                         datasanitation_morethan_1_unique_independent,
+                         # datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique)
 }
 
@@ -102,12 +106,10 @@ datasanitation_hypothesistest_chisq_sm<-function(data,dependent.var,independent.
                          dependent.var,  # all functions take these parameters
                          independent.var,# all functions take these parameters
                          datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_record_per_independent_value,
                          datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique,
-                         datasanitation_dependent_max_unique,
-                         datasanitation_morethan_1_record_per_independent_value
-
-  )
+                         datasanitation_dependent_max_unique)
 
 }
 
@@ -119,12 +121,10 @@ datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
                          dependent.var,  # all functions take these parameters
                          independent.var,# all functions take these parameters
                          datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_record_per_independent_value,
                          datasanitation_morethan_1_unique_independent,
                          datasanitation_dependent_numeric,
-                         datasanitation_independent_max_unique,
-                         datasanitation_morethan_1_record_per_independent_value
-
-  )
+                         datasanitation_independent_max_unique)
 }
 
 

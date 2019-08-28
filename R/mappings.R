@@ -6,13 +6,13 @@
 #' @param weighting_function if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?
 #' @details create a `survey` package design object from the data and information on the sampling strategy
 #' @return a `survey` package design object
-#' @examples map_to_design(data,cluster_variable_name="cluster_id")
+#' @examples \dontrun{map_to_design(data,cluster_variable_name="cluster_id")}
 #' @export
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
                           weighting_function = NULL) {
 
-  # if no weighting function / cluster variable provided, set defaults, otherwise use parameters:
+  # if no weighting function / cluster variable provided
   if(is.null(cluster_variable_name)){
     cluster.ids <- as.formula(c("~1"))}else{
     cluster.ids <- paste0("~",cluster_variable_name)
@@ -30,7 +30,14 @@ map_to_design <- function(data,
       ids = formula(cluster.ids),
       strata = names(strata.weights),
       weights = as.vector(strata.weights),nest = T)
-    return(survey.design)}
+
+  # attributes(survey.design)$hg_weighting_function<-ifelse(!is.null(weighting_function),weighting_function,NA)
+  # attributes(survey.design)$hg_cluster_variable_name<-ifelse(!is.null(weighting_function),cluster_variable_name,NA)
+  attributes(survey.design)$hg_weighting_function<-weighting_function
+  attributes(survey.design)$hg_cluster_variable_name<-cluster_variable_name
+    return(survey.design)
+
+  }
 #add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
 
 
@@ -49,11 +56,11 @@ map_to_design <- function(data,
 #'
 #' @param result a result object containing the summary statistics and hypothesis tests for the case.
 #' @return a _function_ that creates the relevant ggplot object
-#' @examples map_to_visualisation("result_var1")
-#' @examples result_var1<- map_to_result( ... )
+#' @examples \dontrun{map_to_visualisation("result_var1")}
+#' @examples \dontrun{result_var1<- map_to_result( ... )
 #' my_vis_fun <- map_to_visualisation(result_var1)
 #' my_ggplot_obj<-my_vis_fun( ... )
-#' my_ggplot_obj # plots the object
+#' my_ggplot_obj # plots the object}
 #' @export
 map_to_visualisation <- function(result) {
 
@@ -99,18 +106,24 @@ map_to_visualisation <- function(result) {
 #' @export
 map_to_master_table <- function(results_object, filename, questionnaire = NULL){
     summary_table_single <- function(x, questions = questionnaire){
-      if(!is.null(questions)){
-      x <- map_to_labeled(result = x, questionnaire = questions)}
-        if(is.null(x$hypothesis.test$result$p.value)){x$hypothesis.test$result$p.value <- NA}
-        if(is.null(x$hypothesis.test$name)){x$hypothesis.test$name <- NA}
-      y <- NULL
-      if(!is.null(x$summary.statistic)){
-        y <- data.frame(x$summary.statistic,
+        if(!is.null(questions)){
+          x <- map_to_labeled(result = x, questionnaire = questions)
+        }
+        y <- NULL
+        no_pvalue <- is.null(x$hypothesis.test$result$p.value)
+        no_hypothesis.test <- is.null(x$hypothesis.test$name)
+        if(no_pvalue|no_hypothesis.test){
+          x$hypothesis.test$result$p.value <- NA
+          x$hypothesis.test$name <- NA
+        }
+        if(!is.null(x$summary.statistic)){
+        y <- as.data.frame(x$summary.statistic,
              p.value = x$hypothesis.test$result$p.value,
-             test.name = x$hypothesis.test$name)}
+             test.name = x$hypothesis.test$name)
+        }
       return(y)
     }
-    df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+    df <- results_object %>% lapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
 }
 
@@ -130,13 +143,10 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
       x <- map_to_labeled(result = x, questionnaire = questions)}
     y <- NULL
     if(!is.null(x$summary.statistic)){
-      y <- data.frame(x$summary.statistic,
-                      p.value = x$hypothesis.test$result$p.value,
-                      test.name = x$hypothesis.test$name)}
+      y <- as.data.frame(x$summary.statistic)}
     return(y)}
-  df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+  df <- results_object %>% lapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
-
 }
 
 #' Save outputs to files
@@ -145,14 +155,14 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
 #' @param filename The name of the file that is produced. The extension needs to match the type of object you want to save (csv for tables, jpg/pdf for images)
 #' @return the object that was given as input (unchanged).
 #' @examples
-#' # some table:
+#' \dontrun{# some table:
 #' mytable<-data.frame(a=1:10,b=1:10)
 #' map_to_file(mytable,"mytable.csv")
 #'
 #' # some graphic made with ggplot:
 #' mygraphic<-ggplot(mytable,aes(a,b))+geom_point()
 #' map_to_file(mygraphic,"visualisation.jpg")
-#' map_to_file(mygraphic,"visualisation.pdf")
+#' map_to_file(mygraphic,"visualisation.pdf")}
 #' @export
 map_to_file<-function(object,filename,...){
 
@@ -204,7 +214,7 @@ map_to_file<-function(object,filename,...){
 #' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
 #' @examples
-#' # laod data and sampling frames:
+#' \dontrun{# load data and sampling frames:
 #' mydata<-read.csv("mydata.csv")
 #' mysamplingframe<-read.csv("mysamplingframe.csv")
 #' # create weighting function:
@@ -217,7 +227,7 @@ map_to_file<-function(object,filename,...){
 #'
 #' # this also works on subsets of the data:
 #' mydata_subset<-mydata[1:100,]
-#' subset_weights<- weighting(mydata)
+#' subset_weights<- weighting(mydata)}
 #' @export
 map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.population.column = "population",
                            sampling.frame.stratum.column = "stratum", data = NULL){
@@ -227,6 +237,16 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
                                                   sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
 }
 
+
+#' Combine weight functions from two sampling frames
+#'
+#' @param weight_function_1 first weighthing function
+#' @param weight_function_2 second weightng function
+#' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
+#' @export
+combine_weighting_functions<-function(weight_function_1, weight_function_2){
+surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
+}
 
 #' presentable p-value format
 #' @export
