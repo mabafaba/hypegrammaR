@@ -1,8 +1,8 @@
 Package: hypegrammaR
-Title: What the Package Does (one line, title case)
+Title: A grammar of hypothesis test driven analysis
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: quantitative analysis according to the IMPACT minimum standards.
+Authors@R: person("Eliora", "Henzler", email = "eliora.henzler@impact-initiatives.org", role = c("aut", "cre"))
+Description: Quantitative analysis according to the IMPACT minimum standards. Accepts weights and input from kobo questionnaires.
 Depends: 
     R (>= 3.5.2),
     survey,
@@ -15,13 +15,19 @@ Imports:
     dplyr,
     reshape2,
     questionr,
-    koboquest,
+    koboquest (>= 1.0.1),
+    kobostandards,
+    xlsformfill,
     data.table,
     surveyweights,
+    knitr,
     htmltools,
-    assertthat
+    assertthat,
+    kableExtra
 Remotes:
     github::mabafaba/koboquest,
+    github::mabafaba/kobostandards,
+    github::mabafaba/xlsformfill,
     github::ellieallien/surveyweights
 License: What license is it under?
 Encoding: UTF-8
@@ -29,6 +35,5 @@ LazyData: true
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,
-    knitr,
     rmarkdown
 VignetteBuilder: knitr

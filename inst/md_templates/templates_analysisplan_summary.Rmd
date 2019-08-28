@@ -1,0 +1,49 @@
+---
+title: "Analysisplan report"
+author: "Eliora H"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(htmltools)
+library(hypegrammaR)
+
+```
+
+
+```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
+resultlist <- x
+analysisplan<-resultlist$analysisplan
+
+results<-resultlist$results
+if(!is.null(questionnaire)){
+  results<- results %>% lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)})
+}
+for(rq in unique(analysisplan$research.question)){
+  htmltools::h1(rq) %>% as.character %>% cat
+  in_rq<-(analysisplan$research.question==rq)
+  for(srq in unique(analysisplan$sub.research.question)){
+    in_srq<-(analysisplan$sub.research.question==srq)
+    htmltools::h2(srq) %>% as.character %>% cat
+    for(i in which(in_rq & in_srq)){
+
+    if(!is.null(results[[i]]$summary.statistic)){
+    table <- results[[i]]$summary.statistic %>% (hypegrammaR:::rmdrs_pretty_summary_table)
+    cat(knitr::kable(table),format = "html")
+    
+    }
+    if(!is.null(results[[i]]$hypothesis.test$result$p.value)){
+    c(as.character(unique(results[[i]]$hypothesis.test$name)), "P Value:") %>% cat
+    results[[i]]$hypothesis.test$result$p.value %>% print}
+    knitr::kable(resultlist$results[[i]]$hypothesis.test %>% as.data.frame,format="html")    }
+  }
+}
+
+```
+
+

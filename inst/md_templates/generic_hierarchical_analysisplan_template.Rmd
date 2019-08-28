@@ -1,0 +1,74 @@
+---
+title: "Analysisplan report"
+author: "IMPACT Initiatives"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 5
+    toc_float: true
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(htmltools)
+library(hypegrammaR)
+library(kableExtra)
+
+```
+
+```{r}
+# expects in environment:
+# - questionnaire (can be NULL)
+# - resultlist (list(analysisplan = .., results = ...))
+# - by_analysisplan_columns
+# - by_prefix
+# - render_result_with
+
+```
+
+```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
+
+analysisplan<-resultlist$analysisplan
+resultlist$analysisplan$repeat.var[analysisplan$repeat.var %in% c("", " ",NA,"NA")] <- NA
+resultlist$analysisplan$repeat.var.value[analysisplan$repeat.var.value %in% c("", " ",NA,"NA")] <- NA
+# knitr::kable(analysisplan,format = "html")
+
+if(!is.null(questionnaire)){
+  resultlist$results<- resultlist$results %>% lapply(function(x){map_to_labeled(result = x, questionnaire = questionnaire)})
+}
+
+
+
+
+
+
+md_out <- resultlist_recursive_markdown(resultlist,
+                              by_analysisplan_columns = by_analysisplan_columns,
+                              by_prefix = by_prefix,
+                              level = level,
+                              render_result_with = render_result_with,
+                              label_varnames = label_varnames)
+
+cat(md_out)
+
+```
+
+
+```{r,results='asis',echo = FALSE}
+
+cat("<style>")
+cat(".section .tocify-subheader .tocify-item {
+margin-left:5px;
+padding-left:5px;
+background: rgba(0, 0, 0, 0.1); 
+}")
+
+cat("</style>")
+
+```
+
+
+
+

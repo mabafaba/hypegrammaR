@@ -54,30 +54,6 @@ reach_style_barchart<-function(group,percent,error_min=NULL,error_max=NULL,horiz
 
 
 
-#' not used
-barchart_with_error_bars <- function(hypothesis.test.results,summary.statistics){
-  test_name <- hypothesis.test.results$name
-  p_value <- hypothesis.test.results$result$p.value
-
-  chart <- reach_style_barchart(group = summary.statistics$independent.var.value,
-                                percent = summary.statistics$numbers,
-                                error_min = summary.statistics$min,
-                                error_max =  summary.statistics$max)
-
-  chart + geom_text(aes(x =4,
-                        y = 2,
-                        label= paste0("p value: ", round(p_value,6)," (",test_name,")")),
-                    size=3,
-                    family="Arial Narrow",
-                    col='#000000',
-                    hjust=0,
-                    vjust=0.5)
-  return(list(ggplot=theplot))
-  }
-
-
-
-
 
 
 
@@ -134,7 +110,8 @@ grouped_barchart_percent<-function(result){
 barchart_average<-function(result){
   summary.statistic<-result$summary.statistic
   summary.statistic$min[summary.statistic$min<0]<-0
-  theplot<-ggplot(summary.statistic,aes(x=independent.var.value,y=numbers),fill=reach_style_color_darkgrey(1))+geom_bar(stat = "identity")+theme_tufte()+
+  theplot<-ggplot(summary.statistic,aes(x=independent.var.value,y=numbers),
+                  fill=reach_style_color_darkgrey(1))+geom_bar(stat = "identity")+theme_tufte()+
     xlab("")+ylab(summary.statistic$dependent.var[1])+
     theme(text=element_text(family="Arial Narrow"),
           axis.title.x=element_blank(),

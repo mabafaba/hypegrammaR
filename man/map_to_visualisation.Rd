@@ -7,7 +7,7 @@
 map_to_visualisation(result)
 }
 \arguments{
-\item{case}{a string uniquely identifying the analysis case. output of map_to_case(). To list valid case strings use hypegrammar::list_all_cases()}
+\item{result}{a result object containing the summary statistics and hypothesis tests for the case.}
 }
 \value{
 a _function_ that creates the relevant ggplot object
@@ -16,9 +16,9 @@ a _function_ that creates the relevant ggplot object
 selects an appropriate visualisation function based on the analysis case
 }
 \examples{
-map_to_visualisation("group_difference_categorical_categorical")
-my_case<- map_to_case( ... )
-my_vis_fun <- map_to_visualisation(my_case)
+map_to_visualisation("result_var1")
+result_var1<- map_to_result( ... )
+my_vis_fun <- map_to_visualisation(result_var1)
 my_ggplot_obj<-my_vis_fun( ... )
 my_ggplot_obj # plots the object
 }

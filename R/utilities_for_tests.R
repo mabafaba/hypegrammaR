@@ -47,11 +47,20 @@ load.example<-function(name,global_space=F){
   }
 
   ex$data<-exfile("data.csv")
+
+  ## loading example quetsionnaire
+  questions<-read.csv(exfilepath("kobo questions.csv"),stringsAsFactors = F)
+  choices<-read.csv(exfilepath("kobo choices.csv"),stringsAsFactors = F)
+
   ex$questionnaire<-load_questionnaire(ex$data,
-                                        questions = exfilepath("kobo questions.csv"),
-                                        choices = exfilepath("kobo choices.csv"),
+                                        questions = questions,
+                                        choices = choices,
                                         choices.label.column.to.use = ex$choice.label.column.to.use)
 
+  ## loading analysisplan
+  ex$ap <- read.csv(exfilepath("analysis plan.csv"))
+
+  ## Making data frame with usable names
   ex$tf <- data.frame("dependent.var" = c("settlement", "population_group", "when_continue", "males_13_15","uasc_boys", "household_expenditure", "sep_accidental", "bla", NA, NA),
                                     "independent.var" = c("district_localadmin","resp_gender",  "when_continue", "children_0_4", "uasc_girls", "household_expenditure", "sep_forced", "hehe", NA, NA))  %>% t %>% as.data.frame(., stringsAsFactors = F)
   colnames(ex$tf) <- c("select_one_many_cat","select_one","select_one_NA_heavy", "numeric", "numeric_NA_heavy", "select_multiple", "select_multiple_NA_heavy","fake", "NA", "NULL")

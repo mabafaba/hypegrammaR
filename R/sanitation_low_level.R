@@ -1,23 +1,74 @@
 # GENERIC LOW LEVEL SANITATIONS:
 
 datasanitation_return_empty_table <- function(data, dependent.var, independent.var = NULL){
+
+  #### this is really counter intuitive - why would an empty table return 1? -> especially in mean this should not happen.
+  #### therefore added this row to go straight to NA.
+  #### I'm assuming thought that this creats an issue elsewhere... if it's 100% of a single independent.var... then i guess it should be 1?
+  #### not sure how to catch this _here_ though.. "datasanitation_return_empty_table" doesnt know if its numbers or cateogricals etc..
+  #### I think maybe the return 1 should be a different function?
+  #### not sure
+  #### but changing this regardless.. function fails all the time, it's too convoluted further down; all the time the values submitted to the df to return have different lengths and breaks it.
+  return(datasanitation_return_empty_table_NA(data,dependent.var,independent.var = independent.var))
+
+
   if(datasanitation_variables_in_data_colnames(data, dependent.var, independent.var)$success == F){
     return(datasanitation_return_empty_table_NA(data, dependent.var, independent.var))
   }
+#
+#   num_unique_dependent_values <- length(data[[dependent.var]] %>% unique %>% .[!is.na(.)])
+#   num_unique_independent_values <- length(data[[independent.var]] %>% unique %>% .[!is.na(.)])
+#   num_combos<-   num_unique_dependent_values* num_unique_independent_values
+#
+#
+#   if(num_combos == 0){
+#     return(datasanitation_return_empty_table_NA(dependent.var = dependent.var))
+#   }
+#
+#   if(num_combos == 1){
+#     numbers <- 1
+#     dependent.var.value   <- data[[  dependent.var]] %>% unique %>% .[!is.na(.)]
+#     independent.var.value <- data[[independent.var]] %>% unique %>% .[!is.na(.)]
+#
+#   }
+
+
+
+  # expect a single category by default:
+  numbers <- 1
+
   dependent.var.value <- unique(data[[dependent.var]])
-  if(!is.null(independent.var)){
+
+  if(length(dependent.var.value[!is.na(dependent.var.value)]) == 1){
+    numbers <- 1
+  }else{
+    numbers <- NA
+  }
+
+
+
+  if(!is.null(independent.var) & !is.na(independent.var) & length(independent.var) != 0 ){
     independent.var.value <- unique(data[[independent.var]])
+    if(length(independent.var.value) < 1){
+      independent.var.value<-NA
+      numbers<-NA
+    }
+
   }else{
     independent.var <- NA
     independent.var.value <- NA
+    numbers <- NA
   }
+
+
+
 
   return(data.frame(
     dependent.var,
     independent.var = independent.var,
     dependent.var.value,
     independent.var.value = independent.var.value,
-    numbers = 1,
+    numbers = numbers,
     se = NA,
     min = NA,
     max = NA
@@ -109,14 +160,14 @@ datasanitation_variables_in_data_colnames<-function(data,dependent.var,independe
   return(successfull_sanitation(data))
 }
 
-datasanitation_independent_max_unique<-function(data,dependent.var,independent.var, n_max = 20){
+datasanitation_independent_max_unique<-function(data,dependent.var,independent.var, n_max = 50){
   valid<-length(unique(data[[independent.var]])) <= n_max
   datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in independent variable"))
 }
 
-datasanitation_dependent_max_unique<-function(data,dependent.var,independent.var, n_max = 20){
+datasanitation_dependent_max_unique<-function(data,dependent.var,independent.var, n_max = 30){
   valid<-length(unique(data[[dependent.var]])) <= n_max
-  datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in independent variable"))
+  datasanitation_generic_check(data,dependent.var,independent.var,valid,paste0("too many (>=",n_max,") unique values in dependent variable"))
 }
 
 datasanitation_morethan_1_record_per_independent_value<-  function(data,dependent.var,independent.var){
@@ -151,16 +202,59 @@ datasanitation_independent_numeric<-function(data,dependent.var,independent.var,
 
 as.numeric_factors_from_names<-function(x){
   if(is.factor((x))){x<-as.character(x)}
-  as.numeric(x)
+  return(as.numeric(x))
 }
 
 datasanitation_question_not_sm <- function(data,dependent.var,independent.var,...){
-  if(is.null(questionnaire)) {
-  dependent_is_select_multiple <- FALSE}else{
-    dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)}
-if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))}
-  return(successfull_sanitation(data))}
+  if(!exists("questionnaire")) {
+    dependent_is_select_multiple <- FALSE
+  }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)
+    }
+  if(dependent_is_select_multiple){return(failed_sanitation("Question is a select multiple. Please use percent_with_confints_select_multiple instead"))
+  }
+  return(successfull_sanitation(data))
+}
 
+
+datasanitation_question_sm <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_multiple <- TRUE
+  }else{dependent_is_select_multiple <- questionnaire$question_is_select_multiple(dependent.var)
+    }
+  if(!dependent_is_select_multiple){return(failed_sanitation("Question is not select multiple, but the function expects one"))
+  }
+  return(successfull_sanitation(data))
+}
+
+datasanitation_dependent_select_one <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_one <- TRUE
+  }else{dependent_is_select_one <- questionnaire$question_is_select_one(dependent.var)
+  }
+  if(!dependent_is_select_one){return(failed_sanitation("Dependent variable is not a select one (categorial), but the function expects one"))
+  }
+  return(successfull_sanitation(data))
+}
+
+datasanitation_independent_select_one <- function(data,dependent.var,independent.var,...){
+  if(!exists("questionnaire")) {
+    dependent_is_select_one <- TRUE
+  }else{independent_is_select_one <- questionnaire$question_is_select_one(independent.var)
+  }
+  if(!independent_is_select_one){return(failed_sanitation("Independent variable is not a select one (categorial), but the function expects one"))
+  }
+  return(successfull_sanitation(data))
+}
+
+question_matches_choices <- function(data, dependent.var, sm.columns){
+  if(!exists("questionnaire")) {return(NULL)
+    }
+  if(!questionnaire$question_is_select_multiple(dependent.var)){return(warning("Variable provided is not select multiple, Using only the choices to calculate summary statistics."))
+    }
+q_m_c <- all(questionnaire$choices_for_select_multiple(dependent.var, data) == sm.columns)
+  if(!q_m_c){return(warning("The choices don't match the question provided. Using only the choices to calculate summary statistics."))
+    }
+}
 
 
 

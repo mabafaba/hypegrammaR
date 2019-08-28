@@ -5,7 +5,7 @@
 \title{map to hypothesis test}
 \usage{
 map_to_hypothesis_test(design, dependent.var, independent.var, case,
-  questionnaire = NULL)
+  questionnaire = NULL, limit = NULL)
 }
 \arguments{
 \item{case}{a string uniquely identifying the analysis case. output of map_to_case().}

@@ -1,6 +1,5 @@
 ---
 title: "Example Analysis"
-author: "Martin Barner"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -17,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r,include=F,echo=F}
+```{r,include=T,echo=F}
 library(hypegrammaR)
 
 assessment_data<-load_data("../data/testdata.csv")
@@ -39,8 +38,6 @@ questionnaire<-load_questionnaire(data = assessment_data,
 
 
 
-
-
 # Needs Overview
 
 How do needs differ across regions? We will look at this by sector.
@@ -54,7 +51,9 @@ case<-map_to_case(hypothesis.type = "group_difference",
                   dependent.var.type = "numerical",
                   independent.var.type = "categorical")
 
+```
 
+```{r,include=T,warning=F,echo=F}
 result<-map_to_result(assessment_data,
                       dependent.var = "health_need",
                       independent.var = "region",
@@ -122,12 +121,5 @@ map_to_result(assessment_data,"hhexperienced",
 
 
 ```
-
-
-
-
-
-
-
 
 

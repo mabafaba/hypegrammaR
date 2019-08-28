@@ -6,11 +6,15 @@
 #' @export
 map_to_table<-function(result){
   # extract core information
+  if(is.null(result)){return(result)}
+  if(is.null(result$parameters$case)){
+    warning("result object has no parameters - can't map to table");
+    return(result$summary.statistic)}
   is_percent<-grepl("\\_categorical\\_",result$parameters$case)
   has_confints<-!all(is.na(c(result$summary.statistic$min,result$summary.statistic$max)))
   has_dependent_var_values<-!all(is.na(result$summary.statistic$dependent.var.value))
   has_independent_var_values<-!all(is.na(result$summary.statistic$independent.var.value))
-
+  result$summary.statistic$numbers<-as.numeric(result$summary.statistic$numbers)
 
   # format numbers (add confints if available):
   # four cases percent or not, confints or not
@@ -23,8 +27,8 @@ map_to_table<-function(result){
     min_formated<-paste0(round(result$summary.statistic$min*100),"%")
     max_formated<-paste0(round(result$summary.statistic$max*100),"%")
     }else{
-      min_formated<-paste0(round(result$summary.statistic$min,2),"%")
-      max_formated<-paste0(round(result$summary.statistic$max),"%")
+      min_formated<-paste0(round(result$summary.statistic$min,2),"")
+      max_formated<-paste0(round(result$summary.statistic$max,2),"")
     }
     interval<-paste0("(",min_formated,"-",max_formated,")")
   }else{
@@ -46,7 +50,7 @@ map_to_table<-function(result){
 
   }
 
-  table_to_show<-result$summary.statistic[,cols_to_keep]
+  table_to_show<-result$summary.statistic[,cols_to_keep,drop = FALSE]
   if(has_dependent_var_values){
     table_to_show<-tidyr::spread(table_to_show,key = 'dependent.var.value',value = numbers)
   }else{
@@ -56,6 +60,7 @@ map_to_table<-function(result){
     colnames(table_to_show)[colnames(table_to_show)=='independent.var.value']<-"Subset"
     }
 
+  rownames(table_to_show)<-NULL
 
   return(table_to_show)
 }

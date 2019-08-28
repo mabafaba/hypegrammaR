@@ -4,15 +4,15 @@
 \alias{load_questionnaire}
 \title{load_questionnaire}
 \usage{
-load_questionnaire(data, questions.file, choices.file,
+load_questionnaire(data, questions, choices,
   choices.label.column.to.use = NULL)
 }
 \arguments{
 \item{data}{data frame containing the data matching the questionnaire to be loaded.}
 
-\item{questions.file}{file name of a csv file containing the kobo form's question sheet}
+\item{questions}{data frame or file name of a csv file containing the kobo form's question sheet}
 
-\item{choices.file}{file name of a csv file containing the kobo form's choices sheet}
+\item{choices}{data frame or file name of a csv file containing the kobo form's choices sheet}
 
 \item{choices.label.column.to.use}{The choices csv file has (sometimes multiple) columns with labels. They are often called "Label::English" or similar. Here you need to provide the _name of the column_ that you want to use for labels (see example!)}
 }

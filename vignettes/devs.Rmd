@@ -1,0 +1,39 @@
+---
+title: "for Developers / internal structure"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{for Developers / internal structure}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(hypegrammaR)
+```
+
+
+
+
+
+
+- map_to_result: workhorse - apply summary statistic & hypothesis test
+  - map_to_summary_statistic
+  - map_to_hypothesis_test
+  
+- process result
+  - map_to_table
+  - map_to_labeled
+  - map_to_visualisation
+  
+  
+  
+  
+
+
