@@ -17,9 +17,8 @@ Imports:
     questionr,
     koboquest (>= 1.0.1),
     kobostandards,
-    xlsformfill,
     data.table,
-    surveyweights,
+    surveyweights (>= 0.1.0),
     knitr,
     htmltools,
     assertthat,
@@ -27,9 +26,11 @@ Imports:
     srvyr
 Remotes:
     github::mabafaba/koboquest,
-    github::mabafaba/kobostandards,
     github::mabafaba/xlsformfill,
-    github::ellieallien/surveyweights
+    github::mabafaba/kobostandards,
+    github::mabafaba/composr,
+    github::ellieallien/surveyweights,
+    github::mabafaba/koboquest
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
