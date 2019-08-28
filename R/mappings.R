@@ -123,6 +123,7 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
         }
       return(y)
     }
+    results_object <- lapply(results_object,function(x){x$summary.statistic<-as.data.frame(x$summary.statistic,stringsAsFactors=F);x})
     df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
 }
