@@ -10,7 +10,6 @@
 #' @export
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
-                          cluster_ids = NULL,
                           weighting_function = NULL) {
 
   # if no weighting function / cluster variable provided
