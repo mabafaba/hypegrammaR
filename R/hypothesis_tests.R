@@ -4,7 +4,7 @@
 #' @param independen.var string with the column name in `data` of the independent variable. Should be a 'select one' with few (<15) categories.
 #' @param design the svy design object created using map_to_design or directly with svydesign
 #' @return A list with the results of the test (Chi Squared statistics, p value) or the error message.
-#' @examples hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)
+#' @examples \dontrun{hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)}
 #' @export
 hypothesis_test_chisquared_select_one <- function(dependent.var,
                                                   independent.var,
@@ -60,7 +60,7 @@ hypothesis_test_empty <- function(dependent.var = NULL,
 #' @param independen.var string with the column name in `data` of the independent variable. Should be a 'select one' with few (<15) categories.
 #' @param design the svy design object created using map_to_design or directly with svydesign
 #' @return A list with the results of the test (T-value, p value, etc.) or the error message.
-#' @examples hypothesis_test_t_two_sample("males_13_15", "resp_gender", design)
+#' @examples \dontrun{hypothesis_test_t_two_sample("males_13_15", "resp_gender", design)}
 #' @export
 hypothesis_test_t_two_sample <- function(dependent.var,
                                          independent.var,
@@ -94,7 +94,7 @@ hypothesis_test_t_two_sample <- function(dependent.var,
 #' @param limit the value to test the dependent.var against
 #' @param design the svy design object created using map_to_design or directly with svydesign
 #' @return A list with the results of the test (T-value, p value, etc.) or the error message.
-#' @examples hypothesis_test_t_two_sample("males_13_15", 4, design)
+#' @examples \dontrun{hypothesis_test_t_two_sample("males_13_15", 4, design)}
 #' @export
 hypothesis_test_t_one_sample <- function(dependent.var,
                                          independent.var = NULL,
@@ -188,7 +188,7 @@ hypothesis_test_z <- function(dependent.var,
 #' @param independen.var string with the column name in `data` of the independent variable. Should be a 'select one' with few (<15) categories.
 #' @param design the svy design object created using map_to_design or directly with svydesign
 #' @return A list with the results of the test (Chi Squared statistics, p value) or the error message.
-#' @examples hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)
+#' @examples \dontrun{hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)}
 #' @export
 hypothesis_test_chisquared_select_multiple <- function(dependent.var,
                                                        dependent.var.sm.cols,

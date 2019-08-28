@@ -27,8 +27,8 @@ a _function_ that computes the relevant summary statistic
 selects an appropriate summary statistic function based on the analysis case
 }
 \examples{
-map_to_summary_statistic("group_difference_categorical_categorical")
-my_case<- map_to_case( ... )
+\dontrun{map_to_summary_statistic("group_difference_categorical_categorical")}
+\dontrun{my_case<- map_to_case( ... )
 my_sumstat <- map_to_summary_statistic(my_case)
-my_sumstat( ... )
+my_sumstat( ... )}
 }

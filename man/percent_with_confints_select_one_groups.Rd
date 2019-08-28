@@ -26,5 +26,5 @@ Weighted percentages with confidence intervals for groups
 this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category in each group of the independent variable.
 }
 \examples{
-percent_with_confints_select_one_groups("population_group", "resp_gender", design)
+\dontrun{percent_with_confints_select_one_groups("population_group", "resp_gender", design)}
 }

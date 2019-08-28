@@ -41,7 +41,7 @@ load_data<-function(file){
 #' Load a sampling frame from csv
 #' @param file the path and name of the sampling frame csv file to load.
 #' @details function loads the sampling frame and can be used to make weights ith map_to_weighting()
-#' @examples sf <- load_samplingframe("./somefolder/samplingframe.csv")
+#' @examples \dontrun{sf <- load_samplingframe("./somefolder/samplingframe.csv")}
 #'
 #' @export
 load_samplingframe<-function(file){

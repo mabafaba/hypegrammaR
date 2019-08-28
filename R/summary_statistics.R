@@ -5,7 +5,7 @@
 #'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
-#'@examples percent_with_confints_select_one("population_group", design)
+#'@examples \dontrun{percent_with_confints_select_one("population_group", design)}
 #'@export
 percent_with_confints_select_one <-
   function(dependent.var,
@@ -184,7 +184,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
 #'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category in each group of the independent variable.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
-#'@examples percent_with_confints_select_one_groups("population_group", "resp_gender", design)
+#'@examples \dontrun{percent_with_confints_select_one_groups("population_group", "resp_gender", design)}
 #'@export
 percent_with_confints_select_one_groups <- function(dependent.var,
                                                     independent.var,

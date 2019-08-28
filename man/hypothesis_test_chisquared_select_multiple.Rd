@@ -21,5 +21,5 @@ A list with the results of the test (Chi Squared statistics, p value) or the err
 Perform a chi squared test on a select multiple question against a select one question.
 }
 \examples{
-hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)
+\dontrun{hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)}
 }

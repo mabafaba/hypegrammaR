@@ -20,5 +20,5 @@ A list with the results of the test (T-value, p value, etc.) or the error messag
 Perform a two sample t test of one numerical variable across mutliple groups
 }
 \examples{
-hypothesis_test_t_two_sample("males_13_15", "resp_gender", design)
+\dontrun{hypothesis_test_t_two_sample("males_13_15", "resp_gender", design)}
 }

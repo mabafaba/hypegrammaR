@@ -9,7 +9,7 @@
 
 * New Features
 ** allow manual selection of confidence level for confidence intervals
-
+** added appveyor for realtime built checks (see the "build" tag on the gihtub repo page)
 * Changes
 ** stricter but more robust handling of upper case and special characters in variable & choice names
 

@@ -23,5 +23,5 @@ hypothesis_test_chisquared_select_one
 Perform a chi squared test on a select one question against another.
 }
 \examples{
-hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)
+\dontrun{hypothesis_test_chisquared_select_one("population_group", "resp_gender", design)}
 }
