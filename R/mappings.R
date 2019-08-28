@@ -11,7 +11,7 @@
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
                           cluster_ids = NULL,
-                          weighting_function = weighting_hype) {
+                          weighting_function = NULL) {
 
   # if no weighting function / cluster variable provided,
   # the first default of the function is to check what weighting function is defined inside hypegrammaR, then to set defaults, otherwise use parameters:
