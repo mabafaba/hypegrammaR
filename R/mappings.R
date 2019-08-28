@@ -123,7 +123,7 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
         }
       return(y)
     }
-    df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+    df <- results_object %>% lapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
 }
 
@@ -145,7 +145,7 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
     if(!is.null(x$summary.statistic)){
       y <- as.data.frame(x$summary.statistic)}
     return(y)}
-  df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+  df <- results_object %>% lapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
 }
 
