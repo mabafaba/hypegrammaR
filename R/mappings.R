@@ -215,7 +215,6 @@ map_to_file<-function(object,filename,...){
 #' @param data.stratum.column data column name that holds the record's strata names
 #' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
-#' CAREFUL ! The last call of this function overwrites the internal weighting function default in hypegrammaR
 #' @examples
 #' # laod data and sampling frames:
 #' mydata<-read.csv("mydata.csv")
@@ -249,24 +248,9 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
 #' @param weight_function_1 first weighthing function
 #' @param weight_function_2 second weightng function
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
-#' CAREFUL ! This overwrites the internal weighting function default in hypegrammaR
 #' @export
 combine_weighting_functions<-function(weight_function_1, weight_function_2){
-  weighting_f_n <- surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
-  weighting_hype <<- weighting_f_n
-  return(weighting_f_n)
-}
-
-#' secret weighting function
-weighting_hype <- function(data){
-  weighting_internal(data)
-}
-
-#' empty weighting function
-#' @export
-weighting_internal <- function(data){
-  weights <- rep(1,nrow(data))
-  return(weights)
+surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
 }
 
 #' presentable p-value format
