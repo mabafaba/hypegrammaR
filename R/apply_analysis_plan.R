@@ -74,7 +74,8 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
 #' @param cluster_variable_name optional: the name of the variable with the cluster IDs
 #' @param questionnaire optional: the questionnaire (load_questionnaire())
 #' @param labeled do you want the resuts to display labels rather than xml names ? defaults to false, requires the questionnaire
-#' @param should progress be printed to the console? (default TRUE, slightly faster if FALSE)
+#' @param verbose should progress be printed to the console? (default TRUE, slightly faster if FALSE)
+#' @param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #' @return returns a list of hypegrammaR "result" objects (see map_to_result())
 #' @export
 
@@ -84,7 +85,8 @@ from_analysisplan_map_to_output <- function(data,
            cluster_variable_name = NULL,
            questionnaire = NULL,
            labeled = FALSE,
-           verbose = TRUE) {
+           verbose = TRUE,
+           confidence_level = 0.95) {
 
 
   #overwrite 'labeled' paramater if questionnaire is missing
@@ -102,6 +104,8 @@ from_analysisplan_map_to_output <- function(data,
   # remove junk rows:
   analysisplan <- analysisplan[!is.na(analysisplan$dependent.var), ]
   analysisplan <- analysisplan_clean(analysisplan)
+
+  lapply(analysisplan,function(x){if(is.factor(x)){return(as.character(x))};x}) %>% as.data.frame(stringsAsFactors = FALSE)
 
   # each 'repeat.var' repetition gets their own row
   analysisplan <- analysisplan_expand_repeat(analysisplan, data)
@@ -171,7 +175,8 @@ from_analysisplan_map_to_output <- function(data,
         case = case,
         cluster.variable.name = cluster_variable_name,
         weighting = weighting,
-        questionnaire = questionnaire
+        questionnaire = questionnaire,
+        confidence_level = confidence_level
       )
 
       if (!is.null(x["repeat.var"]) & (!is.na(x["repeat.var"]))) {

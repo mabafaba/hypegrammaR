@@ -5,7 +5,7 @@
 \title{Weighted percentages with confidence intervals for select multiple questions}
 \usage{
 percent_with_confints_select_multiple(dependent.var, dependent.var.sm.cols,
-  design, na.rm = TRUE)
+  design, na.rm = TRUE, confidence_level = 0.95)
 }
 \arguments{
 \item{dependent.var}{string with the column name in `data` of the dependent variable. Should be a 'select multiple.}
@@ -13,6 +13,8 @@ percent_with_confints_select_multiple(dependent.var, dependent.var.sm.cols,
 \item{dependent.var.sm.cols}{a vector with the columns indices of the choices for the select multiple question. Can be obtained by calling choices_for_select_multiple(question.name, data)}
 
 \item{design}{the svy design object created using map_to_design or directly with svydesign}
+
+\item{confidence_level}{the confidence level to be used for confidence intervals (default: 0.95)}
 }
 \value{
 A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var (= NA), independent.var.value (= NA), numbers, se, min and max.

@@ -33,10 +33,13 @@ map_to_design <- function(data,
       strata = names(strata.weights),
       weights = as.vector(strata.weights),nest = T)
 
-  if(!(is.null(cluster_ids))){
-    survey.design$cluster <- cluster_ids
+  # attributes(survey.design)$hg_weighting_function<-ifelse(!is.null(weighting_function),weighting_function,NA)
+  # attributes(survey.design)$hg_cluster_variable_name<-ifelse(!is.null(weighting_function),cluster_variable_name,NA)
+  attributes(survey.design)$hg_weighting_function<-weighting_function
+  attributes(survey.design)$hg_cluster_variable_name<-cluster_variable_name
+    return(survey.design)
+
   }
-    return(survey.design)}
 #add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
 
 

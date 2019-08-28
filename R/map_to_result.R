@@ -9,6 +9,7 @@
 #' @param cluster.variable.name if cluster sampling, provide the name of the variable in the dataset that denotes the cluster
 #' @param weighting A function that generates weights from a dataframe. You can create it with surveyweights::weighting_fun_from_samplingframe()
 #' @param questionnaire output from load_questionnaire()
+#' @param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #' @details
 #'
 #' - takes as parameters outputs from
@@ -25,15 +26,16 @@
 #'
 #' @return A list with the summary.statistic the hypothesis.test result
 #' @export
-map_to_result<-function(data,
+map_to_result <- function(data,
                         dependent.var,
                         independent.var = NULL,
                         case,
                         cluster.variable.name=NULL,
                         weighting=function(df){rep(1,nrow(df))},
-                        questionnaire=NULL){
+                        questionnaire=NULL,
+                        confidence_level = 0.95){
 
-  options(survey.lonely.psu = "remove")
+  options(survey.lonely.psu = "adjust")
 
   # put the relevant input parameters in a list so we can attach them to the output:
   parameters<-list(
@@ -44,6 +46,7 @@ map_to_result<-function(data,
     case=case
   )
 
+  data<-koboquest:::to_alphanumeric_lowercase_colnames_df(data)
 
   if(is.null(weighting)){
     weighting=function(df){rep(1,nrow(df))}
@@ -77,8 +80,8 @@ map_to_result<-function(data,
                                               dependent.var = dependent.var,
                                               independent.var = independent.var,
                                               case = case,
-                                              questionnaire = questionnaire)
-
+                                              questionnaire = questionnaire,
+                                              confidence_level = confidence_level)
 
 
 
