@@ -432,6 +432,8 @@ mean_with_confints <- function(dependent.var,
     warning(sanitised$message)
     return(datasanitation_return_empty_table(design$variables, dependent.var, message = sanitised$message))}
 
+  design<-sanitised$design
+
 
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
   summary <- svymean(formula(formula_string),
@@ -484,7 +486,10 @@ mean_with_confints_groups <- function(dependent.var,
                                    datasanitation_summary_statistics_mean_groups)
   if(!sanitised$success){
     warning(sanitised$message)
-    return(datasanitation_return_empty_table_NA(design$variables, dependent.var, independent.var, message = sanitised$message))}
+    return(datasanitation_return_empty_table_NA(design$variables, dependent.var, independent.var, message = sanitised$message))
+  }
+
+  design<-sanitised$design
 
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
   by <- paste0("~", independent.var, sep = "")
