@@ -12,7 +12,7 @@ map_to_design <- function(data,
                           cluster_variable_name = NULL,
                           weighting_function = NULL) {
 
-  # if no weighting function / cluster variable provided, set defaults, otherwise use parameters:
+  # if no weighting function / cluster variable provided
   if(is.null(cluster_variable_name)){
     cluster.ids <- as.formula(c("~1"))}else{
     cluster.ids <- paste0("~",cluster_variable_name)
@@ -30,7 +30,14 @@ map_to_design <- function(data,
       ids = formula(cluster.ids),
       strata = names(strata.weights),
       weights = as.vector(strata.weights),nest = T)
-    return(survey.design)}
+
+  # attributes(survey.design)$hg_weighting_function<-ifelse(!is.null(weighting_function),weighting_function,NA)
+  # attributes(survey.design)$hg_cluster_variable_name<-ifelse(!is.null(weighting_function),cluster_variable_name,NA)
+  attributes(survey.design)$hg_weighting_function<-weighting_function
+  attributes(survey.design)$hg_cluster_variable_name<-cluster_variable_name
+    return(survey.design)
+
+  }
 #add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
 
 
@@ -99,15 +106,21 @@ map_to_visualisation <- function(result) {
 #' @export
 map_to_master_table <- function(results_object, filename, questionnaire = NULL){
     summary_table_single <- function(x, questions = questionnaire){
-      if(!is.null(questions)){
-      x <- map_to_labeled(result = x, questionnaire = questions)}
-        if(is.null(x$hypothesis.test$result$p.value)){x$hypothesis.test$result$p.value <- NA}
-        if(is.null(x$hypothesis.test$name)){x$hypothesis.test$name <- NA}
-      y <- NULL
-      if(!is.null(x$summary.statistic)){
-        y <- data.frame(x$summary.statistic,
+        if(!is.null(questions)){
+          x <- map_to_labeled(result = x, questionnaire = questions)
+        }
+        y <- NULL
+        no_pvalue <- is.null(x$hypothesis.test$result$p.value)
+        no_hypothesis.test <- is.null(x$hypothesis.test$name)
+        if(no_pvalue|no_hypothesis.test){
+          x$hypothesis.test$result$p.value <- NA
+          x$hypothesis.test$name <- NA
+        }
+        if(!is.null(x$summary.statistic)){
+        y <- as.data.frame(x$summary.statistic,
              p.value = x$hypothesis.test$result$p.value,
-             test.name = x$hypothesis.test$name)}
+             test.name = x$hypothesis.test$name)
+        }
       return(y)
     }
     df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
@@ -130,13 +143,10 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
       x <- map_to_labeled(result = x, questionnaire = questions)}
     y <- NULL
     if(!is.null(x$summary.statistic)){
-      y <- data.frame(x$summary.statistic,
-                      p.value = x$hypothesis.test$result$p.value,
-                      test.name = x$hypothesis.test$name)}
+      y <- as.data.frame(x$summary.statistic)}
     return(y)}
   df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
-
 }
 
 #' Save outputs to files
@@ -227,6 +237,16 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
                                                   sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
 }
 
+
+#' Combine weight functions from two sampling frames
+#'
+#' @param weight_function_1 first weighthing function
+#' @param weight_function_2 second weightng function
+#' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
+#' @export
+combine_weighting_functions<-function(weight_function_1, weight_function_2){
+surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
+}
 
 #' presentable p-value format
 #' @export

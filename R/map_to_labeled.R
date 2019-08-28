@@ -21,7 +21,7 @@ map_to_labeled<-function(result, questionnaire){
 #' @param result hypegrammaR `result` object; output from map_to_result().
 #' @param questionnaire koboquest `questionnaire` object; output from load_questionnaire()
 #' @return same as input, but with all variable values labeled
-#' @details if the variable wasn't found in the questionnaire, or the choice wasn't found in the corresponding list of choices, the affected values will remain unchanged.
+#' @details if the Variable wasn't found in the questionnaire, or the choice wasn't found in the corresponding list of choices, the affected values will remain unchanged.
 labels_summary_statistic<-function(summary.statistic,questionnaire,label.dependent.var.value=T,label.independent.var.value=T,label.dependent.var=T,label.independent.var=T,independent.linebreak=T,dependent.linebreak=F){
   if(is.null(summary.statistic)){return(summary.statistic)}
 

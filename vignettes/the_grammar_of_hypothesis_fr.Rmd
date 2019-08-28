@@ -1,0 +1,231 @@
+---
+title: "Une grammaire des statistiques"
+author: "Barner M., Henzler E."
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Speaking with the Grammar of Hypothesis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Logique
+
+## Deroulement d'analyse
+
+Le deroulement d'une analyse selon les directives d'analyse des donnees:
+
+![instructions de flux d'analyse](./ hypegrammaR_flowchart.jpg)
+
+Son implementation dans hypegrammaR:
+
+![analysis flow hypegrammaR](./hypegrammaR_flowchart.jpg)
+
+
+
+
+## Principales etapes
+
+
+Toute analyse avec HypegrammaR suit la meme structure:
+
+- Chargez vos donnees d'entree
+- decidez de vos parametres d'analyse
+     - quel type d'hypothese avez-vous?
+     - quelles sont les variables dependantes et independantes, et quels sont leurs types de donnees?
+     
+     
+La grammaire est construite a partir de deux types d'elements:
+- "Blocks": Prend la sortie d'un mapping
+- "Mappings": decidez quoi faire, appelez un "bloc" qui le fait et renvoie un autre bloc.
+
+- _map_  a partir de vos parametres principaux vers un * cas d'analyse * distinct.
+- _map_ vos * entrees brutes * et * cas d'analyse * pour recevoir un * resultat d'analyse *
+- _map_ votre * resultat * sur une * visualisation * / * un tableau * ou d'autres sorties appropri?es
+- _map_ vos sorties dans un *fichier *
+
+
+## Exemple
+
+### Une premiere fois (une fois seulement par machine):
+```{r,eval=F}
+remotes::install_github('ellieallien/hypegrammaR',build_opts = c())
+remotes::install_github('mabafaba/surveyweights',build_opts = c())
+remotes::install_github('mabafaba/koboquest',build_opts=c())
+
+```
+### Une fois par evaluation
+
+#### Charger le package hypegrammaR
+```{r,warning=FALSE,message=FALSE}
+library(hypegrammaR)
+
+```
+
+#### Chargez vos fichiers
+
+Tous les fichiers d'entree sont attendus en tant que fichiers csv.
+
+Chaque entree que nous attendons habituellement d'une evaluation a sa propre fonction pour la charger. Ils verifient que le format correspond a ce qui est attendu, s'assurent qu'ils fonctionnent bien les uns avec les autres et preparent la fonctionnalite pour laquelle ils sont utilises.
+
+D'abord les donnees. Un fichier csv avec des donnees au format Kobo standard.
+```{r}
+assessment_data<-load_data(file = "../data/testdata.csv")
+```
+
+
+
+Puis un sampling frame. Un fichier csv avec une colonne avec des noms de strates, une colonne avec des chiffres de population. Les noms de strates doivent correspondre exactement a certaines valeurs des donnees. Nous devons indiquer a la fonction de chargement quelle colonne est quoi dans le sampling frame.
+```{r}
+sampling_frame<-load_samplingframe("../data/test_samplingframe.csv")
+```
+
+Enfin, le questionnaire, qui depend de la question et de la feuille de choix en tant que csv.
+
+```{r}
+
+questionnaire<-load_questionnaire(data = assessment_data,
+                                             questions = "../data/test_questionnaire_questions.csv",
+                                             choices = "../data/test_questionnaire_choices.csv",
+                                  choices.label.column.to.use = "label::English"
+                                             )
+
+```
+
+
+#### _Map_ pour ponderation
+```{r}
+
+weighting <- map_to_weighting( sampling.frame = sampling_frame,
+                               data.stratum.column = "stratification",
+                               sampling.frame.population.column = "population",
+                               sampling.frame.stratum.column = "strata.names",
+                               data = assessment_data)
+```
+
+### Pour chaque hypothese
+
+### _Map_ au cas d'analyse
+Tu dois savoir:
+
+- Le type d'hypothese. Actuellement mis en ouvre sont:
+   - `direct_reporting`
+   - `group_difference`
+   - `limit`
+   - `regression`
+- les noms des colonnes qui sont vos variables dependantes et independantes
+
+```{r}
+
+case <- map_to_case(hypothesis.type = "group_difference",
+                    dependent.var.type = "numerical",
+                    independent.var = "categorical")
+
+```
+
+
+## Maintenant, mettez tout cela ensemble et _Map_ le resultat:
+
+```{r}
+
+result<-map_to_result(data = assessment_data,
+              dependent.var = "number_simultaneous_unmet_need",
+              independent.var =   "region",
+              case = case,
+              weighting = weighting)
+```
+
+### Voir les resultats
+
+La fonction `map_to_result` vous donne un certain nombre de choses:
+
+- un message de log
+- Meta-informations: un journal de vos entrees, quel cas d'analyse a ete utilise, etc.
+- Les statistiques recapitulatives (moyennes, pourcentages, etc.)
+- les resultats du test d'hypothese quand il s'applique
+- une visualisation
+
+#### Le message du journal
+
+Tout d'abord, un message vous expliquant comment cela s'est passe:
+```{r}
+# result$message
+```
+C'est ce que nous voulons voir. Si quelque chose ne va pas, cela devrait vous dire ici ce qui s'est pass?.
+
+#### Meta-information
+
+```{r}
+# result$parameters
+```
+Comme vous pouvez le constater, il se souvient de vos param?tres d'entr?e. Il a ?galement ajout? un nom normalis? du cas d'analyse.
+
+#### Le resume statistique 
+
+```{r}
+# result$summary.statistic
+```
+
+Dans ce cas, les 'nombres' sont des moyennes, car la variable d'entree etait numerique. `min` et` max` est l'intervalle de confiance correspondant. `dependent.var.value` donne les valeurs des variables correspondantes si elles sont cat?goriques (` NA` sinon.)
+Lee resume statistique sera toujours organis? avec exactement ces colonnes, quelle que soit l'analyse effectuee. Ainsi, si vous ajoutez une nouvelle visualisation ou un nouveau format de sortie, cela fonctionnera pour toutes les sorties de cette fonction.
+
+#### Le test d'hypothese
+
+Ensuite, vous trouverez des informations sur le test d'hypothese utilise (le cas echeant) et sur la p-valeur:
+```{r}
+# result$hypothesis.test
+
+```
+
+Vous serez probablement plus interesse par la p-valeur et le type de test utilise.
+
+## Ajouter des etiquettes
+
+## _Map_ aux sorties utilisables
+
+### Chart
+```{r,warning=FALSE}
+
+chart<-map_to_visualisation(result)
+heatmap<-map_to_visualisation_heatmap(result)
+chart
+```
+
+Pour les utilisateurs avanc?s (qui connaissent ggplot): La fonction de visualisation retourne un objet ggplot afin que vous puissiez ajouter / remplacer des elements ggplot. par exemple:
+
+```{r,warning=F}
+# myvisualisation+coord_polar()
+
+```
+
+### donner des labels
+```{r,warning=FALSE}
+result %>% map_to_labeled(questionnaire) -> result_labeled
+chart <- result_labeled %>% map_to_visualisation
+heatmap <- result_labeled %>% map_to_visualisation_heatmap
+
+
+```
+
+
+### Sauver sous forme de fichier
+
+```{r, eval=FALSE}
+map_to_file(chart,"barchart.jpg")
+map_to_file(result$summary.statistic,"summary_statistics.csv")
+
+```
+
+
+
+
+
+
+

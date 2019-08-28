@@ -6,7 +6,7 @@
 \usage{
 from_analysisplan_map_to_output(data, analysisplan, weighting = NULL,
   cluster_variable_name = NULL, questionnaire = NULL,
-  labeled = FALSE)
+  labeled = FALSE, verbose = TRUE, confidence_level = 0.95)
 }
 \arguments{
 \item{data}{the data set as a data frame (load_data())}
@@ -20,6 +20,10 @@ from_analysisplan_map_to_output(data, analysisplan, weighting = NULL,
 \item{questionnaire}{optional: the questionnaire (load_questionnaire())}
 
 \item{labeled}{do you want the resuts to display labels rather than xml names ? defaults to false, requires the questionnaire}
+
+\item{verbose}{should progress be printed to the console? (default TRUE, slightly faster if FALSE)}
+
+\item{confidence_level}{the confidence level to be used for confidence intervals (default: 0.95)}
 }
 \value{
 returns a list of hypegrammaR "result" objects (see map_to_result())
