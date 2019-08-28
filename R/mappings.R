@@ -232,13 +232,7 @@ map_to_file<-function(object,filename,...){
 #' @export
 map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.population.column = "population",
                            sampling.frame.stratum.column = "stratum", data = NULL){
-  weighting_f <- surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
-                                                  data.stratum.column = data.stratum.column,
-                                                  sampling.frame.population.column = sampling.frame.population.column,
-                                                  sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
-  ### weighting function now live in hypegrammaR !
-  weighting_hype <<- weighting_f
-  return(weighting_f)
+  surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame
 }
 
 
