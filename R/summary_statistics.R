@@ -348,52 +348,38 @@ percent_with_confints_select_multiple_groups <-
 
 
     result_hg_format <- lapply(names(choices), function(x) {
-      design$variables[[x]] <- factor(as.logical(as.numeric(design$variables[[x]])),levels = c("TRUE","FALSE"))
-
-
-      # THIS PART IS A MESS
+      design$variables[[x]] <- factor(as.logical(as.numeric(design$variables[[x]])),
+                                      levels = c("TRUE", "FALSE"))
       srvyr_design <- srvyr::as_survey_design(design)
+      srvyr_design_grouped <- srvyr::group_by_(srvyr_design,
+                                               independent.var, x)
+      result <- srvyr::summarise(srvyr_design_grouped, numbers = srvyr::survey_mean(vartype = "ci",
+                                                                                    level = confidence_level))
 
-      srvyr_design_grouped <- srvyr::group_by_(srvyr_design, independent.var, x)
-
-      result<-srvyr::summarise(srvyr_design_grouped,
-                               numbers = srvyr::survey_mean(vartype = "ci",
-                                                            level = confidence_level)
-      )
-
-
+      result<-result[result[,2]=="TRUE",]
 
       if (nrow(result) > 0) {
-        summary_with_confints <- data.frame(
-          dependent.var = dependent.var,
-          independent.var = NA,
-          dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
-          independent.var.value = NA,
-          numbers = result$numbers,
-          se = NA,
-          min = result$numbers_low,
-          max = result$numbers_upp
-        )
-      } else{
-        summary_with_confints <- data.frame(
-          dependent.var = dependent.var,
-          independent.var = NA,
-          dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
-          independent.var.value = NA,
-          numbers = NA,
-          se = NA,
-          min = NA,
-          max = NA
-        )
+        summary_with_confints <- data.frame(dependent.var = dependent.var,
+                                            independent.var = independent.var,
+                                            dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
+                                            independent.var.value = result[,1],
+                                            numbers = result$numbers, se = NA, min = result$numbers_low,
+                                            max = result$numbers_upp)
       }
+      else {
+        summary_with_confints <- data.frame(dependent.var = dependent.var,
+                                            independent.var = NA, dependent.var.value = gsub(paste0("^",
 
+                                                                                                    dependent.var, "."), "", x), independent.var.value = NA,
+                                            numbers = NA, se = NA, min = NA, max = NA)
+      }
     })
     result_hg_format %<>% do.call(rbind, .)
+    result_hg_format[, "min"] <- result_hg_format[, "min"] %>%
+      replace(result_hg_format[, "min"] < 0, 0)
+    result_hg_format[, "max"] <- result_hg_format[, "max"] %>%
+      replace(result_hg_format[, "max"] > 1, 1)
 
-    result_hg_format[, "min"] <-
-      result_hg_format[, "min"] %>% replace(result_hg_format[, "min"] < 0 , 0)
-    result_hg_format[, "max"] <-
-      result_hg_format[, "max"] %>% replace(result_hg_format[, "max"] > 1 , 1)
     result_hg_format %>% as.data.frame
 
     return(result_hg_format)
