@@ -16,9 +16,9 @@ a _function_ that creates the relevant ggplot object
 selects an appropriate visualisation function based on the analysis case
 }
 \examples{
-map_to_visualisation("result_var1")
-\dontrun{result_var1<- map_to_result( ... )}
+\dontrun{map_to_visualisation("result_var1")}
+\dontrun{result_var1<- map_to_result( ... )
 my_vis_fun <- map_to_visualisation(result_var1)
 my_ggplot_obj<-my_vis_fun( ... )
-my_ggplot_obj # plots the object
+my_ggplot_obj # plots the object}
 }
