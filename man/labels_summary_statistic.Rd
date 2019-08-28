@@ -21,5 +21,5 @@ same as input, but with all variable values labeled
 Add labels to results
 }
 \details{
-if the variable wasn't found in the questionnaire, or the choice wasn't found in the corresponding list of choices, the affected values will remain unchanged.
+if the Variable wasn't found in the questionnaire, or the choice wasn't found in the corresponding list of choices, the affected values will remain unchanged.
 }

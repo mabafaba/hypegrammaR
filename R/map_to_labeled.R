@@ -38,7 +38,7 @@ labels_summary_statistic<-function(summary.statistic,questionnaire,label.depende
     summary.statistic[,"dependent.var.value"]<-questionnaire$question_get_choice_labels(summary.statistic[,"dependent.var.value"],
                                                                           summary.statistic[,"dependent.var"][1])
     if(dependent.linebreak){
-      summary.statistic[,"dependent.var.value"] %<>% linebreak
+      summary.statistic[,"dependent.var.value"]<-summary.statistic[,"dependent.var.value"] %>% linebreak
     }
   }
 
@@ -46,7 +46,7 @@ labels_summary_statistic<-function(summary.statistic,questionnaire,label.depende
     summary.statistic[,"independent.var.value"]<-questionnaire$question_get_choice_labels(summary.statistic[,"independent.var.value"],
                                                                             summary.statistic[,"independent.var"][1])
     if(independent.linebreak){
-      summary.statistic[,"independent.var.value"] %<>% linebreak
+      summary.statistic[,"independent.var.value"] <- summary.statistic[,"independent.var.value"] %>% linebreak
     }
 
   }

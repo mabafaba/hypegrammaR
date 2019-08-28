@@ -224,7 +224,7 @@ printparamlist <- function(x, title = "") {
   cbind(names(x[-length(x)]), as.matrix(x)[-length(x)]) %>% apply(1, paste, collapse =
                                                                     " = '") %>% paste(collapse = "'\n") %>% cat
   cat("\n\n")
-  cat(blue(paste("----  ", x["percentcomplete"])))
+  cat(crayon::blue(paste("----  ", x["percentcomplete"])))
 }
 
 analysisplan_clean<-function(analysisplan){

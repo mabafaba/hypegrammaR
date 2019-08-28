@@ -1,10 +1,5 @@
 #' not used
 reach_style_barchart<-function(group,percent,error_min=NULL,error_max=NULL,horizontal=T){
-  require('extrafont')
-  require('ggplot2')
-  require("ggthemes")
-  require("dplyr")
-  require('grid')
 
   percent_formats<-function(x,digits=0){return(paste0(round(x*100,digits),"%"))}
 
@@ -35,7 +30,7 @@ reach_style_barchart<-function(group,percent,error_min=NULL,error_max=NULL,horiz
               hjust=0,
               vjust=0.5) +
 
-    theme_tufte()+reachR:::reach_theme() +
+    theme_tufte()+ # reachR:::reach_theme() +
     theme(text=element_text(family="Arial Narrow"),
           axis.title.x=element_blank(),
           axis.text.x=element_blank(),
