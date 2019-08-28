@@ -36,7 +36,7 @@ datasanitation_summary_statistics_percent_sm_choice <- function(data,dependent.v
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_morethan_1_unique_dependent,
+                         # datasanitation_morethan_1_unique_dependent, # this is taken out because the choice is always logical & we don't want NA for 0 or 100%.
                          datasanitation_dependent_max_unique)
 }
 
@@ -44,9 +44,9 @@ datasanitation_summary_statistics_percent_sm_choice_groups <- function(data,depe
   apply_data_sanitations(data,
                          dependent.var,
                          independent.var,
-                         datasanitation_morethan_1_unique_dependent,
+                         # datasanitation_morethan_1_unique_dependent,
                          datasanitation_dependent_max_unique,
-                         datasanitation_morethan_1_unique_independent,
+                         # datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique)}
 
 
@@ -73,7 +73,7 @@ datasanitation_summary_statistics_mean_groups <- function(data, dependent.var, i
                          dependent.var,
                          independent.var,
                          datasanitation_dependent_numeric,
-                         datasanitation_morethan_1_unique_independent,
+                         # datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique)
 }
 

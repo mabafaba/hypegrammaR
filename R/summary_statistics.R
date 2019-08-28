@@ -124,8 +124,11 @@ percent_with_confints_select_multiple <- function(dependent.var,
   choices <- design$variables[, dependent.var.sm.cols]
 
               results_srvyr <- lapply(names(choices), function(x) {
+
+                # sometimes they're 1/0, T/F, in various types. we make it numeric -> logical -> factor to be sure
                 design$variables[[x]] <- factor(as.logical(as.numeric(design$variables[[x]])),
                                                 levels = c("TRUE", "FALSE"))
+
                 srvyr_design <- srvyr::as_survey_design(design)
                 srvyr_design_grouped <- srvyr::group_by_(srvyr_design,
                                                          x)
@@ -150,6 +153,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
                 # names(x)[1]<-names(choices)
               })
 
+              #
 
 
   results_srvyr %<>% do.call(rbind, .)
@@ -357,13 +361,32 @@ percent_with_confints_select_multiple_groups <-
       result <- srvyr::summarise(srvyr_design_grouped, numbers = srvyr::survey_mean(vartype = "ci",
                                                                                     level = confidence_level))
 
-      result<-result[result[,2]=="TRUE",]
+
+    # reverse those that are FALSE to TRUE (1 - numbers). we can't just remove all the falses in case only FALSE existed and there are no TRUE rows.
+      # the code below only makes sense if T and F are the only options (which they should).. but just in case:
+      if(!all(unlist(result[,2]) %in% c("TRUE","FALSE"))){stop("found values other than 'TRUE' and 'FALSE' in select_multiple choice column; this should not happen and might be an internal bug")}
+      # which rows are false? we'll need that a lot:
+      falses<-which(result[,2]=="FALSE")
+      # get the MoE; calculating the higher and lower distance between confint and mean separately because I'm paranoid atm:
+      confint_distance_low<-result$numbers - result$numbers_low
+      confint_distance_high<-result$numbers_upp - result$numbers
+      # reverse numbers
+      result$numbers[falses]<- 1-result$numbers[falses]
+      # reverse confints
+      result$numbers_low[falses]<- result$numbers[falses] - confint_distance_low[falses]
+      result$numbers_upp[falses]<- result$numbers[falses] + confint_distance_high[falses]
+
+      # now they should match the TRUEs:
+      result[falses,2]<-"TRUE"
+
+      # now, if 'TRUE's existed and they are now duplicated, remove those.
+      result<-unique(result)
 
       if (nrow(result) > 0) {
         summary_with_confints <- data.frame(dependent.var = dependent.var,
                                             independent.var = independent.var,
                                             dependent.var.value = gsub(paste0("^", dependent.var, "."), "", x),
-                                            independent.var.value = result[,1],
+                                            independent.var.value = unlist(result[,1]),
                                             numbers = result$numbers, se = NA, min = result$numbers_low,
                                             max = result$numbers_upp)
       }
