@@ -28,9 +28,9 @@ Remotes:
     github::mabafaba/koboquest,
     github::mabafaba/xlsformfill,
     github::mabafaba/kobostandards,
-    mabafaba/composr,
-    ellieallien/surveyweights,
-    mabafaba/koboquest
+    github::mabafaba/composr,
+    github::ellieallien/surveyweights,
+    github::mabafaba/koboquest
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
