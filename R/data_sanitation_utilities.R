@@ -6,7 +6,7 @@
 #' @param sanitation_function the function containing all the checks for the analysis function in question
 #' @return returns the cleaned data with a santation success or failure message
 #' @export
-datasanitation_design<-function(design,dependent.var,independent.var,sanitation_function){
+datasanitation_design<-function(design,dependent.var,independent.var, sanitation_function){
   sanitised<-sanitation_function(design$variables,dependent.var,independent.var)
   if(sanitised$success){
     sanitised$design<-map_to_design(sanitised$data,
@@ -106,12 +106,10 @@ datasanitation_hypothesistest_chisq_sm<-function(data,dependent.var,independent.
                          dependent.var,  # all functions take these parameters
                          independent.var,# all functions take these parameters
                          datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_record_per_independent_value,
                          datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique,
-                         datasanitation_dependent_max_unique,
-                         datasanitation_morethan_1_record_per_independent_value
-
-  )
+                         datasanitation_dependent_max_unique)
 
 }
 
@@ -123,12 +121,10 @@ datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
                          dependent.var,  # all functions take these parameters
                          independent.var,# all functions take these parameters
                          datasanitation_morethan_1_unique_dependent,
+                         datasanitation_morethan_1_record_per_independent_value,
                          datasanitation_morethan_1_unique_independent,
                          datasanitation_dependent_numeric,
-                         datasanitation_independent_max_unique,
-                         datasanitation_morethan_1_record_per_independent_value
-
-  )
+                         datasanitation_independent_max_unique)
 }
 
 
