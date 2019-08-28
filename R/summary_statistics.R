@@ -146,6 +146,29 @@ percent_with_confints_select_multiple <- function(dependent.var,
                   "",
                   names(x)[1])
 
+
+                # which rows are false? we'll need that a lot:
+                falses<-which(x[,1]=="FALSE")
+                # get the MoE; calculating the higher and lower distance between confint and mean separately because I'm paranoid atm:
+                confint_distance_low<-x$numbers - x$numbers_low
+                confint_distance_high<-x$numbers_upp - x$numbers
+                # reverse numbers
+                x$numbers[falses]<- 1-x$numbers[falses]
+                # reverse confints
+                x$numbers_low[falses]<- x$numbers[falses] - confint_distance_low[falses]
+                x$numbers_upp[falses]<- x$numbers[falses] + confint_distance_high[falses]
+
+                # now they should match the TRUEs:
+                x[falses,1]<-"TRUE"
+
+                # now, if 'TRUE's existed and they are now duplicated, remove those. (ignoring nums in fear of floating point errors)
+                duplicated_rows<-duplicated(x[,c(1,5),drop=FALSE])
+                x<-x[!duplicated_rows,,drop = FALSE]
+
+
+
+
+
                 x<-x[x[,1]=="TRUE"|is.na(x[,1]),]
                 # names(x)[1]<-"numbers"
 
