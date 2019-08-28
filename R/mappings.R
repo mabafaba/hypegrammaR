@@ -13,8 +13,7 @@ map_to_design <- function(data,
                           cluster_ids = NULL,
                           weighting_function = NULL) {
 
-  # if no weighting function / cluster variable provided,
-  # the first default of the function is to check what weighting function is defined inside hypegrammaR, then to set defaults, otherwise use parameters:
+  # if no weighting function / cluster variable provided
   if(is.null(cluster_variable_name)){
     cluster.ids <- as.formula(c("~1"))}else{
     cluster.ids <- paste0("~",cluster_variable_name)
