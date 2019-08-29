@@ -7,7 +7,7 @@
 #' @export
 map_to_labeled<-function(result, questionnaire){
   if(is.null(result$summary.statistic)){return(result)}
-
+  result$summary.statistic <- as.data.frame(result$summary.statistic)
   result$summary.statistic<-labels_summary_statistic(result$summary.statistic,
                                                      questionnaire = questionnaire,
                                                      label.dependent.var.value = T,
