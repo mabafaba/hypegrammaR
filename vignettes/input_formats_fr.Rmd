@@ -1,5 +1,5 @@
 ---
-title: "Quickstart"
+title: "Input Formats (FR)"
 author: "Sharon Orengo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
