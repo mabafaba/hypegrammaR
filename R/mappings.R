@@ -107,6 +107,7 @@ map_to_visualisation <- function(result) {
 map_to_master_table <- function(results_object, filename, questionnaire = NULL){
     summary_table_single <- function(x, questions = questionnaire){
         if(!is.null(questions)){
+          x <- map_to_labeled(result = x, questionnaire = questions)
         }
         y <- NULL
         no_pvalue <- is.null(x$hypothesis.test$result$p.value)
