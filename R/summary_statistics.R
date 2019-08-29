@@ -285,6 +285,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
   return(result_hg_format)
 }
 
+
 #'Weighted percentages with confidence intervals for groups (select multiple questions)
 #'
 #'@param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select multiple.
