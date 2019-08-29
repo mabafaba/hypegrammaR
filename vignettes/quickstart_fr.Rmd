@@ -4,7 +4,7 @@ author: "Sharon Orengo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Quickstart}
+  %\VignetteIndexEntry{Quickstart (FR)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
 ## Pretext
 Le package hypegrammaR impl?mente les [lignes directrices pour l'analyse de donn?es quantitatives IMPACT] (http://example.com). Bien que ce guide fonctionne de mani?re autonome, tout cela aura plus de sens si vous les lisez en premier.
 
