@@ -3,7 +3,6 @@ title: "Une grammaire des statistiques"
 author: "Barner M., Henzler E."
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-vignette: >
   %\VignetteIndexEntry{Speaking with the Grammar of Hypothesis (FR)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}

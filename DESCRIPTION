@@ -25,6 +25,7 @@ Imports:
     htmltools,
     assertthat,
     kableExtra,
+    parallel,
     srvyr,
     extrafont,
     purrr,
