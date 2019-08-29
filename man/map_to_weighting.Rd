@@ -26,7 +26,7 @@ returns a new function that takes a data frame as input returns a vector of weig
 creates a weighting function from a sampling frame
 }
 \examples{
-# laod data and sampling frames:
+\dontrun{# load data and sampling frames:
 mydata<-read.csv("mydata.csv")
 mysamplingframe<-read.csv("mysamplingframe.csv")
 # create weighting function:
@@ -39,5 +39,5 @@ mydata$weights<-weighting(mydata)
 
 # this also works on subsets of the data:
 mydata_subset<-mydata[1:100,]
-subset_weights<- weighting(mydata)
+subset_weights<- weighting(mydata)}
 }

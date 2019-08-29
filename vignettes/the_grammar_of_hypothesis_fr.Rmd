@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 Le deroulement d'une analyse selon les directives d'analyse des donnees:
 
-![instructions de flux d'analyse](./ hypegrammaR_flowchart.jpg)
+![instructions de flux d'analyse](./hypegrammaR_flowchart.jpg)
 
 Son implementation dans hypegrammaR:
 

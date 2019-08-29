@@ -6,7 +6,7 @@
 #' @param weighting_function if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?
 #' @details create a `survey` package design object from the data and information on the sampling strategy
 #' @return a `survey` package design object
-#' @examples map_to_design(data,cluster_variable_name="cluster_id")
+#' @examples \dontrun{map_to_design(data,cluster_variable_name="cluster_id")}
 #' @export
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
@@ -56,11 +56,11 @@ map_to_design <- function(data,
 #'
 #' @param result a result object containing the summary statistics and hypothesis tests for the case.
 #' @return a _function_ that creates the relevant ggplot object
-#' @examples map_to_visualisation("result_var1")
-#' @examples result_var1<- map_to_result( ... )
+#' @examples \dontrun{map_to_visualisation("result_var1")}
+#' @examples \dontrun{result_var1<- map_to_result( ... )
 #' my_vis_fun <- map_to_visualisation(result_var1)
 #' my_ggplot_obj<-my_vis_fun( ... )
-#' my_ggplot_obj # plots the object
+#' my_ggplot_obj # plots the object}
 #' @export
 map_to_visualisation <- function(result) {
 
@@ -156,14 +156,14 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
 #' @param filename The name of the file that is produced. The extension needs to match the type of object you want to save (csv for tables, jpg/pdf for images)
 #' @return the object that was given as input (unchanged).
 #' @examples
-#' # some table:
+#' \dontrun{# some table:
 #' mytable<-data.frame(a=1:10,b=1:10)
 #' map_to_file(mytable,"mytable.csv")
 #'
 #' # some graphic made with ggplot:
 #' mygraphic<-ggplot(mytable,aes(a,b))+geom_point()
 #' map_to_file(mygraphic,"visualisation.jpg")
-#' map_to_file(mygraphic,"visualisation.pdf")
+#' map_to_file(mygraphic,"visualisation.pdf")}
 #' @export
 map_to_file<-function(object,filename,...){
 
@@ -215,7 +215,7 @@ map_to_file<-function(object,filename,...){
 #' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
 #' @examples
-#' # laod data and sampling frames:
+#' \dontrun{# load data and sampling frames:
 #' mydata<-read.csv("mydata.csv")
 #' mysamplingframe<-read.csv("mysamplingframe.csv")
 #' # create weighting function:
@@ -228,7 +228,7 @@ map_to_file<-function(object,filename,...){
 #'
 #' # this also works on subsets of the data:
 #' mydata_subset<-mydata[1:100,]
-#' subset_weights<- weighting(mydata)
+#' subset_weights<- weighting(mydata)}
 #' @export
 map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.population.column = "population",
                            sampling.frame.stratum.column = "stratum", data = NULL){
