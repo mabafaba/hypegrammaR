@@ -6,10 +6,6 @@
 #'
 #' @param case a string uniquely identifying the analysis case. output of map_to_case().
 #' @return a _function_ that computes the relevant hypothesis test
-#' @examples map_to_summary_statistic("group_difference_categorical_categorical")
-#' @examples my_case<- map_to_case( ... )
-#' my_hyptest <- map_to_hypothesis_test(my_case)
-#' my_hyptest( ... )
 #' @export
 map_to_hypothesis_test <- function(design,
                                    dependent.var,

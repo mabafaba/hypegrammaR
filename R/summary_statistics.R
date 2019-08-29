@@ -5,7 +5,7 @@
 #'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
-#'@examples percent_with_confints_select_one("population_group", design)
+#'@examples \dontrun{percent_with_confints_select_one("population_group", design)}
 #'@export
 percent_with_confints_select_one <-
   function(dependent.var,
@@ -156,14 +156,14 @@ percent_with_confints_select_multiple <- function(dependent.var,
               #
 
 
-  results_srvyr %<>% do.call(rbind, .)
+  results_srvyr <- results_srvyr %>% do.call(rbind, .)
   # standard columns:
-  results_srvyr %<>% rename('min' = 'numbers_low','max' = 'numbers_upp')
+  results_srvyr <- results_srvyr %>% dplyr::rename('min' = 'numbers_low','max' = 'numbers_upp')
   results_srvyr$dependent.var <- dependent.var
   results_srvyr$independent.var <-NA
   results_srvyr$independent.var.value <-NA
   results_srvyr$se <-NA
-  results <- results_srvyr %>% select(dependent.var,independent.var,dependent.var.value,independent.var.value,numbers,se,min,max)
+  results <- results_srvyr %>% dplyr::select(dependent.var,independent.var,dependent.var.value,independent.var.value,numbers,se,min,max)
 
   # trunkate confints to 0-1:
   results[, "min"] <-
@@ -184,7 +184,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
 #'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #'@details this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category in each group of the independent variable.
 #'@return A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
-#'@examples percent_with_confints_select_one_groups("population_group", "resp_gender", design)
+#'@examples \dontrun{percent_with_confints_select_one_groups("population_group", "resp_gender", design)}
 #'@export
 percent_with_confints_select_one_groups <- function(dependent.var,
                                                     independent.var,
@@ -379,8 +379,11 @@ percent_with_confints_select_multiple_groups <-
       # now they should match the TRUEs:
       result[falses,2]<-"TRUE"
 
-      # now, if 'TRUE's existed and they are now duplicated, remove those.
-      result<-unique(result)
+      # now, if 'TRUE's existed and they are now duplicated, remove those. (ignoring nums in fear of floating point errors)
+      duplicated_rows<-duplicated(result[,c(1,2),drop=FALSE])
+      result<-result[!duplicated_rows,,drop = FALSE]
+      # duplicate_rows<-duplicated(result[,c("dependent.var","independent.var","dependent.var.value","independent.var.value")])
+      # res[-duplicate_rows,,drop = FALSE]
 
       if (nrow(result) > 0) {
         summary_with_confints <- data.frame(dependent.var = dependent.var,
@@ -398,7 +401,7 @@ percent_with_confints_select_multiple_groups <-
                                             numbers = NA, se = NA, min = NA, max = NA)
       }
     })
-    result_hg_format %<>% do.call(rbind, .)
+    result_hg_format <- result_hg_format %>% do.call(rbind, .)
     result_hg_format[, "min"] <- result_hg_format[, "min"] %>%
       replace(result_hg_format[, "min"] < 0, 0)
     result_hg_format[, "max"] <- result_hg_format[, "max"] %>%
@@ -563,7 +566,7 @@ summary_statistic_rank <-
       percent_with_confints(dependent.var, independent.var, design, confidence_level = confidence_level)
     ranked <-
       percent %>% split.data.frame(percent$independent.var.value, drop = T) %>% lapply(function(x) {
-        mutate(x, rank = rank(x$numbers, ties.method = "min"))
+        dplyr::mutate(x, rank = rank(x$numbers, ties.method = "min"))
       }) %>% do.call(rbind, .)
     return(ranked)
   }

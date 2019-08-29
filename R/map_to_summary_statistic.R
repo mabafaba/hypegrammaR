@@ -9,10 +9,10 @@
 #' @param questionnaire the questionnaire (from load_questionnaire())
 #' @param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
 #' @return a _function_ that computes the relevant summary statistic
-#' @examples map_to_summary_statistic("group_difference_categorical_categorical")
-#' @examples my_case<- map_to_case( ... )
+#' @examples \dontrun{map_to_summary_statistic("group_difference_categorical_categorical")}
+#' @examples \dontrun{my_case<- map_to_case( ... )
 #' my_sumstat <- map_to_summary_statistic(my_case)
-#' my_sumstat( ... )
+#' my_sumstat( ... )}
 #' @export
 map_to_summary_statistic <-
   function(design,

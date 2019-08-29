@@ -45,7 +45,7 @@ case_not_implemented_error<-function(case,situation){
 #' @param dependent.var.type The type of the dependent variable as a string. must be either "numerical" or "categorical"
 #' @param independent.var.type The type of the independent variable as a string. must be either "numerical" or "categorical"
 #' @return a string that other functions can use to know what analysis case they are dealing with. It has a class "analysis_case" assigned
-#' @examples map_to_case()
+#' @examples \dontrun{map_to_case("group_difference","categorical","categorical")}
 #' @export
 map_to_case<-function(hypothesis.type,
                       dependent.var.type=NULL,
