@@ -285,7 +285,7 @@ percent_with_confints_select_one_groups <- function(dependent.var,
 
       srvyr_design <- srvyr::as_survey_design(design)
 
-      srvyr_design_grouped <- group_by_(srvyr_design,independent.var, dependent.var)
+      srvyr_design_grouped <- srvyr::group_by_(srvyr_design,independent.var, dependent.var)
 
       result <- summarise(srvyr_design_grouped,numbers = srvyr::survey_mean(vartype = "ci",
                                                                   level = confidence_level)
