@@ -35,7 +35,7 @@ map_to_result <- function(data,
                         questionnaire=NULL,
                         confidence_level = 0.95){
 
-  options(survey.lonely.psu = "adjust")
+  options(survey.lonely.psu = "average")
 
   # put the relevant input parameters in a list so we can attach them to the output:
   parameters<-list(
