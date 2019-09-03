@@ -5,10 +5,20 @@
 \title{Map to summary statistic}
 \usage{
 map_to_summary_statistic(design, dependent.var, independent.var, case,
-  questionnaire = NULL)
+  questionnaire = NULL, confidence_level = 0.95)
 }
 \arguments{
+\item{design}{the design object (map_to_design())}
+
+\item{dependent.var}{the name of the dependent variable}
+
+\item{independent.var}{the name of the independent variable}
+
 \item{case}{a string uniquely identifying the analysis case. output of map_to_case().}
+
+\item{questionnaire}{the questionnaire (from load_questionnaire())}
+
+\item{confidence_level}{the confidence level to be used for confidence intervals (default: 0.95)}
 }
 \value{
 a _function_ that computes the relevant summary statistic
@@ -17,8 +27,8 @@ a _function_ that computes the relevant summary statistic
 selects an appropriate summary statistic function based on the analysis case
 }
 \examples{
-map_to_summary_statistic("group_difference_categorical_categorical")
-my_case<- map_to_case( ... )
+\dontrun{map_to_summary_statistic("group_difference_categorical_categorical")}
+\dontrun{my_case<- map_to_case( ... )
 my_sumstat <- map_to_summary_statistic(my_case)
-my_sumstat( ... )
+my_sumstat( ... )}
 }

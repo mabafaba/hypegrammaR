@@ -4,7 +4,8 @@
 \alias{map_to_template}
 \title{Map results to an output template}
 \usage{
-map_to_template(x, questionnaire = NULL, dir, type, filename)
+map_to_template(x, questionnaire = NULL, dir, type = NULL, filename,
+  custom_template = NULL)
 }
 \arguments{
 \item{x}{hypegrammaR result or list of results (created with map_to_result() or from_analysisplan_map_to_output())}
@@ -13,9 +14,11 @@ map_to_template(x, questionnaire = NULL, dir, type, filename)
 
 \item{dir}{the directory in which to save the output file (absolute path or relative to current working directory)}
 
-\item{type}{the type of report template to use. Currently one of "full", "visual" or "summary"}
+\item{type}{the type of report template to use, as a string. Currently one of "full", "visual" or "summary". Can be omitted if custom template is used}
 
 \item{filename}{the name of the file. must end in '.html'}
+
+\item{custom_template}{optional: the full path to the custom template to use (must be an RMD file in the templates folder)}
 }
 \description{
 Map results to an output template

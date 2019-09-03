@@ -6,15 +6,13 @@
 #' @param weighting_function if cluster sampling was used, what's the name of the column in `data` that identifies the cluster?
 #' @details create a `survey` package design object from the data and information on the sampling strategy
 #' @return a `survey` package design object
-#' @examples map_to_design(data,cluster_variable_name="cluster_id")
+#' @examples \dontrun{map_to_design(data,cluster_variable_name="cluster_id")}
 #' @export
 map_to_design <- function(data,
                           cluster_variable_name = NULL,
-                          cluster_ids = NULL,
-                          weighting_function = weighting_hype) {
+                          weighting_function = NULL) {
 
-  # if no weighting function / cluster variable provided,
-  # the first default of the function is to check what weighting function is defined inside hypegrammaR, then to set defaults, otherwise use parameters:
+  # if no weighting function / cluster variable provided
   if(is.null(cluster_variable_name)){
     cluster.ids <- as.formula(c("~1"))}else{
     cluster.ids <- paste0("~",cluster_variable_name)
@@ -33,10 +31,13 @@ map_to_design <- function(data,
       strata = names(strata.weights),
       weights = as.vector(strata.weights),nest = T)
 
-  if(!(is.null(cluster_ids))){
-    survey.design$cluster <- cluster_ids
+  # attributes(survey.design)$hg_weighting_function<-ifelse(!is.null(weighting_function),weighting_function,NA)
+  # attributes(survey.design)$hg_cluster_variable_name<-ifelse(!is.null(weighting_function),cluster_variable_name,NA)
+  attributes(survey.design)$hg_weighting_function<-weighting_function
+  attributes(survey.design)$hg_cluster_variable_name<-cluster_variable_name
+    return(survey.design)
+
   }
-    return(survey.design)}
 #add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
 
 
@@ -55,11 +56,11 @@ map_to_design <- function(data,
 #'
 #' @param result a result object containing the summary statistics and hypothesis tests for the case.
 #' @return a _function_ that creates the relevant ggplot object
-#' @examples map_to_visualisation("result_var1")
-#' @examples result_var1<- map_to_result( ... )
+#' @examples \dontrun{map_to_visualisation("result_var1")}
+#' @examples \dontrun{result_var1<- map_to_result( ... )
 #' my_vis_fun <- map_to_visualisation(result_var1)
 #' my_ggplot_obj<-my_vis_fun( ... )
-#' my_ggplot_obj # plots the object
+#' my_ggplot_obj # plots the object}
 #' @export
 map_to_visualisation <- function(result) {
 
@@ -122,7 +123,8 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
         }
       return(y)
     }
-    df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+    results_object <- lapply(results_object,function(x){x$summary.statistic<-as.data.frame(x$summary.statistic,stringsAsFactors=F);x})
+    df <- results_object %>% lapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
 }
 
@@ -144,7 +146,7 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
     if(!is.null(x$summary.statistic)){
       y <- as.data.frame(x$summary.statistic)}
     return(y)}
-  df <- results_object %>% mclapply(summary_table_single) %>% do.call(rbind, .)
+  df <- results_object %>% lapply(summary_table_single) %>% do.call(rbind, .)
   map_to_file(df, filename)
 }
 
@@ -154,14 +156,14 @@ map_to_summary_table <- function(results_object, filename, questionnaire = NULL)
 #' @param filename The name of the file that is produced. The extension needs to match the type of object you want to save (csv for tables, jpg/pdf for images)
 #' @return the object that was given as input (unchanged).
 #' @examples
-#' # some table:
+#' \dontrun{# some table:
 #' mytable<-data.frame(a=1:10,b=1:10)
 #' map_to_file(mytable,"mytable.csv")
 #'
 #' # some graphic made with ggplot:
 #' mygraphic<-ggplot(mytable,aes(a,b))+geom_point()
 #' map_to_file(mygraphic,"visualisation.jpg")
-#' map_to_file(mygraphic,"visualisation.pdf")
+#' map_to_file(mygraphic,"visualisation.pdf")}
 #' @export
 map_to_file<-function(object,filename,...){
 
@@ -212,9 +214,8 @@ map_to_file<-function(object,filename,...){
 #' @param data.stratum.column data column name that holds the record's strata names
 #' @param data optional but recommended: you can provide an example data frame of data supposed to match the sampling frame to check if the provided variable names match and whether all strata in the data appear in the sampling frame.
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
-#' CAREFUL ! The last call of this function overwrites the internal weighting function default in hypegrammaR
 #' @examples
-#' # laod data and sampling frames:
+#' \dontrun{# load data and sampling frames:
 #' mydata<-read.csv("mydata.csv")
 #' mysamplingframe<-read.csv("mysamplingframe.csv")
 #' # create weighting function:
@@ -227,17 +228,14 @@ map_to_file<-function(object,filename,...){
 #'
 #' # this also works on subsets of the data:
 #' mydata_subset<-mydata[1:100,]
-#' subset_weights<- weighting(mydata)
+#' subset_weights<- weighting(mydata)}
 #' @export
 map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.population.column = "population",
                            sampling.frame.stratum.column = "stratum", data = NULL){
-  weighting_f <- surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
+  surveyweights::weighting_fun_from_samplingframe(sampling.frame = sampling.frame,
                                                   data.stratum.column = data.stratum.column,
                                                   sampling.frame.population.column = sampling.frame.population.column,
                                                   sampling.frame.stratum.column = sampling.frame.stratum.column, data = data)
-  ### weighting function now live in hypegrammaR !
-  weighting_hype <<- weighting_f
-  return(weighting_f)
 }
 
 
@@ -246,24 +244,9 @@ map_to_weighting<-function(sampling.frame, data.stratum.column, sampling.frame.p
 #' @param weight_function_1 first weighthing function
 #' @param weight_function_2 second weightng function
 #' @return returns a new function that takes a data frame as input returns a vector of weights corresponding to each row in the data frame.
-#' CAREFUL ! This overwrites the internal weighting function default in hypegrammaR
 #' @export
 combine_weighting_functions<-function(weight_function_1, weight_function_2){
-  weighting_f_n <- surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
-  weighting_hype <<- weighting_f_n
-  return(weighting_f_n)
-}
-
-#' secret weighting function
-weighting_hype <- function(data){
-  weighting_internal(data)
-}
-
-#' empty weighting function
-#' @export
-weighting_internal <- function(data){
-  weights <- rep(1,nrow(data))
-  return(weights)
+surveyweights::combine_weighting_functions(weight_function_1, weight_function_2)
 }
 
 #' presentable p-value format

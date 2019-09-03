@@ -1,10 +1,10 @@
 ---
-title: "Quickstart"
+title: "Input Formats (FR)"
 author: "Sharon Orengo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Quickstart}
+  %\VignetteIndexEntry{Input formars (FR)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -103,7 +103,7 @@ Les param?tres sont:
 - `choices.file` le chemin d'acc?s ? la feuille de choix en tant que fichier csv
 - `choices.label.column.to.use`: nom exact de la colonne contenant les ?tiquettes ? utiliser. Vous pouvez ajouter une colonne suppl?mentaire avec des ?tiquettes personnalis?es ? votre feuille de choix si vous ne souhaitez pas utiliser les ?tiquettes de choix du questionnaire d'origine.
 
-```{r}
+```{r,warning = FALSE}
 
 questionnaire<- koboquest::load_questionnaire(data = assessment_data,
                                   questions = "../data/test_questionnaire_questions.csv",

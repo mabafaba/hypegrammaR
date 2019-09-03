@@ -5,7 +5,7 @@
 \title{Weighted percentages with confidence intervals for groups}
 \usage{
 percent_with_confints_select_one_groups(dependent.var, independent.var,
-  design, na.rm = TRUE)
+  design, na.rm = TRUE, confidence_level = 0.95)
 }
 \arguments{
 \item{dependent.var}{string with the column name in `data` of the dependent variable. Should be a 'select one'}
@@ -13,6 +13,8 @@ percent_with_confints_select_one_groups(dependent.var, independent.var,
 \item{independent.var}{string with the column name in `data` of the independent (group) variable. Should be a 'select one'}
 
 \item{design}{the svy design object created using map_to_design or directly with svydesign}
+
+\item{confidence_level}{the confidence level to be used for confidence intervals (default: 0.95)}
 }
 \value{
 A table in long format of the results, with the column names dependent.var, dependent.var.value, independent.var, independent.var.value, numbers, se, min and max.
@@ -24,5 +26,5 @@ Weighted percentages with confidence intervals for groups
 this function takes the design object and the name of your dependent variable when this one is a select one. It calculates the weighted percentage for each category in each group of the independent variable.
 }
 \examples{
-percent_with_confints_select_one_groups("population_group", "resp_gender", design)
+\dontrun{percent_with_confints_select_one_groups("population_group", "resp_gender", design)}
 }

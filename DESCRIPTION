@@ -1,6 +1,6 @@
 Package: hypegrammaR
 Title: A grammar of hypothesis test driven analysis
-Version: 0.0.0.9000
+Version: 0.2.2
 Authors@R: person("Eliora", "Henzler", email = "eliora.henzler@impact-initiatives.org", role = c("aut", "cre"))
 Description: Quantitative analysis according to the IMPACT minimum standards. Accepts weights and input from kobo questionnaires.
 Depends: 
@@ -10,7 +10,9 @@ Depends:
     ggplot2,
     ggthemes,
     tidyr,
-    crayon
+    crayon,
+    grid,
+    stats
 Imports:
     dplyr,
     reshape2,
@@ -22,19 +24,25 @@ Imports:
     knitr,
     htmltools,
     assertthat,
-    kableExtra
+    kableExtra,
+    parallel,
+    srvyr,
+    extrafont,
+    purrr,
+    scales
 Remotes:
     github::mabafaba/koboquest,
     github::mabafaba/xlsformfill,
     github::mabafaba/kobostandards,
-    mabafaba/composr,
-    ellieallien/surveyweights,
-    mabafaba/koboquest
-License: What license is it under?
+    github::mabafaba/composr,
+    github::ellieallien/surveyweights,
+    github::mabafaba/koboquest
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
 Suggests: 
     testthat,
-    rmarkdown
+    rmarkdown,
+    tibble
 VignetteBuilder: knitr

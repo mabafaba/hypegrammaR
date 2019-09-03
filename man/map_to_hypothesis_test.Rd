@@ -16,9 +16,3 @@ a _function_ that computes the relevant hypothesis test
 \description{
 selects an appropriate hypothesis test function based on the analysis case
 }
-\examples{
-map_to_summary_statistic("group_difference_categorical_categorical")
-my_case<- map_to_case( ... )
-my_hyptest <- map_to_hypothesis_test(my_case)
-my_hyptest( ... )
-}

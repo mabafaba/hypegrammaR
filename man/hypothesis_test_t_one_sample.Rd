@@ -23,5 +23,5 @@ A list with the results of the test (T-value, p value, etc.) or the error messag
 Perform a one sample t test of one numerical variable against  hypothesised value (limit)
 }
 \examples{
-hypothesis_test_t_two_sample("males_13_15", 4, design)
+\dontrun{hypothesis_test_t_two_sample("males_13_15", 4, design)}
 }

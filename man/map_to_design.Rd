@@ -22,5 +22,5 @@ creates a `survey` design object from the data
 create a `survey` package design object from the data and information on the sampling strategy
 }
 \examples{
-map_to_design(data,cluster_variable_name="cluster_id")
+\dontrun{map_to_design(data,cluster_variable_name="cluster_id")}
 }

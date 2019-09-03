@@ -4,7 +4,7 @@ author: "Barner M., Henzler E."
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Speaking with the Grammar of Hypothesis}
+  %\VignetteIndexEntry{Speaking with the Grammar of Hypothesis (FR)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,7 +12,8 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
@@ -22,7 +23,7 @@ knitr::opts_chunk$set(
 
 Le deroulement d'une analyse selon les directives d'analyse des donnees:
 
-![instructions de flux d'analyse](./ hypegrammaR_flowchart.jpg)
+![instructions de flux d'analyse](./hypegrammaR_flowchart.jpg)
 
 Son implementation dans hypegrammaR:
 

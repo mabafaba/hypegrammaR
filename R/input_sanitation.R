@@ -1,4 +1,5 @@
 
+## THESE FUNCTIONS ARE DEPRECIATED AND NOT IN USE!
 
 sanitise_data <- function(data, dependent.var,independent.var,case){
 

@@ -28,7 +28,7 @@ gg_heatmap_generic<-function(summary.statistic){
   theplot<-ggplot(summary.statistic)+
     geom_tile(aes(x=dependent.var.value,y=independent.var.value,fill=numbers))+
     xlab("")+ylab("")+coord_fixed()
-  theplot %<>%  gg_reach_style()
+  theplot <- theplot %>%  gg_reach_style()
   return(theplot)
 }
 
