@@ -117,7 +117,6 @@ percent_with_confints_select_multiple <- function(dependent.var,
       }
     design<-sanitised$design
     }
-
   ###
 
   # Get the columns with the choices data into an object
@@ -126,7 +125,7 @@ percent_with_confints_select_multiple <- function(dependent.var,
               results_srvyr <- lapply(names(choices), function(x) {
 
                 # sometimes they're 1/0, T/F, in various types. we make it numeric -> logical -> factor to be sure
-                design$variables[[x]] <- factor(as.logical(as.numeric(design$variables[[x]])),
+                design$variables[[x]] <- factor(as.logical(design$variables[[x]]),
                                                 levels = c("TRUE", "FALSE"))
 
                 srvyr_design <- srvyr::as_survey_design(design)
@@ -352,7 +351,7 @@ percent_with_confints_select_multiple_groups <-
 
 
     result_hg_format <- lapply(names(choices), function(x) {
-      design$variables[[x]] <- factor(as.logical(as.numeric(design$variables[[x]])),
+      design$variables[[x]] <- factor(as.logical(design$variables[[x]]),
                                       levels = c("TRUE", "FALSE"))
       srvyr_design <- srvyr::as_survey_design(design)
       srvyr_design_grouped <- srvyr::group_by_(srvyr_design,
