@@ -76,15 +76,26 @@ map_to_summary_statistic <-
     }
 
 
-    if (case == "CASE_regression_numerical_categorical") {
+    if (case == "CASE_correlation_categorical_numerical") {
+      if(!dependent_is_select_multiple){
       summary_stat <-
-        mean_with_confints_groups(
+        average_values_for_categories(
           dependent.var = dependent.var,
           independent.var = independent.var,
           design = design,
           confidence_level = confidence_level
         )
-    }
+      }
+      if(dependent_is_select_multiple){
+        summary_stat <-
+          average_values_for_categories_sm(
+            dependent.var = dependent.var,
+            independent.var = independent.var,
+            design = design,
+            confidence_level = confidence_level
+          )
+      }
+      }
 
     if (case == "CASE_direct_reporting_numerical_") {
       summary_stat <- mean_with_confints(

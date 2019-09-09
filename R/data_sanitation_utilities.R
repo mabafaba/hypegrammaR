@@ -78,8 +78,17 @@ datasanitation_summary_statistics_mean_groups <- function(data, dependent.var, i
 }
 
 
+datasanitation_average_values_for_categories <- function(data, dependent.var, independent.var){
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
+                         datasanitation_independent_numeric,
+                         # datasanitation_morethan_1_unique_independent,
+                         datasanitation_dependent_max_unique)
+}
 
 
+# HYPOTHESIS TESTS
 datasanitation_hypothesistest_chisq<-function(data,dependent.var,independent.var){
   # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
 
