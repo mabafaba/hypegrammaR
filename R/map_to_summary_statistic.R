@@ -76,9 +76,9 @@ map_to_summary_statistic <-
     }
 
 
-    if (case == "CASE_regression_numerical_categorical") {
+    if (case == "CASE_regression_categorical_numerical") {
       summary_stat <-
-        mean_with_confints_groups(
+        average_values_for_categories(
           dependent.var = dependent.var,
           independent.var = independent.var,
           design = design,

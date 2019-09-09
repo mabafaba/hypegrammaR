@@ -537,6 +537,65 @@ mean_with_confints_groups <- function(dependent.var,
   return(results)
 }
 
+#'Weighted means with confidence intervals for groups
+#'@param dependent.var string with the column name in `data` of the dependent variable. Should be a numerical variable.
+#'@param independent.var string with the column name in `data` of the independent (group) variable. Should be a 'select one'
+#'@param design the svy design object created using map_to_design or directly with svydesign
+#'@param confidence_level the confidence level to be used for confidence intervals (default: 0.95)
+#'@details This function takes the design object and the name of your dependent variable when the latter is a numerical. It calculates the weighted mean for your variable.
+#'@return A table in long format of the results, with the column names dependent.var, dependent.var.value (=NA), independent.var, independent.var.value, numbers (= mean), se, min and max.
+#'@export
+average_values_for_categories <- function(dependent.var,
+                                      independent.var,
+                                      design,
+                                      confidence_level = 0.95) {
+
+  sanitised <-datasanitation_design(design,dependent.var,independent.var,
+                                    datasanitation_average_values_for_categories)
+  if(!sanitised$success){
+    warning(sanitised$message)
+    return(datasanitation_return_empty_table_NA(design$variables, dependent.var, independent.var, message = sanitised$message))
+  }
+
+  design<-sanitised$design
+
+  formula_string <- paste0("~as.numeric(", independent.var, ")")
+  by <- paste0("~", dependent.var, sep = "")
+
+
+  result_svy_format <-
+    svyby(
+      formula(formula_string),
+      formula(by),
+      design,
+      svymean,
+      na.rm = T,
+      keep.var = T,
+      vartype = "ci",
+      level = confidence_level
+    )
+  unique.dependent.var.values <-
+    design$variables[[dependent.var]] %>% unique
+  results <- unique.dependent.var.values %>%
+    lapply(function(x) {
+      independent_value_x_stats <- result_svy_format[as.character(x), ]
+      colnames(independent_value_x_stats) <-
+        c("dependent.var.value", "numbers", "min", "max")
+      data.frame(
+        dependent.var = dependent.var,
+        independent.var = independent.var,
+        dependent.var.value = x,
+        independent.var.value = NA,
+        numbers = independent_value_x_stats[2],
+        se = NA,
+        min = independent_value_x_stats[3],
+        max = independent_value_x_stats[4]
+      )
+    }) %>% do.call(rbind, .)
+
+  return(results)
+}
+
 ### for select_one and select multiple answers, returns the most common answer for that group
 # only works for select_one and select_multiple
 

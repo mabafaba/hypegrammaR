@@ -203,7 +203,7 @@ datasanitation_dependent_numeric<-function(data,dependent.var,independent.var,..
 
 datasanitation_independent_numeric<-function(data,dependent.var,independent.var,...){
   if(is.factor(data[[dependent.var]])){data[[dependent.var]]<-as.character(data[[dependent.var]])}
-  data[[dependent.var]]<-as.numeric(data[[dependent.var]])
+  data[[dependent.var]]<-as.numeric(data[[independent.var]])
   if(all(is.na(data[[dependent.var]]))){return(failed_sanitation("independent variable is not numeric"))}
   data<-data[!is.na(data[[dependent.var]]),]
   return(successfull_sanitation(data))
