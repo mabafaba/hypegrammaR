@@ -149,6 +149,12 @@ datasanitation_remove_missing<-function(data,dependent.var,independent.var,...){
   data<-data[(data[[dependent.var]]!=""),]
   data<-data[(data[[dependent.var]]!="NA"),]
   data<-data[(data[[dependent.var]]!="<NA>"),]
+  if(!is.null(independent.var)){
+  data<-data[!is.na(data[[independent.var]]),]
+  data[[independent.var]] <- as.character(data[[independent.var]])
+  data<-data[(data[[independent.var]]!=""),]
+  data<-data[(data[[independent.var]]!="NA"),]
+  data<-data[(data[[independent.var]]!="<NA>"),]}
   if(nrow(data)<=2){return(failed_sanitation("less than 3 records have valid values in the dependent variable and in the independent variable"))}
   return(successfull_sanitation(data))
 }
