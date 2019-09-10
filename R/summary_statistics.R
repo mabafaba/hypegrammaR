@@ -525,38 +525,39 @@ mean_with_confints_groups <- function(dependent.var,
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
   by <- paste0("~", independent.var, sep = "")
 
-
-  result_svy_format <-
-    svyby(
-      formula(formula_string),
-      formula(by),
-      design,
-      svymean,
-      na.rm = T,
-      keep.var = T,
-      vartype = "ci",
-      level = confidence_level
-    )
-  unique.independent.var.values <-
-    design$variables[[independent.var]] %>% unique
-  results <- unique.independent.var.values %>%
-    lapply(function(x) {
-      dependent_value_x_stats <- result_svy_format[as.character(x), ]
-      colnames(dependent_value_x_stats) <-
-        c("independent.var.value", "numbers", "min", "max")
-      data.frame(
-        dependent.var = dependent.var,
-        independent.var = independent.var,
-        dependent.var.value = NA,
-        independent.var.value = x,
-        numbers = dependent_value_x_stats[2],
-        se = NA,
-        min = dependent_value_x_stats[3],
-        max = dependent_value_x_stats[4]
+  if (!all(is.na(design$variables[[by]]))) {
+    result_svy_format <-
+      svyby(
+        formula(formula_string),
+        formula(by),
+        design,
+        svymean,
+        na.rm = T,
+        keep.var = T,
+        vartype = "ci",
+        level = confidence_level
       )
-    }) %>% do.call(rbind, .)
+    unique.independent.var.values <-
+      design$variables[[independent.var]] %>% unique
+    results <- unique.independent.var.values %>%
+      lapply(function(x) {
+        dependent_value_x_stats <- result_svy_format[as.character(x), ]
+        colnames(dependent_value_x_stats) <-
+          c("independent.var.value", "numbers", "min", "max")
+        data.frame(
+          dependent.var = dependent.var,
+          independent.var = independent.var,
+          dependent.var.value = NA,
+          independent.var.value = x,
+          numbers = dependent_value_x_stats[2],
+          se = NA,
+          min = dependent_value_x_stats[3],
+          max = dependent_value_x_stats[4]
+        )
+      }) %>% do.call(rbind, .)
 
-  return(results)
+    return(results)
+  }
 }
 
 #'Weighted means with confidence intervals for groups
