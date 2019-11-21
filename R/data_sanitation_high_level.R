@@ -1,3 +1,19 @@
+#' "high level" data sanitations do the following:
+#'
+#' - take a design object and some information on the analysis to be conducted
+#' - apply a number of low lever data sanitations such as checking the number of unique values in a variable (data_sanitation_low_level.R)
+#' - return a logical whether the sanitation was successful plus either the design object or a message explaining why the sanitation failed
+#'
+#' We do this mainly because the survey package is very strict and throws a lot of errors that we are trying to catch up front
+
+
+#' the code is structured as follows:
+#'
+#'
+#' - there's some "low level" check functions
+#' - apply_data_sanitations() can be used to chain any number of those checks
+#' - that is then used to create "high level" sanitation functions matching specific "Blocks", for example a specific summary statistic function.
+
 #' Applies basic sanitation to data before summary statistics or hypothesis test can be applied
 #'
 #' @param design the design object
@@ -84,9 +100,9 @@ datasanitation_hypothesistest_chisq<-function(data,dependent.var,independent.var
   # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
 
 
-  apply_data_sanitations(data,           # all functions take these parameters
-                         dependent.var,  # all functions take these parameters
-                         independent.var,# all functions take these parameters
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
                          datasanitation_morethan_1_unique_dependent,
                          datasanitation_morethan_1_unique_independent,
                          datasanitation_independent_max_unique,
@@ -102,9 +118,9 @@ datasanitation_hypothesistest_chisq_sm<-function(data,dependent.var,independent.
   # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
 
 
-  apply_data_sanitations(data,           # all functions take these parameters
-                         dependent.var,  # all functions take these parameters
-                         independent.var,# all functions take these parameters
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
                          datasanitation_morethan_1_unique_dependent,
                          datasanitation_morethan_1_record_per_independent_value,
                          datasanitation_morethan_1_unique_independent,
@@ -117,9 +133,9 @@ datasanitation_hypothesistest_t<-function(data,dependent.var,independent.var){
   # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
 
 
-  apply_data_sanitations(data,           # all functions take these parameters
-                         dependent.var,  # all functions take these parameters
-                         independent.var,# all functions take these parameters
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
                          datasanitation_morethan_1_unique_dependent,
                          datasanitation_morethan_1_record_per_independent_value,
                          datasanitation_morethan_1_unique_independent,
@@ -132,9 +148,9 @@ datasanitation_hypothesistest_limit<-function(data,dependent.var,independent.var
   # apply an exquisite selection of sanitations functions relevant to chisquare hypothesis tests:
 
 
-  apply_data_sanitations(data,           # all functions take these parameters
-                         dependent.var,  # all functions take these parameters
-                         independent.var,# all functions take these parameters
+  apply_data_sanitations(data,
+                         dependent.var,
+                         independent.var,
                          datasanitation_morethan_1_unique_dependent,
                          datasanitation_dependent_numeric
                          )
@@ -187,14 +203,20 @@ datasanitation_generic_check<-function(data,dependent.var,independent.var,valid,
   if(valid){return(successfull_sanitation(data))}else{return(failed_sanitation(message))}
 }
 
-# CHAINING SANITATION FUNCTIONS:
+#' chaining sanitation functions
+#' @param data the data
+#' @param dependent.var the name of the dependent variable
+#' @param independent.var the name of the independent variable
+#' @param BEFORE optional: overwrite the default checks that are always used in the beginning (not recommended, used mainly to break the recursion)
+#' @param AFTER optional: overwrite the default checks that are always used in the end (not recommended, used mainly to break the recursion)
+#' @param ... any number of sanitation functions
+#' @details
+# call like this:
+# apply_data_sanitations(data,"myvarname","myothervarname",
+#                        datasanitation_remove_missing_data,
+#                        datasanitation_dependent_morethan_1_unique,
+#                        datasanitation_independent_morethan_1_unique)
 apply_data_sanitations<-function(data,dependent.var,independent.var,...){
-  # ... should be sanitation functions.
-  # call like this:
-  # apply_data_sanitations(data,"myvarname","myothervarname",
-  #                        datasanitation_remove_missing_data,
-  #                        datasanitation_dependent_morethan_1_unique,
-  #                        datasanitation_independent_morethan_1_unique)
   # get the "..." parameters as a list; add generic tests (can be overwritten by passing datasanitation_always_applicable_before/after as parameters!)
   params<-list(...)
   # allow overwriting 'before' and 'after' generic tests by passing 'BEFORE' and 'AFTER' named arguments:

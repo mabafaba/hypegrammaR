@@ -1,3 +1,9 @@
+#' produce a table that can be used for indesign data merge
+#' @param results a list with an analysisplan and a matching list of results (as produced by from_analysisplan_map_to_output() )
+#' @param rows which analysisplan columns should define what to have per row
+#' @param values default "numbers" is almost always what you want
+#' @param ignore which columns not to include
+#' @param questionnaire an object created with load_questionnaire() (used to produce labels if required)
 map_to_datamerge<-function(results,
                                       rows=c("repeat.var","repeat.var.value"),
                                       values="numbers",

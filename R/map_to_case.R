@@ -1,4 +1,5 @@
-
+#' the "analysis case" is the minimal info required to know what hypothesis test, summary statistic and visualisation would be most appropriate.
+#' it's stored as a string with a class.
 
 list_all_cases<-function(implemented_only=F){
 

@@ -1,6 +1,20 @@
 
-## THESE FUNCTIONS ARE DEPRECIATED AND NOT IN USE!
+#' these functions should be depreciated eventually, but for now still in use in hypothesis_tests.R
+#' they should go because now there is a proper system to apply data sanitation within each summary statistic and hypothesis test function.
 
+
+
+#' take the data and some information about the planned analysis and prepare the data to ensure analysis doesn't fail
+#' @param data data
+#' @param dependent.var the name of the dependent variable
+#' @param independent.var the name of the independent variable
+#' @param case the analysis case (see map_to_case())
+#' @return a list with two items:
+#' - 1. `data`:  the sanitised dataset
+#' - 2. `success` a logical value, TRUE if the data can be analysed,FALSE if the sanitation was unsuccessful
+#'
+#' if `$success` is FALSE, there may be a `$message` with more information, and the data will be NULL.
+#'
 sanitise_data <- function(data, dependent.var,independent.var,case){
 
   # data<-tryCatch({

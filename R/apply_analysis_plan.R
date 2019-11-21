@@ -1,43 +1,48 @@
-#
-#     # shorten column headers
-
-#
-#     cases <- apply(analysisplan, 1, function(x) {
-#       # print("\n\n\n")
-#       # print(x %>% kable)
-#
-#       list(case)
-#     }) %>% lapply(unlist)
-#
-#   }
-#
-
-
-
-
-
-#' expand an analysis plan with repeat var
+#' These are wrappers to run many analysis at once based on an analysis plan
+#' In hypegrammaR, you identify a dependent variable, an independent variable, an analysis case and a hypothesis type.
+#' The analyssiplan basically collects that information in a table that can then be applied in batch.
 #'
-#' each repetion gets its own analysisplan row
+#'
+#'
+
+
+
+
+#' expand an analysis plan with repeat variable
+#'
+#' @param analysisplan an analysis plan as a data frame
+#' @param data a datasets matching the analysisplan
+#'
+#' @details an analysisplan can contain a "repeat.var" column.
+#' This function expands each analysisplan row with a repeat variable into one row per unique value in the dataset for that variable;
+#' for example if the repeat variable is "district", and in the data there are the districts  "d_1" and "d_2"
+#' this will create a new analysisplan with two rows where "repeat.var.value" is "d_1" and "d_2" respectively
 analysisplan_expand_repeat <- function(analysisplan, data) {
   if (!is.null(analysisplan[, "repeat.var"])) {
     # repeat.var.value <- unique(data[[repeat.var]])
     # repeat.var.value <- repeat.var.value[!is.na(repeat.var.value )]
+
+    # store the ap rows that do not use repeat var
     analysisplan.no.repeat <-
       analysisplan[analysisplan$repeat.var %in% c(NA, "", " "), ]
+    # set their repeat values to NA...
     if (!nrow(analysisplan.no.repeat) < 1) {
       analysisplan.no.repeat$repeat.var <- NA
       analysisplan.no.repeat$repeat.var.value <- NA
-    } else{
+    } else{ # .. unless there are no rows that don't use repeat
       analysisplan.no.repeat$repeat.var <- character(0)
       analysisplan.no.repeat$repeat.var.value <- character(0)
     }
+    # pick the row that do use repeat
     analysisplan.repeat <-
       analysisplan[!(analysisplan$repeat.var %in% c(NA, "", " ")), ]
+
+    # for each row, expand to however many unique values exist in the data, create that many rows,
+    # and fill the new "repeat.var.value" column with those values.
     analysisplan.repeat <-
       (1:nrow(analysisplan.repeat)) %>% lapply(function(ap_row_index) {
         ap_row <- analysisplan.repeat[ap_row_index, ] %>% unlist
-        ap_row_expanded <-
+        ap_row_expanded
           matrix(
             ap_row,
             nrow = length(unique(data[[ap_row["repeat.var"]]])),
@@ -49,12 +54,6 @@ analysisplan_expand_repeat <- function(analysisplan, data) {
           unique(as.character(data[[ap_row["repeat.var"]]]))
         ap_row_expanded
       }) %>% do.call(rbind, .)
-
-    # analysisplan.repeat <- lapply(repeat.var, function(x){
-    #   if(!x %in% c(NA, "", " ")){
-    #   repeat.var.value <- unique(data[[x]])
-    #   repeat.var.value <- repeat.var.value[!is.na(repeat.var.value )]
-    #   analysisplan %>% filter(repeat.var %in% x) %>% slice(rep(1:n(), each = length(repeat.var.value))) %>% cbind(.,repeat.var.value, stringsAsFactors = F)}}) %>% do.call(rbind,.)
 
     analysisplan <-
       rbind(analysisplan.no.repeat,
@@ -92,7 +91,7 @@ from_analysisplan_map_to_output <- function(data,
   #overwrite 'labeled' paramater if questionnaire is missing
   if(is.null(questionnaire)){labeled <- FALSE}
 
-  # shorten analysisplan column names
+  # shorten analysisplan column names. This is because the analysis plan we used more human readable column names than in the code.
         analysisplan <-
           analysisplan %>% dplyr::rename(
             repeat.var = repeat.for.variable,
@@ -101,10 +100,13 @@ from_analysisplan_map_to_output <- function(data,
             dependent.var.type = dependent.variable.type,
             independent.var.type = independent.variable.type
           )
-  # remove junk rows:
+  # remove "junk" rows (if dependent.var is NA, it's definitely empty)
+  # Since the analysisplan is often made in excel it can happen easily to have some rows that are empty or otherwise aren't meant to be used)
   analysisplan <- analysisplan[!is.na(analysisplan$dependent.var), ]
+  # later we added more structured a generic function to clean up a raw analysisplan:
   analysisplan <- analysisplan_clean(analysisplan)
 
+  # convert factors to characters because factors are the devil
   lapply(analysisplan,function(x){if(is.factor(x)){return(as.character(x))};x}) %>% as.data.frame(stringsAsFactors = FALSE)
 
   # each 'repeat.var' repetition gets their own row
@@ -115,7 +117,7 @@ from_analysisplan_map_to_output <- function(data,
     analysisplan$percentcomplete <-
       paste0(floor(1:nrow(analysisplan) / nrow(analysisplan) * 100), "%\n\n")
 
-    # Apply rows:
+    # do analysis for each row in the analysis plan:
     results <- apply(analysisplan, 1, function(x) {
 
       # subset for current repition (if has a repeat var)
@@ -126,21 +128,15 @@ from_analysisplan_map_to_output <- function(data,
         this_valid_data <- data
       }
 
+      # check data is still good:
+
       if(!(is_good_dataframe(this_valid_data))){
         result <- list()
         return(result)
       }
 
 
-      # subset where dependent and independent has data
-#
-#       this_valid_data <- this_valid_data[which(!(is.na(this_valid_data[, as.character(x["dependent.var"])]))), ,drop=FALSE]
-#       if (!is.na(x["independent.var"])) {
-#         this_valid_data <- this_valid_data[which(!(is.na(this_valid_data[, as.character(x["independent.var"])]))), ]
-#       }
-
-      # print what we're doing to console
-
+      # print progress:
 
       if(verbose){
       printparamlist(x, "calculating summary statistics and hypothesis tests")
@@ -151,6 +147,8 @@ from_analysisplan_map_to_output <- function(data,
       } else{
         indep.var <- as.character(x["independent.var"])
       }
+
+      # identify analysis case:
       case <- map_to_case(
         hypothesis.type = x["hypothesis.type"],
         dependent.var.type =
@@ -168,6 +166,9 @@ from_analysisplan_map_to_output <- function(data,
 
       )
 
+      # calculate the results:
+
+
       result <- map_to_result(
         data = this_valid_data,
         dependent.var = x["dependent.var"],
@@ -179,6 +180,7 @@ from_analysisplan_map_to_output <- function(data,
         confidence_level = confidence_level
       )
 
+      # add into output the parameter information on the current repetetition / subset
       if (!is.null(x["repeat.var"]) & (!is.na(x["repeat.var"]))) {
         result$parameters$repeat.var <- x["repeat.var"]
         result$parameters$repeat.var.value <-
@@ -189,9 +191,11 @@ from_analysisplan_map_to_output <- function(data,
 
       }
 
+
       if(labeled){
         result <- map_to_labeled(result, questionnaire)
       }
+
 
 
 
@@ -205,9 +209,11 @@ from_analysisplan_map_to_output <- function(data,
           result$summary.statistic$repeat.var.value <- character(0)
         }
       }
-      # names(result) <- paste(x["dependent.var"], result$parameters$repeat.var.value)
       return(result)
     })
+
+    # output not only the results but also the final analysisplan that was used,
+    # where each analysisplan row matches one item in the result list
     all_results<-list(results = results, analysisplan = analysisplan)
     class(all_results)<-"hypegrammar_resultlist"
     return(all_results)

@@ -1,3 +1,5 @@
+
+
 #' Heatmaps from `result` objects
 #' @param result a hypegrammaR result object (can be made with map_to_result())
 #' @details to add labels, use `myresult %>% map_to_labeled %>% map_to_result`. The easiest way to save this to a file is with `map_to_file()`. The first elemnent of the returned list is a ggplot object, so you can add/overwrite ggplot elements to it.

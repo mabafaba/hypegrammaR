@@ -1,3 +1,8 @@
+
+#' create a result table in markdown format
+#'
+#' @param result a result as produced by map_to_result()
+#' @return  a character string with markdown syntax.
 from_result_map_to_md_table <-function(result){
   md_out<-""
 

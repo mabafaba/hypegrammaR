@@ -1,3 +1,15 @@
+#' Based on the analysis case, map_to_hypothesis_test() will pick out one of these hypothesis test functions.
+#'
+#'
+#' they all have the same pattern
+#'
+#' 1. Start with a sanitation: checking if the data is ok and modifying it if necessary. see data_sanitation_high_level.R for details)
+#' 2. if sanitation failed, return an empty result
+#' 3. make a formula for the test
+#' 4. apply the test; on failure, try not to throw errors, but instead an empty result with a hopefully meaningful message
+#' 5. return a result in a standard format; all of these functions should _always_ return an object of exactly the same structure
+#'
+
 #' hypothesis_test_chisquared_select_one
 #' Perform a chi squared test on a select one question against another.
 #' @param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'.
@@ -43,6 +55,11 @@ hypothesis_test_chisquared_select_one <- function(dependent.var,
 
 
 
+#' make an empty hypothesis test result in standard format
+#'
+#' @param dependent.var string with the column name in `data` of the dependent variable. Should be a 'select one'.
+#' @param independen.var string with the column name in `data` of the independent variable. Should be a 'select one' with few (<15) categories.
+#' @param design the svy design object created using map_to_design or directly with svydesign
 hypothesis_test_empty <- function(dependent.var = NULL,
                                   independent.var = NULL,
                                   design = NULL,

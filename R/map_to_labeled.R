@@ -1,4 +1,4 @@
-#' Add labels to results
+#' Add labels to results based on the questionnaire
 #'
 #' @param result hypegrammaR `result` object; output from map_to_result().
 #' @param questionnaire koboquest `questionnaire` object; output from load_questionnaire()

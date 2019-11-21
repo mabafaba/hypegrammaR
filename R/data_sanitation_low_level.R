@@ -1,5 +1,13 @@
-# GENERIC LOW LEVEL SANITATIONS:
+# GENERIC LOW LEVEL SANITATIONS
 
+
+#' creates a summary.statistic table with all numbers NA
+#' in  the standard format you would expect from map_to_summary_statistic
+#'
+#' @param data the input data
+#' @param dependent.var the name of the dependent variable
+#' @param independent.var the name of the indepenent variable
+#' @param message a character string explaining why we are returning an empty table
 datasanitation_return_empty_table <- function(data, dependent.var, independent.var = NULL, message = NA){
 
   #### this is really counter intuitive - why would an empty table return 1? -> especially in mean this should not happen.
@@ -10,6 +18,10 @@ datasanitation_return_empty_table <- function(data, dependent.var, independent.v
   #### not sure
   #### but changing this regardless.. function fails all the time, it's too convoluted further down; all the time the values submitted to the df to return have different lengths and breaks it.
   return(datasanitation_return_empty_table_NA(data,dependent.var,independent.var = independent.var,message = message))
+
+
+
+  # All of the below is depreciated. It was an attempt to return rows with NA depending on the input
 
 
 #   if(datasanitation_variables_in_data_colnames(data, dependent.var, independent.var)$success == F){
@@ -77,6 +89,8 @@ datasanitation_return_empty_table <- function(data, dependent.var, independent.v
   )
 }
 
+
+# this is the same as above. Changes to an empty table should be made in the function that wants something other than an empty table..
 datasanitation_return_empty_table_NA <- function(data, dependent.var, independent.var = NULL,message = NA){
 
 empty_table<-data.frame(
@@ -94,6 +108,22 @@ return(empty_table)
 
 }
 
+
+#' individual low level sanitation checks --------------------------------------------
+#'
+#' low level sanitation checks make sure a very specific condition in the data is fulfilled.
+#' They are then chained together into task specific combinations of checks (see data_sanitation_high_level)
+#'
+#' each data sanitation does the following:
+#'
+#' 1. check if the specific sanitation check is fulfilled
+#' 2. if yes, return a successfull_sanitation object which includes the data as is
+#' 3. if no, try to modify the dataset to fix the issue
+#' 4. if successful, return a successful_sanitation object which includes the dataset
+#' 5. if not successful, return a failed_sanitation object
+
+
+#' check if data is a data frame
 datasanitation_is_good_dataframe<-function(data,...){
   if(!is.data.frame(data)){return(failed_sanitation("data is not a data frame"))}
   if(ncol(data)<1){return(failed_sanitation("data has no columns"))}
@@ -101,6 +131,8 @@ datasanitation_is_good_dataframe<-function(data,...){
   if(as.vector(data) %>% is.na %>% all){return(failed_sanitation("all data is NA"))}
   return(successfull_sanitation(data))
 }
+
+# sanitise data to remove rows whose strata can not be found in the sampling frame
 
 data_sanitation_remove_not_in_samplingframe<-function(data,samplingframe_object,name="samplingframe"){
   records_not_found_in_sf<-!(samplingframe_object$add_stratum_names_to_data(data)[,samplingframe_object$stratum_variable] %in% samplingframe_object$sampling.frame$stratum)
@@ -115,6 +147,9 @@ data_sanitation_remove_not_in_samplingframe<-function(data,samplingframe_object,
                    "records discarded, because they could not be matched with samplingframe.
                    I wrote a copy of those records to",logfile,
                    "\n sampling frame name:",name,"\n"))
+
+  # .write_to_log() currently does nothing at the moment, but can be overwritten if needed
+
   .write_to_log(paste("names not found in sampling frame:\n",
                       paste(samplingframe_object$add_stratum_names_to_data(data)[,samplingframe_object$stratum_variable] %>% unique,collapse="\n")
   ))
@@ -131,11 +166,14 @@ data_sanitation_remove_not_in_samplingframe<-function(data,samplingframe_object,
 #   return(successfull_sanitation(data))
 # }
 
+
+
 datasanitation_morethan_1_unique_dependent<-function(data,dependent.var,independent.var){
   dependent_more_than_1 <- length(unique(data[[dependent.var]])) > 1
   if(!dependent_more_than_1){return(failed_sanitation("less than two unique values in the dependent variable"))}
   return(successfull_sanitation(data))
 }
+
 datasanitation_morethan_1_unique_independent<-function(data,dependent.var,independent.var){
   independent_more_than_1 <- length(unique(data[[independent.var]])) > 1
   if(!independent_more_than_1){return(failed_sanitation("less than two unique values in the independent variable"))}

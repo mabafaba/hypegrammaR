@@ -1,5 +1,9 @@
 
-
+#' convert text to alphanumeric lowercase. It' similar to make.names() but more tailored to kobo.
+#' NOTE: there's a general dilemma on making sure that variable names always match between data headers and questionnaire etc.
+#' we introduced this to try to be able to standardise all column headers as much as possible
+#' HOWEVER in hindsight, this is causing lots of issues; even though it prevents a lot of mistakes, it makes things less predictable.
+#' Ideally we should revert this; basically remove this function _everywhere_, and expect people to load the data with "check.names = F" and have precise names.
 to_alphanumeric_lowercase <- function(x){tolower(gsub("[^a-zA-Z0-9_]", "\\.", x))}
 
 
@@ -12,7 +16,7 @@ to_alphanumeric_lowercase_colnames_df <- function(df){
 #'
 #' @param file path to a csv file with the assessment data
 #'
-#' @details the file is loaded with stringsAsFactors = F and with column names in alphanumeric lowercase
+#' @details the file is loaded with stringsAsFactors = F and with column names in alphanumeric lowercase. This is mainly relevant if hypegrammaR is used in the background of an interface where people don't load and their data into R manually.
 #' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
 #' @export
 read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
@@ -25,7 +29,7 @@ read.csv.auto.sep<-function (file, stringsAsFactors = F, ...){
 #'
 #' @param file path to a csv file with the assessment data
 #'
-#' @details the data _must_ be in standard kobo format with xml style headers.
+#' @details the data _must_ be in standard kobo format with xml style headers. This is mainly relevant if hypegrammaR is used in the background of an interface where people don't load and their data into R manually.
 #' @return the data from the csv files as data frame. Column header symbols are changed to lowercase alphanumeric and underscore; everything else is converted to a "."
 #' @export
 load_data<-function(file){
@@ -40,7 +44,7 @@ load_data<-function(file){
 
 #' Load a sampling frame from csv
 #' @param file the path and name of the sampling frame csv file to load.
-#' @details function loads the sampling frame and can be used to make weights ith map_to_weighting()
+#' @details function loads the sampling frame and can be used to make weights ith map_to_weighting(). This is mainly relevant if hypegrammaR is used in the background of an interface where people don't load and their data into R manually.
 #' @examples \dontrun{sf <- load_samplingframe("./somefolder/samplingframe.csv")}
 #'
 #' @export
@@ -51,6 +55,8 @@ load_samplingframe<-function(file){
   samplingframe<-read.csv.auto.sep(file, stringsAsFactors = F)
 }
 
+
+# this is just to export load_questionnaire from koboquest package. Probably there's a more elegant way to do this.
 
 #' load_questionnaire
 #' @param data data frame containing the data matching the questionnaire to be loaded.
@@ -90,7 +96,7 @@ load_questionnaire<-function(data,
 #' @param df alternative to `file`, you can provide the analysis plan as a data frame
 #' @details The analysis plan csv file must contain the following column headers:
 #' "repeat.for.variable","research.question", "sub.research.question", "hypothesis", "independent.variable", "dependent.variable", "hypothesis.type", "independent.variable.type", "dependent.variable.type".
-#' You can generate an empty template with
+#' This is mainly relevant if hypegrammaR is used in the background of an interface where people don't load and their data into R manually.
 #' @export
 load_analysisplan<-function(file=NULL,df=NULL){
 
@@ -120,7 +126,7 @@ return(ap_raw)
   }
 
 
-
+#' check if an analysisplan is in valid format
 assert_valid_analysisplan<-function(df){
   expected_column_names<-c("repeat.for.variable",
                            "research.question",
