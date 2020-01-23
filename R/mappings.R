@@ -105,8 +105,8 @@ map_to_visualisation <- function(result) {
 #' @return a dataframe containing the summary statistics and p values for each element in results.
 #' @export
 map_to_master_table <- function(results_object, filename, questionnaire = NULL){
-  if(!is.null(questions)){
-    x <- map_to_labeled(result = x, questionnaire = questions)}
+  if(!is.null(questionnaire)){
+    x <- map_to_labeled(result = x, questionnaire = questionnaire)}
   summary_table_single <- function(x, questions = questionnaire){
         if(!is.null(questions)){
           x <- map_to_labeled(result = x, questionnaire = questions)
