@@ -6,15 +6,20 @@
 #' @param sanitation_function the function containing all the checks for the analysis function in question
 #' @return returns the cleaned data with a santation success or failure message
 #' @export
-datasanitation_design<-function(design,dependent.var,independent.var, sanitation_function){
-  sanitised<-sanitation_function(design$variables,dependent.var,independent.var)
-  if(sanitised$success){
-    sanitised$design<-map_to_design(design$variables,
-                                    cluster_variable_name = attr(design,"hg_cluster_variable_name"),
-                                    weighting_function = attr(design,"hg_weighting_function")
-                                    )
-  }else{
-    sanitised$design<-NULL
+## Change the datasanitation design function to do the weighting based on data (rather than sanitised$data)
+datasanitation_design <- function (design, dependent.var, independent.var, sanitation_function)
+{
+  sanitised <- sanitation_function(design$variables, dependent.var,
+                                   independent.var)
+  if (sanitised$success) {
+    sanitised$design <- map_to_design(data, cluster_variable_name = attr(design, "hg_cluster_variable_name"), weighting_function = attr(design, "hg_weighting_function"))
+
+    NA_variables <- datasanitation_find_missing(data, dependent.var, independent.var)
+    sanitised$design$prob[NA_variables == 1] <- 0
+    sanitised$design$allprob[NA_variables == 1] <- 0
+  }
+  else {
+    sanitised$design <- NULL
   }
   return(sanitised)
 }
@@ -232,6 +237,18 @@ apply_data_sanitations<-function(data,dependent.var,independent.var,...){
     data <- data_sanitised$data # after updating the data!!!
   }
   return(data_sanitised)
+}
+
+### Change the function that removes the non-subsetted records
+datasanitation_find_missing <- function (data, dependent.var, independent.var, ...) {
+  na_indices <- is.na(data[[dependent.var]])
+  data[[dependent.var]] <- as.character(data[[dependent.var]])
+  blank_indices <- (data[[dependent.var]] == "")
+  na_indices_2 <- (data[[dependent.var]] == "NA")
+  na_indices_3 <- (data[[dependent.var]] == "<NA>")
+  problem_index <- blank_indices + na_indices_2 + na_indices_3
+  na_indices[na_indices == FALSE] <- problem_index[na_indices == FALSE]
+  return(na_indices)
 }
 
 
