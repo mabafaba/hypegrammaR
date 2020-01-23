@@ -12,11 +12,11 @@ datasanitation_design <- function (design, dependent.var, independent.var, sanit
   sanitised <- sanitation_function(design$variables, dependent.var,
                                    independent.var)
   if (sanitised$success) {
-    sanitised$design <- map_to_design(data, cluster_variable_name = attr(design, "hg_cluster_variable_name"), weighting_function = attr(design, "hg_weighting_function"))
+    sanitised$design <- map_to_design(design$variables, cluster_variable_name = attr(design, "hg_cluster_variable_name"), weighting_function = attr(design, "hg_weighting_function"))
 
-    NA_variables <- datasanitation_find_missing(data, dependent.var, independent.var)
+    NA_variables <- datasanitation_find_missing(design$variables, dependent.var, independent.var)
     sanitised$design$prob[NA_variables == 1] <- 0
-    sanitised$design$allprob[NA_variables == 1] <- 0
+    sanitised$design$allprob[NA_variables == 1,] <- 0
   }
   else {
     sanitised$design <- NULL
