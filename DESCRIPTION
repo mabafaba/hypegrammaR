@@ -35,7 +35,7 @@ Remotes:
     github::mabafaba/xlsformfill,
     github::mabafaba/kobostandards,
     github::mabafaba/composr,
-    github::ellieallien/surveyweights,
+    github::mabafaba/surveyweights,
     github::mabafaba/koboquest
 License: GPL-3
 Encoding: UTF-8
