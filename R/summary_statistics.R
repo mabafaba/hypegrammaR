@@ -335,7 +335,7 @@ percent_with_confints_select_multiple_groups <-
     ### Sanitation checks
     for(x in dependent.var.sm.cols){
       dependent.var.check <- names(design$variables)[x]
-      sanitised<-datasanitation_design(design,dependent.var.check,independent.var = NULL,
+      sanitised<-datasanitation_design(design,dependent.var.check,independent.var = independent.var,
                                        datasanitation_summary_statistics_percent_sm_choice_groups)
       if(!sanitised$success){
         warning(sanitised$message)
