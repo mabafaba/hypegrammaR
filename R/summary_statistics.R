@@ -20,7 +20,7 @@ percent_with_confints_select_one <-
     }
 
     stopifnot(is.numeric(confidence_level))
-    sanitised<-datasanitation_design(design,dependent.var,independent.var = NULL,
+    sanitised<-datasanitation_design(design,dependent.var,independent.var = independent.var,
                                      datasanitation_summary_statistics_percent_with_confints_select_one)
 
     if(!sanitised$success){
