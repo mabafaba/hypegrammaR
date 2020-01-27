@@ -145,7 +145,6 @@ datasanitation_morethan_1_unique_independent<-function(data,dependent.var,indepe
 
 datasanitation_remove_missing<-function(data,dependent.var,independent.var,...){
   data<-data[!is.na(data[[dependent.var]]),]
-  data[[dependent.var]] <- as.character(data[[dependent.var]])
   data<-data[(data[[dependent.var]]!=""),]
   data<-data[(data[[dependent.var]]!="NA"),]
   data<-data[(data[[dependent.var]]!="<NA>"),]
