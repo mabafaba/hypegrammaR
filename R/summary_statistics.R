@@ -368,7 +368,6 @@ percent_with_confints_select_multiple_groups <-
     }
 
 
-
     # Get the columns with the choices data into an object
     choices <- design$variables[, dependent.var.sm.cols]
 
