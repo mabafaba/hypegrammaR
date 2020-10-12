@@ -524,7 +524,7 @@ mean_with_confints_groups <- function(dependent.var,
   formula_string <- paste0("~as.numeric(", dependent.var, ")")
   by <- paste0("~", independent.var, sep = "")
 
-  if (!all(is.na(design$variables[[by]]))) {
+  if (!all(is.na(design$variables[[independent.var]]))) {
     result_svy_format <-
       svyby(
         formula(formula_string),
