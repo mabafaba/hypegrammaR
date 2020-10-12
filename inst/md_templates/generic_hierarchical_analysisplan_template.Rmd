@@ -42,15 +42,11 @@ if(!is.null(questionnaire)){
 
 
 
-
-
-
 md_out <- resultlist_recursive_markdown(resultlist,
-                              by_analysisplan_columns = by_analysisplan_columns,
+                              by_analysisplan_columns = names(analysisplan),
                               by_prefix = by_prefix,
-                              level = level,
-                              render_result_with = render_result_with,
-                              label_varnames = label_varnames)
+                              questionnaire = questionnaire,
+                              label_varnames = TRUE)
 
 cat(md_out)
 

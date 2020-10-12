@@ -14,7 +14,8 @@ map_to_design <- function(data,
 
   # if no weighting function / cluster variable provided
   if(is.null(cluster_variable_name)){
-    cluster.ids <- as.formula(c("~1"))}else{
+    cluster.ids <- as.formula(c("~1"))
+    }else{
     cluster.ids <- paste0("~",cluster_variable_name)
     if(any(is.na(data[cluster_variable_name]))){
   data <- data[!is.na(data[cluster_variable_name]),]
@@ -39,9 +40,6 @@ map_to_design <- function(data,
 
   }
 #add to this an option that strata weights can be the vector of weights if there is one in the data & warning that we usually dont do this
-
-
-
 
 
 
@@ -104,7 +102,7 @@ map_to_visualisation <- function(result) {
 #' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
 #' @return a dataframe containing the summary statistics and p values for each element in results.
 #' @export
-map_to_master_table <- function(results_object, filename, questionnaire = NULL){
+map_to_master_table <- function(results_object, filename, questionnaire = NULL, ...){
   if(!is.null(questionnaire)){
     x <- map_to_labeled(result = x, questionnaire = questionnaire)}
   summary_table_single <- function(x, questions = questionnaire){
@@ -140,16 +138,48 @@ map_to_master_table <- function(results_object, filename, questionnaire = NULL){
 #' @param questionnaire optional: the questionnaire obtained by load_questionnaire. Necessary is you want labeled results
 #' @return a dataframe containing the summary statistics for each element in results.
 #' @export
-map_to_summary_table <- function(results_object, filename, questionnaire = NULL){
-  summary_table_single <- function(x, questions = questionnaire){
-    if(!is.null(questions)){
-      x <- map_to_labeled(result = x, questionnaire = questions)}
-    y <- NULL
+map_to_summary_table <- function(results_object, analysisplan = NULL,
+                                 filename, questionnaire = NULL,
+                                 csv.type = "english"){
+
+  summary_table_single <- function(x, questions = questionnaire, analysis_plan = analysisplan){
+
+    y <- data.frame(dependent.var = character,
+                    independent.var=character(),
+                    independent.var.value=character(),
+                    dependent.var.value =character(),
+                    numbers=double(),
+                    se=double(),
+                    min=double(),
+                    max=double(),
+                    repeat.var=character(),
+                    repeat.var.value=character(),
+                    RQ=character(),
+                    SRQ=character())
+
     if(!is.null(x$summary.statistic)){
-      y <- as.data.frame(x$summary.statistic)}
+      y <- as.data.frame(x$summary.statistic)
+      y$RQ <- NA
+      y$SRQ <- NA
+    }
+
+    if(!is.null(y) & !is.na(y$numbers) & (!is.null(analysis_plan))){
+      print(y$dependent.var)
+      y$RQ <- analysis_plan$research.question[which(analysis_plan$dependent.variable == y$dependent.var)]
+      y$SRQ <- analysis_plan$sub.research.question[which(analysis_plan$dependent.variable == y$dependent.var)]
+    }
+    if(!is.null(questions)){
+      y <- labels_summary_statistic(y, questionnaire = questions)
+      y %<>% as.data.frame(.,stringsAsFactors = F)
+    }
     return(y)}
+
   df <- results_object %>% lapply(summary_table_single) %>% do.call(rbind, .)
-  map_to_file(df, filename)
+
+  if(csv.type == "french"){
+    map_to_file_french(df, filename)
+  }else{map_to_file(df, filename)}
+
 }
 
 #' Save outputs to files
@@ -177,7 +207,7 @@ map_to_file<-function(object,filename,...){
     }
 
     if("data.frame" %in% class(object)){
-      write.csv(object,filename,...)
+      write.csv(object,filename)
     }
 
   },
@@ -207,6 +237,63 @@ map_to_file<-function(object,filename,...){
   )
   return(object)
 }
+
+#' Save outputs to files (french csv format)
+#'
+#' @param object The object you want to save as a file
+#' @param filename The name of the file that is produced. The extension needs to match the type of object you want to save (csv for tables, jpg/pdf for images)
+#' @return the object that was given as input (unchanged).
+#' @examples
+#' \dontrun{# some table:
+#' mytable<-data.frame(a=1:10,b=1:10)
+#' map_to_file(mytable,"mytable.csv")
+#'
+#' # some graphic made with ggplot:
+#' mygraphic<-ggplot(mytable,aes(a,b))+geom_point()
+#' map_to_file(mygraphic,"visualisation.jpg")
+#' map_to_file(mygraphic,"visualisation.pdf")}
+#' @export
+map_to_file_french <-function(object,filename,...){
+
+  tryCatch({
+
+    if("ggplot" %in% class(object)){
+      ggsave(filename,object,...,limitsize = F)
+      return(filename)
+    }
+
+    if("data.frame" %in% class(object)){
+      write.csv2(object,filename)
+    }
+
+  },
+  error=function(e){
+    logmessage(paste0("Could not write to the file called:\n",filename))
+    logmessage(paste0("error:\n",e$message))
+    logmessage("Please close the file if it is open in any application and make sure the folder I am trying to write to exists.")
+    logmessage("to try again and continue the script, type 't'. To skip writing this file and countine the script, type 's'. To cancel the whole script, type 'c'. Then press enter.")
+    whattodo<-readline("Try again (t), skip this file (s), or cancel script (c)?: ")
+
+    if(!(whattodo %in% c("t","s","c"))){
+      logmessage("invalid input. You must type 't' to Try again, 's' to skip this file or 'c' to cancel the script (otherwise I'll abort the script, equivalent to typing 'c').")
+      whattodo<-readline("Try again (t), skip this file (s), or cancel script (c)?: ")
+    }
+    if(!(whattodo %in% c("t","s","c"))){
+      stop("Could not write to a file")
+    }
+
+    if(whattodo=="t"){return(map_to_file(object,filename))}
+    if(whattodo=="s"){
+      logmessage("WRITING TO FILE HAS BEEN SKIPPED. Proceeding with the script.")
+      return(NULL)}
+    if(whattodo=="c"){stop("Could not write to a file, and user decided to cancel the script.")}
+
+  },
+  finally = {}
+  )
+  return(object)
+}
+
 
 #' creates a weighting function from a sampling frame
 #'

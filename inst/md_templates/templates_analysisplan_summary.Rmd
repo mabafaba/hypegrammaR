@@ -33,7 +33,7 @@ for(rq in unique(analysisplan$research.question)){
     for(i in which(in_rq & in_srq)){
 
     if(!is.null(results[[i]]$summary.statistic)){
-    table <- results[[i]]$summary.statistic %>% (hypegrammaR:::rmdrs_pretty_summary_table)
+    table <- results[[i]]$summary.statistic %>% (hypegrammaR:::rmdrs_pretty_summary_table_minimal)
     cat(knitr::kable(table),format = "html")
     
     }
