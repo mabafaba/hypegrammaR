@@ -144,7 +144,7 @@ map_to_summary_table <- function(results_object, analysisplan = NULL,
 
   summary_table_single <- function(x, questions = questionnaire, analysis_plan = analysisplan){
 
-    y <- data.frame(dependent.var = character,
+    y <- data.frame(dependent.var = character(),
                     independent.var=character(),
                     independent.var.value=character(),
                     dependent.var.value =character(),
