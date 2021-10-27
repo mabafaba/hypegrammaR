@@ -165,8 +165,8 @@ map_to_summary_table <- function(results_object, analysisplan = NULL,
 
     if(!is.null(y) & !is.na(y$numbers) & (!is.null(analysis_plan))){
       print(y$dependent.var)
-      y$RQ <- analysis_plan$research.question[which(analysis_plan$dependent.variable == y$dependent.var)]
-      y$SRQ <- analysis_plan$sub.research.question[which(analysis_plan$dependent.variable == y$dependent.var)]
+      y$RQ <- analysis_plan$research.question[which(analysis_plan$dependent.variable == y$dependent.var & analysis_plan$independent.variable == y$independent.var) ]
+      y$SRQ <- analysis_plan$sub.research.question[which(analysis_plan$dependent.variable == y$dependent.var & analysis_plan$independent.variable == y$independent.var)]
     }
     if(!is.null(questions)){
       y <- labels_summary_statistic(y, questionnaire = questions)
