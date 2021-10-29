@@ -15,7 +15,7 @@ library(hypegrammaR)
 
 
 ```{r,include=T,warning=F,error=F,message=F,echo=FALSE,results='asis'}
-resultlist <- x
+# resultlist <- x
 analysisplan<-resultlist$analysisplan
 knitr::kable(analysisplan,format = "html")
 results<-resultlist$results
